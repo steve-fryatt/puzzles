@@ -1,0 +1,132 @@
+REM >!Help
+REM
+REM Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+REM
+REM This file is part of Puzzles:
+REM
+REM   http://www.stevefryatt.org.uk/risc-os
+REM
+REM Licensed under the EUPL, Version 1.2 only (the "Licence");
+REM You may not use this work except in compliance with the
+REM Licence.
+REM
+REM You may obtain a copy of the Licence at:
+REM
+REM   http://joinup.ec.europa.eu/software/page/eupl
+REM
+REM Unless required by applicable law or agreed to in
+REM writing, software distributed under the Licence is
+REM distributed on an "AS IS" basis, WITHOUT WARRANTIES
+REM OR CONDITIONS OF ANY KIND, either express or implied.
+REM
+REM See the Licence for the specific language governing
+REM permissions and limitations under the Licence.
+:
+REM Select help file based on available readers and selected territory.
+
+ON ERROR PRINT REPORT$ + " at line " + STR$(ERL) : END
+
+REM Change this direcrtory and the names of the target files and variables as required.
+
+StrongHelp$ = ""
+TextHelp$ = "HelpText"
+ResourceDir$ = "<Puzzles$Dir>.Resources"
+HelpTextVar$ = "Puzzles$HelpText"
+LanguageVar$ = "Puzzles$Language"
+FallbackDir$ = "UK"
+
+DIM b% 255
+folders$ = ""
+
+REM Read the application language override.
+
+SYS "XOS_ReadVarVal", LanguageVar$, b%, 256, 0, 3 TO ,,length%,,type% ;flags%
+IF (flags% AND 1) = 0 AND type% = 0 AND length% > 0 THEN
+	b%?length% = 13
+	folders$ += $b% + ","
+ENDIF
+
+REM Read the ResFind Language Prefix.
+
+SYS "XOS_ReadVarVal", "ResFind$LanguagesPref", b%, 256, 0, 3 TO ,,length%,,type% ;flags%
+IF (flags% AND 1) = 0 AND type% = 0 AND length% > 0 THEN
+	b%?length% = 13
+	folders$ += $b% + ","
+ENDIF
+
+REM Read the currently configured country.
+
+SYS "XOS_Byte", 70, 127 TO ,country% ;flags%
+IF (flags% AND 1) = 0 THEN
+	SYS "XOS_ServiceCall",,67, 2, country%, b%, 256 TO ,claimed%,,,,length% ;flags%
+	IF (flags% AND 1) = 0 AND claimed% = 0 AND length% > 0 THEN
+		b%?length% = 13
+		folders$ += $b% + ","
+	ENDIF
+ENDIF
+
+REM Read the ResFind Language Suffix.
+
+SYS "XOS_ReadVarVal", "ResFind$LanguagesSuff", b%, 256, 0, 3 TO ,,length%,,type% ;flags%
+IF (flags% AND 1) = 0 AND type% = 0 AND length% > 0 THEN
+	b%?length% = 13
+	folders$ += $b% + ","
+ENDIF
+
+REM Add in the fallback.
+
+IF FallbackDir$ <> "" THEN folders$ += FallbackDir$ ELSE folders$ += "UK"
+
+REM Scan through the folders until we've found the two files that we need.
+
+text_file$ = ""
+strong_file$ = ""
+
+WHILE LEN(folders$) > 0 AND ((TextHelp$ <> "" AND text_file$ = "") OR (StrongHelp$ <> "" AND strong_file$ = ""))
+	pos% = INSTR(folders$, ",")
+	IF pos% = 0 THEN
+		dir$ = folders$
+		folders$ = ""
+	ELSE
+		dir$ = LEFT$(folders$, pos% - 1)
+		folders$ = MID$(folders$, pos% + 1)
+	ENDIF
+
+	IF LEN(dir$) > 0 THEN
+		dir$ = ResourceDir$ + "." + dir$
+
+		SYS "XOS_File", 17, dir$ TO object_type% ;flags%
+		IF (flags% AND 1) = 0 AND object_type% = 2 THEN
+			IF StrongHelp$ <>"" AND strong_file$ = "" THEN
+				SYS "XOS_File", 17, dir$ + "." + StrongHelp$ TO object_type% ;flags%
+				IF (flags% AND 1) = 0 AND object_type% <> 0 THEN strong_file$ = dir$ + "." + StrongHelp$
+			ENDIF
+
+			IF TextHelp$ <> "" AND text_file$ = "" THEN
+				SYS "XOS_File", 17, dir$ + "." + TextHelp$ TO object_type% ;flags%
+				IF (flags% AND 1) = 0 AND object_type% <> 0 THEN text_file$ = dir$ + "." + TextHelp$
+			ENDIF
+		ENDIF
+	ENDIF
+ENDWHILE
+
+REM Set the Help Text variable.
+
+IF text_file$ <> "" THEN SYS "XOS_SetVarVal", HelpTextVar$, text_file$, LEN(text_file$), 0, 0
+
+REM Check which file we're loading.
+
+file$ = ""
+
+IF strong_file$ <> "" THEN
+	SYS "XOS_ReadVarVal", "Alias$@RunType_3d6", b%, 256, 0, 0 TO ;flags%
+	IF ((flags% AND 1) = 0) THEN file$ = strong_file$
+ENDIF
+
+IF file$ = "" THEN file$ = text_file$
+
+REM Run the file.
+
+IF file$ <> "" THEN OSCLI("%Filer_Run " + file$)
+
+END

@@ -1,0 +1,61 @@
+# Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+#
+# This file is part of Puzzles:
+#
+#   http://www.stevefryatt.org.uk/risc-os
+#
+# Licensed under the EUPL, Version 1.2 only (the "Licence");
+# You may not use this work except in compliance with the
+# Licence.
+#
+# You may obtain a copy of the Licence at:
+#
+#   http://joinup.ec.europa.eu/software/page/eupl
+#
+# Unless required by applicable law or agreed to in
+# writing, software distributed under the Licence is
+# distributed on an "AS IS" basis, WITHOUT WARRANTIES
+# OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the Licence for the specific language governing
+# permissions and limitations under the Licence.
+
+# UK Version
+
+# General application details
+
+TaskName:Puzzles
+Version:%0 (%1)
+
+TaskSpr:!puzzles
+SupportURL:http://www.stevefryatt.org.uk/risc-os/games
+
+# Messages and errors
+
+NoMemNewGame:There was not enough memory to create a new game.
+
+BadResource:Failed to locate suitable %0 file.
+BadTemplate:Window template '%0' not found.
+
+# Interactive Help for windows and icons.
+#
+# Window icon data (particularly toolbar items) may be in menu data when duplicates exist.
+
+Help.IconBar:\TPuzzles application.|M\Sselect a new puzzle.
+
+Help.Choices:\Tchoices window for Puzzles.
+Help.Choices.Apply:\Sclose the choices \w and use the changes|M\Ause the changes.
+Help.Choices.Save:\Sclose the choices \w, using the changes and saving them to disc.|M\Ause the changes and save them.
+Help.Choices.Cancel:\Sclose the choices \w and forget any changes made.|M\Aforget the changes made since the window was opened.
+
+Help.ProgInfo:This \w displays information about Puzzles.
+Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
+
+# Interactive help for menus.
+#
+# Where duplicate menu entries exist, items may be grouped and numbering will not be contiguous.
+
+Help.IconBarMenu.00:\Rsee information about Puzzles.
+Help.IconBarMenu.01:\Sread the online manual.
+Help.IconBarMenu.02:\Schange the Puzzles options.
+Help.IconBarMenu.03:\Squit Puzzles.

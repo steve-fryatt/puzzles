@@ -1,0 +1,112 @@
+<document title="Puzzles">
+<define name="version" value="">
+<define name="date" value="" length=30 align="right">
+
+
+
+
+<literal mode="Text">
+=============================================================================
+Puzzles - Simon Tatham's Portable Puzzle Collection on RISC OS   Version $$version$$
+
+(C) Stephen Fryatt, 2024                       $$date$$
+=============================================================================
+</literal>
+
+
+
+
+
+<literal mode="HTML">
+<html>
+<head>
+<title>Puzzles</title>
+</head>
+
+<body>
+<h1 align="center">Puzzles</h1>
+<p align="center"><b>Simon Tatham&rsquo;s Portable Puzzle Collection on RISC&nbsp;OS</b> - &copy; Stephen Fryatt, 2024<br>
+Version $$version$$ ($$date$$)</p>
+
+</literal>
+
+
+
+
+
+<chapter title="License" file="License">
+
+<cite>Puzzles</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.
+
+You may obtain a copy of the Licence at <link ref="#url http://joinup.ec.europa.eu/software/page/eupl">http://joinup.ec.europa.eu/software/page/eupl</link>
+
+Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an &ldquo;<strong>as is</strong>&rdquo; basis, <strong>without warranties or conditions of any kind</strong>, either express or implied.
+
+See the Licence for the specific language governing permissions and limitations under the Licence.
+
+The source for <cite>Puzzles</cite> can be found on GitHub, at <link ref="#url https://github.com/steve-fryatt/puzzles">https://github.com/steve-fryatt/puzzles</link>
+
+</chapter>
+
+
+
+
+<chapter title="Introduction &amp; Installation" file="Introduction">
+
+<cite>Puzzles</cite> is a RISC&nbsp;OS port of <link ref="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/">Simon Tatham&rsquo;s Portable Puzzle Collection</link>.
+
+<subhead title="Installation">
+
+<cite>Puzzles</cite> is designed to work with RISC&nbsp;OS&nbsp;4 or later; it can be used on RISC&nbsp;OS&nbsp;3, but a copy of the Nested Wimp must be installed. It is 26/32-bit neutral, and should therefore run on all hardware systems as long as the 32-bit Shared C Library is installed. If required, this can be found in the System Resources on RISC&nbsp;OS Open Ltd&rsquo;s website at <link ref="https://www.riscosopen.org/content/downloads/common">https://www.riscosopen.org/content/downloads/common</link>.
+
+To install, copy the <file>!Puzzles</file> application from the archive into a suitable place on your hard disc.  It can be run from a floppy disc, but this is not recommended.  Once installed, double-click on the <file>!Puzzles</file> application in the Filer window to load it on to the iconbar.
+
+</chapter>
+
+
+
+
+<chapter title="Version History" file="History">
+
+This is a complete list of all the changes made to the publicly released versions of <cite>Puzzles</cite> on the RISC&nbsp;OS platform.
+
+<subhead title="Test Build">
+
+First alpha release, for testing and feedback.
+
+</chapter>
+
+
+
+
+<literal mode="Text">
+
+Updates and Contacting Me
+-------------------------
+
+  If you have any comments about Puzzles, or would like to report any bugs
+  that you find, you can email me at the address below.
+
+  Updates to Puzzles and more programs for RISC OS computers can be found
+  on my website at http://www.stevefryatt.org.uk/risc-os/games
+
+  Stephen Fryatt
+  email: info@stevefryatt.org.uk
+</literal>
+
+
+
+
+<literal mode="HTML">
+
+<hr noshade>
+<h2>Updates and Contacting Me</h2>
+
+<p>If you have any comments about Puzzles, or would like to report any bugs that you find, you can email me at the address below.</p>
+
+<p>Updates to Puzzles and more programs for RISC&nbsp;OS computers can be found on my website at <a href="http://www.stevefryatt.org.uk/risc-os/games">http://www.stevefryatt.org.uk/risc-os/games</a></p>
+
+<p>Stephen Fryatt (email: <a href="mailto:info@stevefryatt.org.uk">info@stevefryatt.org.uk</a>)</p>
+</body>
+</html>
+</literal>

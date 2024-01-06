@@ -1,0 +1,46 @@
+| >!Run
+|
+| Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+|
+| This file is part of Puzzles:
+|
+|   http://www.stevefryatt.org.uk/risc-os
+|
+| Licensed under the EUPL, Version 1.2 only (the "Licence");
+| You may not use this work except in compliance with the
+| Licence.
+|
+| You may obtain a copy of the Licence at:
+|
+|   http://joinup.ec.europa.eu/software/page/eupl
+|
+| Unless required by applicable law or agreed to in
+| writing, software distributed under the Licence is
+| distributed on an "AS IS" basis, WITHOUT WARRANTIES
+| OR CONDITIONS OF ANY KIND, either express or implied.
+|
+| See the Licence for the specific language governing
+| permissions and limitations under the Licence.
+
+| Set the application path.
+
+Set Puzzles$Dir <Obey$Dir>
+
+| Set the application sprites.
+
+IconSprites <Puzzles$Dir>.!Sprites
+
+| Ensure the Nested Wimp is installed.
+
+RMEnsure WindowManager 3.98 Error Puzzles requires the Nested Window Manager.
+
+| Ensure that the Castle Shared C Library is present, with C99 support.
+
+RMEnsure SharedCLibrary 5.17 RMLoad System:Modules.CLib
+RMEnsure SharedCLibrary 5.43 Error Puzzles requires version 5.43 or later of the Shared C Library.
+
+| Allocate memory and run Puzzles
+
+WimpSlot -min 128k -max 128k
+
+Run <Puzzles$Dir>.!RunImage %*0

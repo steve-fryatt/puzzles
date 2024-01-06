@@ -1,0 +1,12 @@
+Package: Puzzles
+Version: 1.10-1
+Section: Games
+Priority: Optional
+Maintainer: Stephen Fryatt <info@stevefryatt.org.uk>
+Standards-Version: 0.6.0
+Environment: arm
+Licence: Free
+Description: Simon Tatham's Portable Puzzle Collection on RISC OS
+ Puzzles is a RISC OS port of Simon Tatham's Portable Puzzle Collection.
+Homepage: http://www.stevefryatt.org.uk/risc-os/games
+Components: Apps.Games.!Puzzles (Movable)
