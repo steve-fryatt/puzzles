@@ -122,18 +122,24 @@ int main(int argc, char *argv[])
 
 static void main_poll_loop(void)
 {
-	wimp_event_no		reason;
-	wimp_block		blk;
+	wimp_poll_flags	flags;
+	wimp_event_no	reason;
+	wimp_block	blk;
+	os_t		next_poll;
+
+	next_poll = os_read_monotonic_time();
 
 	while (!main_quit_flag) {
-		reason = wimp_poll(wimp_MASK_NULL, &blk, 0);
+		flags = (next_poll != 0) ? 0 : wimp_MASK_NULL;
+
+		reason = wimp_poll_idle(flags, &blk, next_poll, NULL);
 
 		/* Events are passed to Event Lib first; only if this fails
-		 * to handle them do they get passed on to the internal
-		 * inline handlers shown here.
+		 * to handle them do they get passed on to the central
+		 * inline handlers here.
 		 */
 
-		if (!event_process_event(reason, &blk, 0, NULL)) {
+		if (!event_process_event(reason, &blk, 0, &next_poll)) {
 			switch (reason) {
 			case wimp_OPEN_WINDOW_REQUEST:
 				wimp_open_window(&(blk.open));
