@@ -33,17 +33,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Acorn C header files */
+
+#include "flex.h"
+
 /* OSLib header files */
 
 #include "oslib/wimp.h"
-#include "oslib/os.h"
-#include "oslib/osbyte.h"
 #include "oslib/osfile.h"
-#include "oslib/osspriteop.h"
-#include "oslib/uri.h"
 #include "oslib/hourglass.h"
-#include "oslib/pdriver.h"
-#include "oslib/help.h"
 
 /* SF-Lib header files. */
 
@@ -51,17 +49,12 @@
 #include "sflib/dataxfer.h"
 #include "sflib/resources.h"
 #include "sflib/heap.h"
-#include "sflib/windows.h"
-#include "sflib/icons.h"
 #include "sflib/ihelp.h"
-#include "sflib/menus.h"
 #include "sflib/url.h"
 #include "sflib/msgs.h"
-#include "sflib/debug.h"
 #include "sflib/config.h"
 #include "sflib/errors.h"
 #include "sflib/string.h"
-#include "sflib/colpick.h"
 #include "sflib/event.h"
 #include "sflib/templates.h"
 
@@ -69,6 +62,7 @@
 
 #include "main.h"
 
+#include "game_window.h"
 #include "iconbar.h"
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -194,6 +188,11 @@ static void main_initialise(void)
 
 	event_add_message_handler(message_QUIT, EVENT_MESSAGE_INCOMING, main_message_quit);
 
+	/* Initialise the flex heap. */
+
+	flex_init(task_name, 0, 0);
+	heap_initialise();
+
 	/* Initialise the configuration. */
 
 	config_initialise(task_name, "Puzzles", "<Puzzles$Dir>");
@@ -219,6 +218,7 @@ static void main_initialise(void)
 	ihelp_initialise();
 	dataxfer_initialise(main_task_handle, NULL);
 	iconbar_initialise();
+	game_window_initialise();
 	url_initialise();
 
 	templates_close();

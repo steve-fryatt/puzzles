@@ -31,7 +31,9 @@ APP := !Puzzles
 PACKAGE := Puzzles
 PACKAGELOC := Games
 
-OBJS =  iconbar.o	\
+OBJS =  game_collection.o	\
+	game_window.o		\
+	iconbar.o		\
 	main.o
 
 include $(SFTOOLS_MAKE)/CApp

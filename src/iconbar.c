@@ -37,21 +37,18 @@
 
 /* SF-Lib header files. */
 
-#include "sflib/debug.h"
-#include "sflib/errors.h"
 #include "sflib/event.h"
 #include "sflib/icons.h"
 #include "sflib/ihelp.h"
-#include "sflib/menus.h"
 #include "sflib/msgs.h"
 #include "sflib/templates.h"
 #include "sflib/url.h"
-#include "sflib/windows.h"
 
 /* Application header files */
 
 #include "iconbar.h"
 
+#include "game_collection.h"
 #include "main.h"
 
 
@@ -68,15 +65,25 @@
 #define ICON_PROGINFO_VERSION 6
 #define ICON_PROGINFO_WEBSITE 8
 
+/* Static function prototypes. */
 
 static void	iconbar_click_handler(wimp_pointer *pointer);
-static void	iconbar_menu_prepare(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
 static void	iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static osbool	iconbar_proginfo_web_click(wimp_pointer *pointer);
 
+/* Global variables. */
 
-static wimp_menu	*iconbar_menu = NULL;					/**< The iconbar menu handle.			*/
-static wimp_w		iconbar_info_window = NULL;				/**< The iconbar menu info window handle.	*/
+/**
+ * The iconbar menu handle.
+ */
+
+static wimp_menu	*iconbar_menu = NULL;
+
+/**
+ * The iconbar menu program info window handle.
+ */
+
+static wimp_w		iconbar_info_window = NULL;
 
 
 /**
@@ -110,7 +117,6 @@ void iconbar_initialise(void)
 
 	event_add_window_mouse_event(wimp_ICON_BAR, iconbar_click_handler);
 	event_add_window_menu(wimp_ICON_BAR, iconbar_menu);
-	event_add_window_menu_prepare(wimp_ICON_BAR, iconbar_menu_prepare);
 	event_add_window_menu_selection(wimp_ICON_BAR, iconbar_menu_selection);
 }
 
@@ -128,27 +134,9 @@ static void iconbar_click_handler(wimp_pointer *pointer)
 
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
-//		bookmark_create_new_window();
-		break;
-
-	case wimp_CLICK_ADJUST:
-//		convert_open_queue_window(pointer);
+		game_collection_create_instance();
 		break;
 	}
-}
-
-
-/**
- * Prepare the iconbar menu for (re)-opening.
- *
- * \param  w			The handle of the menu's parent window.
- * \param  *menu		Pointer to the menu being opened.
- * \param  *pointer		Pointer to the Wimp Pointer event block.
- */
-
-static void iconbar_menu_prepare(wimp_w w, wimp_menu *menu, wimp_pointer *pointer)
-{
-//	menus_shade_entry(iconbar_menu, ICONBAR_MENU_CHOICES, convert_pdf_conversion_in_progress());
 }
 
 
@@ -162,7 +150,7 @@ static void iconbar_menu_prepare(wimp_w w, wimp_menu *menu, wimp_pointer *pointe
 
 static void iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *selection)
 {
-	wimp_pointer		pointer;
+	wimp_pointer	pointer;
 
 	wimp_get_pointer_info(&pointer);
 
@@ -191,7 +179,7 @@ static void iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *se
 
 static osbool iconbar_proginfo_web_click(wimp_pointer *pointer)
 {
-	char		temp_buf[256];
+	char	temp_buf[256];
 
 	msgs_lookup("SupportURL:http://www.stevefryatt.org.uk/risc-os/games", temp_buf, sizeof(temp_buf));
 	url_launch(temp_buf);

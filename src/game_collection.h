@@ -22,20 +22,32 @@
  */
 
 /**
- * \file: iconbar.h
+ * \file: game_collection.h
  *
- * IconBar icon external interface.
+ * Active game collection external interface.
  */
 
-#ifndef PUZZLES_ICONBAR
-#define PUZZLES_ICONBAR
-
+#ifndef PUZZLES_GAME_COLLECTION
+#define PUZZLES_GAME_COLLECTION
 
 /**
- * Initialise the iconbar icon and its associated menus and dialogues.
+ * A game collection instance.
  */
 
-void iconbar_initialise(void);
+struct game_collection_block;
+
+/**
+ * Initialise a new game and open its window.
+ */
+
+void game_collection_create_instance(void);
+
+/**
+ * Delete a game instance.
+ *
+ * \param *instance	The instance to be deleted.
+ */
+
+void game_collection_delete_instance(struct game_collection_block *instance);
 
 #endif
-
