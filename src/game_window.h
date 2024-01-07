@@ -55,4 +55,37 @@ struct game_window_block *game_window_create_instance(struct game_collection_blo
 
 void game_window_delete_instance(struct game_window_block *instance);
 
+/**
+ * Start a drawing operation on the game window canvas, redirecting
+ * VDU output to the canvas sprite.
+ * 
+ * \param *instance	The instance to start drawing in.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_start_draw(struct game_window_block *instance);
+
+/**
+ * End a drawing operation on the game window canvas, restoring
+ * VDU output back to the previous context.
+ * 
+ * \param *instance	The instance to finish drawing in.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_end_draw(struct game_window_block *instance);
+/**
+ * Perform an OS_Plot operation in a game window.
+ *
+ * A redraw operation must be in progress when this call is used.
+ *
+ * \param *instance	The instance to plot to.
+ * \param plot_code	The OS_Plot operation code.
+ * \param x		The X coordinate.
+ * \param y		The Y coordinate.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_code, int x, int y);
+
 #endif
