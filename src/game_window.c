@@ -33,6 +33,8 @@
 
 /* Acorn C header files */
 
+#include "flex.h"
+
 /* OSLib header files */
 
 #include "oslib/colourtrans.h"
@@ -252,7 +254,10 @@ void game_window_delete_instance(struct game_window_block *instance)
 	/* Deallocate the instance block. */
 
 	if (instance->sprite != NULL)
-		heap_free(instance->sprite);
+		flex_free((flex_ptr) &(instance->sprite));
+
+	if (instance->save_area != NULL)
+		flex_free((flex_ptr) &(instance->save_area));
 
 	heap_free(instance);
 }
@@ -369,10 +374,17 @@ static osbool game_window_create_canvas(struct game_window_block *instance, int 
 
 	/* Allocate, or adjust, the required area. */
 
-	if (instance->sprite == NULL)
-		instance->sprite = heap_alloc(area_size);
-	else
-		instance->sprite = heap_extend(instance->sprite, area_size);
+	if (instance->sprite == NULL) {
+		if (flex_alloc((flex_ptr) &(instance->sprite), area_size) == 0) {
+			instance->sprite = NULL;
+			return FALSE;
+		}
+	} else {
+		if (flex_extend((flex_ptr) &(instance->sprite), area_size) == 0) {
+			instance->sprite = NULL;
+			return FALSE;
+		}
+	}
 
 	if (instance->sprite == NULL)
 		return FALSE;
@@ -432,14 +444,16 @@ static osbool game_window_create_canvas(struct game_window_block *instance, int 
 
 	/* Allocate, or adjust, the required save area. */
 
-	if (instance->save_area == NULL)
-		instance->save_area = heap_alloc(save_area_size);
-	else
-		instance->save_area = heap_extend(instance->save_area, save_area_size);
-
 	if (instance->save_area == NULL) {
-		instance->sprite = NULL;
-		return FALSE;
+		if (flex_alloc((flex_ptr) &(instance->save_area), save_area_size) == 0) {
+			instance->save_area = NULL;
+			return FALSE;
+		}
+	} else {
+		if (flex_extend((flex_ptr) &(instance->save_area), save_area_size) == 0) {
+			instance->save_area = NULL;
+			return FALSE;
+		}
 	}
 
 	*((int32_t *) instance->save_area) = 0;
