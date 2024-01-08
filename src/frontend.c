@@ -29,6 +29,9 @@
 
 /* ANSI C header files */
 
+#include <stdarg.h>
+#include <stdio.h>
+
 /* Acorn C header files */
 
 /* OSLib header files */
@@ -56,6 +59,14 @@ struct frontend {
 
 	struct frontend *next;	/**< The next game in the list, or null.	*/
 };
+
+/* Constants. */
+
+/**
+ * The maximum length of message that fatal() can report, once expanded.
+ */
+
+#define FRONTEND_MAX_FATAL_MESSAGE 256
 
 /* Global variables. */
 
@@ -137,6 +148,11 @@ void frontend_delete_instance(struct frontend *fe)
 	free(fe);
 }
 
+/* Below this point are the functions that the frontend must provide
+ * for the midend.
+ *
+ * Prototypes are in core/puzzles.h
+ */
 
 void get_random_seed(void **randseed, int *randseedsize)
 {
@@ -154,7 +170,15 @@ void deactivate_timer(frontend *fe)
 
 void fatal(const char *fmt, ...)
 {
+	char	s[FRONTEND_MAX_FATAL_MESSAGE];
+	va_list	ap;
 
+	va_start(ap, fmt);
+	vsnprintf(s, FRONTEND_MAX_FATAL_MESSAGE, fmt, ap);
+	va_end(ap);
+
+	s[FRONTEND_MAX_FATAL_MESSAGE - 1] = '\0';
+	error_report_fatal(s);
 }
 
 void frontend_default_colour(frontend *fe, float *output)
