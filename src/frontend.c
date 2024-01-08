@@ -76,6 +76,64 @@ struct frontend {
 
 static struct frontend *frontend_list = NULL;
 
+/* Static function prototypes. */
+
+static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
+static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour);
+static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour);
+static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour);
+static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour);
+static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour);
+static void riscos_draw_update(void *handle, int x, int y, int w, int h);
+static void riscos_clip(void *handle, int x, int y, int w, int h);
+static void riscos_unclip(void *handle);
+static void riscos_start_draw(void *handle);
+static void riscos_end_draw(void *handle);
+static void riscos_status_bar(void *handle, const char *text);
+static blitter *riscos_blitter_new(void *handle, int w, int h);
+static void riscos_blitter_free(void *handle, blitter *bl);
+static void riscos_blitter_save(void *handle, blitter *bl, int x, int y);
+static void riscos_blitter_load(void *handle, blitter *bl, int x, int y);
+
+/* The drawing API. */
+
+static const struct drawing_api riscos_drawing = {
+	riscos_draw_text,
+	riscos_draw_rect,
+	riscos_draw_line,
+	riscos_draw_polygon,
+	riscos_draw_circle,
+	riscos_draw_update,
+	riscos_clip,
+	riscos_unclip,
+	riscos_start_draw,
+	riscos_end_draw,
+	riscos_status_bar,
+	riscos_blitter_new,
+	riscos_blitter_free,
+	riscos_blitter_save,
+	riscos_blitter_load,
+
+	/* The printing API. */
+
+	NULL, // riscos_begin_doc,
+	NULL, // riscos_begin_page,
+	NULL, // riscos_begin_puzzle,
+	NULL, // riscos_end_puzzle,
+	NULL, // riscos_end_page,
+	NULL, // riscos_end_doc,
+	NULL, // riscos_line_width,
+	NULL, // riscos_line_dotted,
+
+	/* Text fallback. */
+
+	NULL, // riscos_text_fallback,
+
+	/* Thick lines. */
+
+	NULL, // riscos_draw_thick_line,
+};
+
 /**
  * Initialise a new game and open its window.
  */
@@ -147,6 +205,60 @@ void frontend_delete_instance(struct frontend *fe)
 
 	free(fe);
 }
+
+/* Below this point are the draing API calls. */
+
+static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
+{}
+
+static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
+{}
+
+static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
+{}
+
+static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour)
+{}
+
+static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
+{}
+
+static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour)
+{}
+
+static void riscos_draw_update(void *handle, int x, int y, int w, int h)
+{}
+
+static void riscos_clip(void *handle, int x, int y, int w, int h)
+{}
+
+static void riscos_unclip(void *handle)
+{}
+
+static void riscos_start_draw(void *handle)
+{}
+
+static void riscos_end_draw(void *handle)
+{}
+
+static void riscos_status_bar(void *handle, const char *text)
+{}
+
+static blitter *riscos_blitter_new(void *handle, int w, int h)
+{
+	return NULL;
+}
+
+static void riscos_blitter_free(void *handle, blitter *bl)
+{}
+
+static void riscos_blitter_save(void *handle, blitter *bl, int x, int y)
+{}
+
+static void riscos_blitter_load(void *handle, blitter *bl, int x, int y)
+{}
+
+
 
 /* Below this point are the functions that the frontend must provide
  * for the midend.
