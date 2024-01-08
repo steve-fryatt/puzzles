@@ -30,7 +30,7 @@
 #ifndef PUZZLES_GAME_WINDOW
 #define PUZZLES_GAME_WINDOW
 
-#include "game_collection.h"
+#include "frontend.h"
 
 /**
  * Initialise the game windows and their associated menus and dialogues.
@@ -45,7 +45,7 @@ void game_window_initialise(void);
  * \return		Pointer to the new window instance, or NULL.
  */
 
-struct game_window_block *game_window_create_instance(struct game_collection_block *parent);
+struct game_window_block *game_window_create_instance(struct frontend *fe);
 
 /**
  * Delete a game window instance and the associated window.

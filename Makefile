@@ -31,10 +31,15 @@ APP := !Puzzles
 PACKAGE := Puzzles
 PACKAGELOC := Games
 
-OBJS =  game_collection.o	\
+OBJS =  frontend.o		\
 	game_window.o		\
 	iconbar.o		\
-	main.o
+	main.o			\
+	core/drawing.o		\
+	core/malloc.o		\
+	core/misc.o		\
+	core/midend.o		\
+	core/printing.o		\
+	core/random.o
 
 include $(SFTOOLS_MAKE)/CApp
-

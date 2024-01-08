@@ -48,7 +48,7 @@
 
 #include "iconbar.h"
 
-#include "game_collection.h"
+#include "frontend.h"
 #include "main.h"
 
 
@@ -134,7 +134,7 @@ static void iconbar_click_handler(wimp_pointer *pointer)
 
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
-		game_collection_create_instance();
+		frontend_create_instance();
 		break;
 	}
 }

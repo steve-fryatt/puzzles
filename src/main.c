@@ -35,8 +35,6 @@
 
 /* Acorn C header files */
 
-#include "flex.h"
-
 /* OSLib header files */
 
 #include "oslib/wimp.h"
@@ -48,7 +46,6 @@
 #include "sflib/config.h"
 #include "sflib/dataxfer.h"
 #include "sflib/resources.h"
-#include "sflib/heap.h"
 #include "sflib/ihelp.h"
 #include "sflib/url.h"
 #include "sflib/msgs.h"
@@ -187,11 +184,6 @@ static void main_initialise(void)
 	main_task_handle = wimp_initialise(wimp_VERSION_RO3, task_name, NULL, NULL);
 
 	event_add_message_handler(message_QUIT, EVENT_MESSAGE_INCOMING, main_message_quit);
-
-	/* Initialise the flex heap. */
-
-	flex_init(task_name, 0, 0);
-	heap_initialise();
 
 	/* Initialise the configuration. */
 

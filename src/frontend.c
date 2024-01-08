@@ -22,9 +22,9 @@
  */
 
 /**
- * \file: game_collection.c
+ * \file: frontend.c
  *
- * Active game collection implementation.
+ * Frontend collection implementation.
  */
 
 /* ANSI C header files */
@@ -36,24 +36,25 @@
 /* SF-Lib header files. */
 
 #include "sflib/debug.h"
-#include "sflib/heap.h"
 #include "sflib/errors.h"
 
 /* Application header files */
 
-#include "game_collection.h"
+#include "frontend.h"
+
+#include "core/puzzles.h"
 
 #include "game_window.h"
 
 /* The game collection data structure. */
 
-struct game_collection_block {
+struct frontend {
 	int x_size;				/**< The X size of the window, in game pixels.	*/
 	int y_size;				/**< The Y size of the window, in game pixels.	*/
 
 	struct game_window_block *window;	/**< The associated game window instance.	*/
 
-	struct game_collection_block *next;	/**< The next game in the list, or null.	*/
+	struct frontend *next;	/**< The next game in the list, or null.	*/
 };
 
 /* Global variables. */
@@ -62,19 +63,19 @@ struct game_collection_block {
  * The list of active game windows.
  */
 
-static struct game_collection_block *game_collection_list = NULL;
+static struct frontend *frontend_list = NULL;
 
 /**
  * Initialise a new game and open its window.
  */
 
-void game_collection_create_instance(void)
+void frontend_create_instance(void)
 {
-	struct game_collection_block *new;
+	struct frontend *new;
 
-	/* Allocate the memory for the instance from the static flex heap. */
+	/* Allocate the memory for the instance from the heap. */
 
-	new = heap_alloc(sizeof(struct game_collection_block));
+	new = malloc(sizeof(struct frontend));
 	if (new == NULL) {
 		error_msgs_report_error("NoMemNewGame");
 		return;
@@ -84,8 +85,8 @@ void game_collection_create_instance(void)
 
 	/* Link the game into the list, and initialise critical data. */
 
-	new->next = game_collection_list;
-	game_collection_list = new;
+	new->next = frontend_list;
+	frontend_list = new;
 
 	new->window = NULL;
 
@@ -96,42 +97,67 @@ void game_collection_create_instance(void)
 
 	new->window = game_window_create_instance(new);
 	if (new->window == NULL) {
-		game_collection_delete_instance(new);
+		frontend_delete_instance(new);
 		return;
 	}
 }
 
 /**
- * Delete a game instance.
+ * Delete a frontend instance.
  *
- * \param *instance	The instance to be deleted.
+ * \param *fe	The instance to be deleted.
  */
 
-void game_collection_delete_instance(struct game_collection_block *instance)
+void frontend_delete_instance(struct frontend *fe)
 {
-	struct game_collection_block **list;
+	struct frontend **list;
 
-	if (instance == NULL)
+	if (fe == NULL)
 		return;
 
-	debug_printf("Deleting a game instance: block=0x%x", instance);
+	debug_printf("Deleting a game instance: block=0x%x", fe);
 
 	/* Delink the instance from the list. */
 
-	list = &game_collection_list;
+	list = &frontend_list;
 
-	while (*list != NULL && *list != instance)
+	while (*list != NULL && *list != fe)
 		list = &((*list)->next);
 
 	if (*list != NULL)
-		*list = instance->next;
+		*list = fe->next;
 
 	/* Delete the window. */
 
-	if (instance->window != NULL)
-		game_window_delete_instance(instance->window);
+	if (fe->window != NULL)
+		game_window_delete_instance(fe->window);
 
 	/* Deallocate the instance block. */
 
-	heap_free(instance);
+	free(fe);
+}
+
+
+void get_random_seed(void **randseed, int *randseedsize)
+{
+}
+
+void activate_timer(frontend *fe)
+{
+
+}
+
+void deactivate_timer(frontend *fe)
+{
+
+}
+
+void fatal(const char *fmt, ...)
+{
+
+}
+
+void frontend_default_colour(frontend *fe, float *output)
+{
+
 }

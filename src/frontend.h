@@ -22,32 +22,36 @@
  */
 
 /**
- * \file: game_collection.h
+ * \file: frontend.h
  *
- * Active game collection external interface.
+ * Frontend collection external (to the RISC OS code) interface.
+ * 
+ * This header defines the interface exposed to the rest of the
+ * RISC OS application. The interface facing the midend is defined
+ * in core/puzzles.h
  */
 
-#ifndef PUZZLES_GAME_COLLECTION
-#define PUZZLES_GAME_COLLECTION
+#ifndef PUZZLES_FRONTEND
+#define PUZZLES_FRONTEND
 
 /**
  * A game collection instance.
  */
 
-struct game_collection_block;
+struct frontend;
 
 /**
- * Initialise a new game and open its window.
+ * Initialise a new frontend and open its window.
  */
 
-void game_collection_create_instance(void);
+void frontend_create_instance(void);
 
 /**
- * Delete a game instance.
+ * Delete a frontend instance.
  *
- * \param *instance	The instance to be deleted.
+ * \param *fe	The instance to be deleted.
  */
 
-void game_collection_delete_instance(struct game_collection_block *instance);
+void frontend_delete_instance(struct frontend *fe);
 
 #endif

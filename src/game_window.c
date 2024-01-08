@@ -29,11 +29,10 @@
 
 /* ANSI C header files */
 
+#include <stdlib.h>
 #include <stdint.h>
 
 /* Acorn C header files */
-
-#include "flex.h"
 
 /* OSLib header files */
 
@@ -46,7 +45,6 @@
 /* SF-Lib header files. */
 
 #include "sflib/debug.h"
-#include "sflib/heap.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
 #include "sflib/string.h"
@@ -62,7 +60,7 @@
 
 #include "game_window.h"
 
-#include "game_collection.h"
+#include "frontend.h"
 
 /* The name of the canvas sprite. */
 
@@ -72,7 +70,7 @@
 /* The game window data structure. */
 
 struct game_window_block {
-	struct game_collection_block *parent;	/**< The parent game collection instance.	*/
+	struct frontend *fe;			/**< The parent frontend instance.		*/
 
 	wimp_w handle;				/**< The handle of the game window.		*/
 
@@ -111,23 +109,23 @@ void game_window_initialise(void)
  * \return		Pointer to the new window instance, or NULL.
  */
 
-struct game_window_block *game_window_create_instance(struct game_collection_block *parent)
+struct game_window_block *game_window_create_instance(struct frontend *fe)
 {
 	wimp_window window_definition;
 	struct game_window_block *new;
 	os_error *error;
 
-	/* Allocate the memory for the instance from the static flex heap. */
+	/* Allocate the memory for the instance from the heap. */
 
-	new = heap_alloc(sizeof(struct game_window_block));
+	new = malloc(sizeof(struct game_window_block));
 	if (new == NULL)
 		return NULL;
 
-	debug_printf("Creating a new game window instance: block=0x%x, parent=0x%x", new, parent);
+	debug_printf("Creating a new game window instance: block=0x%x, fe=0x%x", new, fe);
 
 	/* Initialise critical fields in the struct. */
 
-	new->parent = parent;
+	new->fe = fe;
 
 	new->handle = NULL;
 	new->sprite = NULL;
@@ -254,12 +252,12 @@ void game_window_delete_instance(struct game_window_block *instance)
 	/* Deallocate the instance block. */
 
 	if (instance->sprite != NULL)
-		flex_free((flex_ptr) &(instance->sprite));
+		free(instance->sprite);
 
 	if (instance->save_area != NULL)
-		flex_free((flex_ptr) &(instance->save_area));
+		free(instance->save_area);
 
-	heap_free(instance);
+	free(instance);
 }
 
 /**
@@ -281,7 +279,7 @@ static void game_window_close_handler(wimp_close *close)
 
 	/* Delete the parent game instance. */
 
-	game_collection_delete_instance(instance->parent);
+	frontend_delete_instance(instance->fe);
 }
 
 /**
@@ -374,17 +372,10 @@ static osbool game_window_create_canvas(struct game_window_block *instance, int 
 
 	/* Allocate, or adjust, the required area. */
 
-	if (instance->sprite == NULL) {
-		if (flex_alloc((flex_ptr) &(instance->sprite), area_size) == 0) {
-			instance->sprite = NULL;
-			return FALSE;
-		}
-	} else {
-		if (flex_extend((flex_ptr) &(instance->sprite), area_size) == 0) {
-			instance->sprite = NULL;
-			return FALSE;
-		}
-	}
+	if (instance->sprite == NULL)
+		instance->sprite = malloc(area_size);
+	else
+		instance->sprite = realloc(instance->sprite, area_size);
 
 	if (instance->sprite == NULL)
 		return FALSE;
@@ -444,16 +435,14 @@ static osbool game_window_create_canvas(struct game_window_block *instance, int 
 
 	/* Allocate, or adjust, the required save area. */
 
-	if (instance->save_area == NULL) {
-		if (flex_alloc((flex_ptr) &(instance->save_area), save_area_size) == 0) {
-			instance->save_area = NULL;
-			return FALSE;
-		}
-	} else {
-		if (flex_extend((flex_ptr) &(instance->save_area), save_area_size) == 0) {
-			instance->save_area = NULL;
-			return FALSE;
-		}
+	if (instance->save_area == NULL)
+		instance->save_area = malloc(save_area_size);
+	else
+		instance->save_area = realloc(instance->save_area, save_area_size);
+
+ 	if (instance->save_area == NULL) {
+		instance->sprite = NULL;
+		return FALSE;
 	}
 
 	*((int32_t *) instance->save_area) = 0;
