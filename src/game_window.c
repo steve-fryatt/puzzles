@@ -92,8 +92,6 @@ struct game_window_block {
 static void game_window_close_handler(wimp_close *close);
 static void game_window_redraw_handler(wimp_draw *redraw);
 
-static osbool game_window_create_canvas(struct game_window_block *instance, int x, int y);
-
 /**
  * Initialise the game windows and their associated menus and dialogues.
  */
@@ -184,10 +182,10 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 
 	/* Create the drawing canvas. */
 
-	if (game_window_create_canvas(new, 200, 200) == FALSE) {
-		game_window_delete_instance(new);
-		return NULL;
-	}
+//	if (game_window_create_canvas(new, 200, 200) == FALSE) {
+//		game_window_delete_instance(new);
+//		return NULL;
+//	}
 
 	/* Register the window events. */
 
@@ -197,31 +195,20 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 
 	/* Plot some debug graphics. */
 
-	game_window_start_draw(new);
-	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 255);
-//	os_writec(os_VDU_SET_GCOL);
+//	game_window_start_draw(new);
+//	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 255);
+//	os_set_colour(os_ACTION_OVERWRITE, 53);
+//	os_writec(os_VDU_CLG);
 
-	os_set_colour(os_ACTION_OVERWRITE, 53);
+//	game_window_plot(new, os_PLOT_SOLID | os_MOVE_TO, 20, 20);
+//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 380);
+//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 380);
+//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 20);
+//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 20);
+//	game_window_end_draw(new);
 
-
-//	os_writec(os_ACTION_OVERWRITE);
-//	os_writec(os_GCOL_SET_BG | 63);
-
-//	os_writec(os_VDU_SET_GCOL);
-//	os_writec(os_ACTION_OVERWRITE);
-//	os_writec(os_GCOL_SET_FG | 16);
-
-	os_writec(os_VDU_CLG);
-
-	game_window_plot(new, os_PLOT_SOLID | os_MOVE_TO, 20, 20);
-	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 380);
-	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 380);
-	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 20);
-	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 20);
-	game_window_end_draw(new);
-
-	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, new->sprite, "RAM::RamDisc0.$.Sprites");
-	debug_printf("Saved sprites: outcome=0x%x", error);
+//	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, new->sprite, "RAM::RamDisc0.$.Sprites");
+//	debug_printf("Saved sprites: outcome=0x%x", error);
 
 	/* Open the window. */
 
@@ -337,7 +324,7 @@ static void game_window_redraw_handler(wimp_draw *redraw)
  * \return		TRUE if successful; else FALSE.
  */
 
-static osbool game_window_create_canvas(struct game_window_block *instance, int x, int y)
+osbool game_window_create_canvas(struct game_window_block *instance, int x, int y)
 {
 	size_t area_size;
 	int entry, save_area_size;
@@ -462,6 +449,14 @@ static osbool game_window_create_canvas(struct game_window_block *instance, int 
 		instance->window_size.y = 2 * y;
 	}
 
+	/* TODO -- Bodge to clear the screen. */
+
+	game_window_start_draw(instance);
+	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 255);
+	os_set_colour(os_ACTION_OVERWRITE, 53);
+	os_writec(os_VDU_CLG);
+	game_window_end_draw(instance);
+
 	return TRUE;
 }
 
@@ -543,7 +538,13 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
-	error = xos_plot(plot_code, x, y);
+	error = xos_set_colour(os_ACTION_OVERWRITE, 53);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	error = xos_plot(plot_code, x, instance->canvas_size.y - 2 * y);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;

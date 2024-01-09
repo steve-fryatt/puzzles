@@ -36,6 +36,9 @@
 
 /* OSLib header files */
 
+#include "oslib/types.h"
+#include "oslib/osword.h"
+
 /* SF-Lib header files. */
 
 #include "sflib/debug.h"
@@ -54,6 +57,8 @@
 struct frontend {
 	int x_size;				/**< The X size of the window, in game pixels.	*/
 	int y_size;				/**< The Y size of the window, in game pixels.	*/
+
+	midend *me;				/**< The associated midend.			*/
 
 	struct game_window_block *window;	/**< The associated game window instance.	*/
 
@@ -159,8 +164,8 @@ void frontend_create_instance(void)
 
 	new->window = NULL;
 
-	new->x_size = 200;
-	new->y_size = 200;
+	new->x_size = 800;
+	new->y_size = 800;
 
 	/* Create the game window. */
 
@@ -169,6 +174,25 @@ void frontend_create_instance(void)
 		frontend_delete_instance(new);
 		return;
 	}
+
+	/* Create the midend, and agree the window size. */
+
+	new->me = midend_new(new, gamelist[1], &riscos_drawing, new->window);
+	if (new->me == NULL) {
+		frontend_delete_instance(new);
+		return;
+	}
+
+	midend_new_game(new->me);
+
+	midend_size(new->me, &(new->x_size), &(new->y_size), false, 1.0);
+
+	debug_printf("Agreed on canvas x=%d, y=%d", new->x_size, new->y_size);
+
+	game_window_create_canvas(new->window, new->x_size, new->y_size);
+
+	midend_redraw(new->me);
+
 }
 
 /**
@@ -201,6 +225,11 @@ void frontend_delete_instance(struct frontend *fe)
 	if (fe->window != NULL)
 		game_window_delete_instance(fe->window);
 
+	/* Delete the midend. */
+
+	if (fe->me != NULL)
+		midend_free(fe->me);
+
 	/* Deallocate the instance block. */
 
 	free(fe);
@@ -209,54 +238,93 @@ void frontend_delete_instance(struct frontend *fe)
 /* Below this point are the draing API calls. */
 
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
-{}
+{
+	debug_printf("\\ODraw Text");
+}
 
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
-{}
+{
+	debug_printf("\\ODraw rectangle");
+}
 
 static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
-{}
+{
+	debug_printf("\\oDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
+
+	game_window_plot(handle, os_PLOT_SOLID | os_MOVE_TO, x1, y1);
+	game_window_plot(handle, os_PLOT_SOLID | os_PLOT_TO, x2, y2);
+}
 
 static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour)
-{}
+{
+	debug_printf("\\ODraw Polygon");
+}
 
 static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
-{}
+{
+	debug_printf("\\ODraw Circle");
+}
 
 static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour)
-{}
+{
+	debug_printf("\\ODraw Thick Line");
+}
 
 static void riscos_draw_update(void *handle, int x, int y, int w, int h)
-{}
+{
+	debug_printf("\\ODraw Update");
+}
 
 static void riscos_clip(void *handle, int x, int y, int w, int h)
-{}
+{
+	debug_printf("\\OClip");
+}
 
 static void riscos_unclip(void *handle)
-{}
+{
+	debug_printf("\\OUnclip");
+}
 
 static void riscos_start_draw(void *handle)
-{}
+{
+	debug_printf("\\GStart Draw");
+
+	game_window_start_draw(handle);
+}
 
 static void riscos_end_draw(void *handle)
-{}
+{
+	debug_printf("\\GEnd Draw");
+
+	game_window_end_draw(handle);
+}
 
 static void riscos_status_bar(void *handle, const char *text)
-{}
+{
+	debug_printf("\\OStatus Bar");
+}
 
 static blitter *riscos_blitter_new(void *handle, int w, int h)
 {
+	debug_printf("\\OBlitter New");
+
 	return NULL;
 }
 
 static void riscos_blitter_free(void *handle, blitter *bl)
-{}
+{
+	debug_printf("\\OBlitter Free");
+}
 
 static void riscos_blitter_save(void *handle, blitter *bl, int x, int y)
-{}
+{
+	debug_printf("\\OBlitter Save");
+}
 
 static void riscos_blitter_load(void *handle, blitter *bl, int x, int y)
-{}
+{
+	debug_printf("\\OBlitter Load");
+}
 
 
 
@@ -266,19 +334,57 @@ static void riscos_blitter_load(void *handle, blitter *bl, int x, int y)
  * Prototypes are in core/puzzles.h
  */
 
+/**
+ * Obtain a random seed for the midend to use. In line with the suggestion
+ * in the documentation, we do this by requesting a five byte RTC value
+ * from the OS.
+ * 
+ * \param **randseed		Pointer to a variable to hold a pointer to the
+ *				random seed data.
+ * \param *randseedsize		Pointer to variable to hold the size of the
+ *				random seed data on exit.
+ */
+
 void get_random_seed(void **randseed, int *randseedsize)
 {
+	oswordreadclock_utc_block *rtc;
+
+	debug_printf("Get Random Seed");
+
+	rtc = malloc(sizeof(oswordreadclock_utc_block));
+	if (rtc == NULL) {
+		*randseed = NULL;
+		randseedsize = 0;
+		return;
+	}
+
+	rtc->op = oswordreadclock_OP_UTC;
+	oswordreadclock_utc(rtc);
+
+	*randseed = &(rtc->utc);
+	*randseedsize = sizeof(os_date_and_time);
 }
 
 void activate_timer(frontend *fe)
 {
-
+	debug_printf("\\OActivate Timer");
 }
 
 void deactivate_timer(frontend *fe)
 {
-
+	debug_printf("\\ODeactivate Timer");
 }
+
+/**
+ * Report a fatal error to the user, using the standard printf() syntax
+ * and functionality. Expanded text is limited to 256 characters including
+ * a null terminator.
+ * 
+ * This function does not return.
+ *
+ * \param *fmt			A standard printf() formatting string.
+ * \param ...			Additional printf() parameters as required.
+ */
 
 void fatal(const char *fmt, ...)
 {
@@ -293,7 +399,29 @@ void fatal(const char *fmt, ...)
 	error_report_fatal(s);
 }
 
+/**
+ * Return details of the preferred default colour, which will be
+ * "Wimp Light Grey".
+ * 
+ * \param *fe			The frontend handle.
+ * \param *output		An array to hold the colour values.
+ */
+
 void frontend_default_colour(frontend *fe, float *output)
 {
+	byte pal_data[80];
+	os_palette *palette = (os_palette *) &pal_data;
+	os_error *error;
 
+	debug_printf("\\OFrontend Default Colour");
+
+	output[0] = output[1] = output[2] = 1.0f;
+
+	error = xwimp_read_palette(palette);
+	if (error != NULL)
+		return;
+
+	output[0] = ((float) ((palette->entries[1] >>  8) & 0xff)) / 255.0f;
+	output[1] = ((float) ((palette->entries[1] >> 16) & 0xff)) / 255.0f;
+	output[2] = ((float) ((palette->entries[1] >> 24) & 0xff)) / 255.0f;
 }

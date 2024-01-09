@@ -56,6 +56,22 @@ struct game_window_block *game_window_create_instance(struct frontend *fe);
 void game_window_delete_instance(struct game_window_block *instance);
 
 /**
+ * Create or update the drawing canvas associated with a window
+ * instance.
+ * 
+ * After an update, the canvas will be cleared and it will be
+ * necessary to request that the client redraws any graphics which
+ * had previously been present.
+ * 
+ * \param *instance	The instance to update.
+ * \param x		The required horizontal dimension.
+ * \param y		The required vertical dimension.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_create_canvas(struct game_window_block *instance, int x, int y);
+
+/**
  * Start a drawing operation on the game window canvas, redirecting
  * VDU output to the canvas sprite.
  * 

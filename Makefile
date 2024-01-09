@@ -36,10 +36,17 @@ OBJS =  frontend.o		\
 	iconbar.o		\
 	main.o			\
 	core/drawing.o		\
+	core/dsf.o		\
+	core/galaxies.o		\
+	core/list.o		\
 	core/malloc.o		\
+	core/matching.o		\
 	core/misc.o		\
 	core/midend.o		\
 	core/printing.o		\
-	core/random.o
+	core/random.o		\
+	core/tents.o
+
+CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 
 include $(SFTOOLS_MAKE)/CApp
