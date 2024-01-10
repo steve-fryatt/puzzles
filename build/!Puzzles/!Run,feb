@@ -41,6 +41,6 @@ RMEnsure SharedCLibrary 5.43 Error Puzzles requires version 5.43 or later of the
 
 | Allocate memory and run Puzzles
 
-WimpSlot -min 128k -max 128k
+WimpSlot -min 512k -max 512k
 
 Run <Puzzles$Dir>.!RunImage %*0
