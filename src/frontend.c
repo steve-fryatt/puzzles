@@ -189,7 +189,10 @@ void frontend_create_instance(void)
 
 	debug_printf("Agreed on canvas x=%d, y=%d", new->x_size, new->y_size);
 
-	game_window_create_canvas(new->window, new->x_size, new->y_size);
+	int number_of_colours = 0;
+	float *colours = midend_colours(new->me, &number_of_colours);
+
+	game_window_create_canvas(new->window, new->x_size, new->y_size, colours, number_of_colours);
 
 	midend_redraw(new->me);
 
@@ -244,14 +247,19 @@ static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fonts
 
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
 {
-	debug_printf("\\ODraw rectangle");
+	debug_printf("\\oDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, h, h, colour);
+
+	game_window_set_colour(handle, colour);
+	game_window_plot(handle, os_MOVE_TO, x, y);
+	game_window_plot(handle, os_PLOT_RECTANGLE | os_PLOT_TO, x + w - 1, y + h - 1);
 }
 
 static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
 {
 	debug_printf("\\oDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
 
-	game_window_plot(handle, os_PLOT_SOLID | os_MOVE_TO, x1, y1);
+	game_window_set_colour(handle, colour);
+	game_window_plot(handle, os_MOVE_TO, x1, y1);
 	game_window_plot(handle, os_PLOT_SOLID | os_PLOT_TO, x2, y2);
 }
 
@@ -262,7 +270,17 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
 
 static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
 {
-	debug_printf("\\ODraw Circle");
+	debug_printf("\\oDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
+
+	if (fillcolour != -1) {
+		game_window_set_colour(handle, outlinecolour);
+		game_window_plot(handle, os_MOVE_TO, cx, cy);
+		game_window_plot(handle, os_PLOT_CIRCLE | os_PLOT_TO, cx + radius, cy);
+	}
+
+	game_window_set_colour(handle, outlinecolour);
+	game_window_plot(handle, os_MOVE_TO, cx, cy);
+	game_window_plot(handle, os_PLOT_CIRCLE_OUTLINE | os_PLOT_TO, cx + radius, cy);
 }
 
 static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour)
@@ -277,12 +295,16 @@ static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 
 static void riscos_clip(void *handle, int x, int y, int w, int h)
 {
-	debug_printf("\\OClip");
+	debug_printf("\\oClip");
+
+	game_window_set_clip(handle, x, y, x + w - 1, y + h - 1);
 }
 
 static void riscos_unclip(void *handle)
 {
-	debug_printf("\\OUnclip");
+	debug_printf("\\oUnclip");
+
+	game_window_clear_clip(handle);
 }
 
 static void riscos_start_draw(void *handle)

@@ -63,13 +63,15 @@ void game_window_delete_instance(struct game_window_block *instance);
  * necessary to request that the client redraws any graphics which
  * had previously been present.
  * 
- * \param *instance	The instance to update.
- * \param x		The required horizontal dimension.
- * \param y		The required vertical dimension.
- * \return		TRUE if successful; else FALSE.
+ * \param *instance		The instance to update.
+ * \param x			The required horizontal dimension.
+ * \param y			The required vertical dimension.
+ * \param *colours		An array of colours required by the game.
+ * \param number_of_colours	The number of colourd defined in the array.
+ * \return			TRUE if successful; else FALSE.
  */
 
-osbool game_window_create_canvas(struct game_window_block *instance, int x, int y);
+osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours);
 
 /**
  * Start a drawing operation on the game window canvas, redirecting
@@ -90,6 +92,44 @@ osbool game_window_start_draw(struct game_window_block *instance);
  */
 
 osbool game_window_end_draw(struct game_window_block *instance);
+
+/**
+ * Set the plotting colour in a game window.
+ *
+ * \param *instance	The instance to plot to.
+ * \param colour	The colour, as an index into the game's list.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_set_colour(struct game_window_block *instance, int colour);
+
+/**
+ * Set a graphics clipping window, to affect all future
+ * operations on the canvas.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x0		The X coordinate of the top left corner of
+ *			the window.
+ * \param y0		The Y coordinate of the top left corner of
+ *			the window.
+ * \param x1		The X coordinate of the bottom right corner
+ *			of the window.
+ * \param y1		The Y coordinate of the bottom right corner
+ *			of the window.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, int x1, int y1);
+
+/**
+ * Clear the clipping window set by set_clip()
+ * 
+ * \param *instance	The instance to plot to.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_clear_clip(struct game_window_block *instance);
+
 /**
  * Perform an OS_Plot operation in a game window.
  *

@@ -37,15 +37,19 @@ OBJS =  frontend.o		\
 	main.o			\
 	core/drawing.o		\
 	core/dsf.o		\
+	core/findloop.o		\
 	core/galaxies.o		\
 	core/list.o		\
 	core/malloc.o		\
 	core/matching.o		\
 	core/misc.o		\
 	core/midend.o		\
+	core/net.o		\
+	core/netslide.o		\
 	core/printing.o		\
 	core/random.o		\
-	core/tents.o
+	core/tents.o		\
+	core/tree234.o
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 

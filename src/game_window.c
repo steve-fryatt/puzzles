@@ -85,6 +85,8 @@ struct game_window_block {
 
 	os_coord canvas_size;			/**< The size of the drawing canvas, in pixels.	*/
 	os_coord window_size;			/**< The size of the window, in pixels.		*/
+
+	int number_of_colours;			/**< The number of colours defined.		*/
 };
 
 /* Static function prototypes. */
@@ -136,6 +138,8 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 	new->window_size.x = 0;
 	new->window_size.y = 0;
 
+	new->number_of_colours = 0;
+
 	/* Create the new window. */
 
 	window_definition.visible.x0 = 200;
@@ -180,35 +184,11 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 		return NULL;
 	}
 
-	/* Create the drawing canvas. */
-
-//	if (game_window_create_canvas(new, 200, 200) == FALSE) {
-//		game_window_delete_instance(new);
-//		return NULL;
-//	}
-
 	/* Register the window events. */
 
 	event_add_window_user_data(new->handle, new);
 	event_add_window_close_event(new->handle, game_window_close_handler);
 	event_add_window_redraw_event(new->handle, game_window_redraw_handler);
-
-	/* Plot some debug graphics. */
-
-//	game_window_start_draw(new);
-//	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 255);
-//	os_set_colour(os_ACTION_OVERWRITE, 53);
-//	os_writec(os_VDU_CLG);
-
-//	game_window_plot(new, os_PLOT_SOLID | os_MOVE_TO, 20, 20);
-//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 380);
-//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 380);
-//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 380, 20);
-//	game_window_plot(new, os_PLOT_SOLID | os_PLOT_TO, 20, 20);
-//	game_window_end_draw(new);
-
-//	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, new->sprite, "RAM::RamDisc0.$.Sprites");
-//	debug_printf("Saved sprites: outcome=0x%x", error);
 
 	/* Open the window. */
 
@@ -318,13 +298,15 @@ static void game_window_redraw_handler(wimp_draw *redraw)
  * necessary to request that the client redraws any graphics which
  * had previously been present.
  * 
- * \param *instance	The instance to update.
- * \param x		The required horizontal dimension.
- * \param y		The required vertical dimension.
- * \return		TRUE if successful; else FALSE.
+ * \param *instance		The instance to update.
+ * \param x			The required horizontal dimension.
+ * \param y			The required vertical dimension.
+ * \param *colours		An array of colours required by the game.
+ * \param number_of_colours	The number of colourd defined in the array.
+ * \return			TRUE if successful; else FALSE.
  */
 
-osbool game_window_create_canvas(struct game_window_block *instance, int x, int y)
+osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours)
 {
 	size_t area_size;
 	int entry, save_area_size;
@@ -346,11 +328,12 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	instance->canvas_size.y = 0;
 
 	/* The size of the area is 16 for the area header, 44 for the sprite
-	 * header, (x * y) bytes for the sprite, and 2048 for the 256 double-word
+	 * header, (x * y) bytes for the sprite with the rows rounded up to,
+	 * a full number of words, and 2048 for the 256 double-word
 	 * palette entries that we're going to add in.
 	 */
 
-	area_size = 16 + 44 + 2048 + (x * y);
+	area_size = 16 + 44 + 2048 + (((x + 3) & 0xfffffffc) * y);
 
 	/* If there's already a save area, zero its first word to reset it. */
 
@@ -406,9 +389,18 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	debug_printf("Palette at 0x%x, sprite at 0x%x, size=%d, image at %d", palette, sprite, sprite->size, sprite->image);
 
 	for (entry = 0; entry < 256; entry++) {
-		palette->entries[entry].on = (entry << 8) | (entry << 16) | (entry << 24);
-		palette->entries[entry].off = (entry << 8) | (entry << 16) | (entry << 24);
+		if (entry < number_of_colours) {
+			palette->entries[entry].on = ((int) (colours[entry * 3] * 0xff) << 8) |
+					((int) (colours[entry * 3 + 1] * 0xff) << 16) |
+					((int) (colours[entry * 3 + 2] * 0xff) << 24);
+		} else {
+			palette->entries[entry].on = 0xffffff00;
+		}
+
+		palette->entries[entry].off = palette->entries[entry].on;
 	}
+
+	instance->number_of_colours = number_of_colours;
 
 	/* Initialise the save area. */
 
@@ -452,10 +444,30 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	/* TODO -- Bodge to clear the screen. */
 
 	game_window_start_draw(instance);
-	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 255);
-	os_set_colour(os_ACTION_OVERWRITE, 53);
+	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 0);
 	os_writec(os_VDU_CLG);
 	game_window_end_draw(instance);
+
+	game_window_start_draw(instance);
+	os_set_colour(os_ACTION_OVERWRITE, 1);
+	game_window_plot(instance, os_PLOT_SOLID | os_MOVE_TO, 20, 20);
+	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, 20, y - 20);
+	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, x - 20, y - 20);
+	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, x - 20, 20);
+	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, 20, 20);
+	game_window_end_draw(instance);
+
+	game_window_start_draw(instance);
+	game_window_set_colour(instance, 2);
+	game_window_plot(instance, os_PLOT_SOLID | os_MOVE_TO, 100, 100);
+	game_window_plot(instance, os_PLOT_RECTANGLE | os_PLOT_SOLID | os_PLOT_TO, x - 100, y - 100);
+	game_window_end_draw(instance);
+
+	game_window_start_draw(instance);
+	game_window_end_draw(instance);
+
+	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
+	debug_printf("Saved sprites: outcome=0x%x", error);
 
 	return TRUE;
 }
@@ -514,7 +526,128 @@ osbool game_window_end_draw(struct game_window_block *instance)
 		return FALSE;
 	}
 
+	instance->vdu_redirection_active = FALSE;
+
 	debug_printf("VDU Redirection Inactive");
+
+	return TRUE;
+}
+
+/**
+ * Set the plotting colour in a game window.
+ *
+ * \param *instance	The instance to plot to.
+ * \param colour	The colour, as an index into the game's list.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_set_colour(struct game_window_block *instance, int colour)
+{
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	if (colour < 0 || colour >= instance->number_of_colours)
+		return TRUE;
+
+	error = xos_set_colour(os_ACTION_OVERWRITE, colour);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	debug_printf("Select colour %d", colour);
+
+	return TRUE;
+}
+
+/**
+ * Set a graphics clipping window, to affect all future
+ * operations on the canvas.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x0		The X coordinate of the top left corner of
+ *			the window.
+ * \param y0		The Y coordinate of the top left corner of
+ *			the window.
+ * \param x1		The X coordinate of the bottom right corner
+ *			of the window.
+ * \param y1		The Y coordinate of the bottom right corner
+ *			of the window.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, int x1, int y1)
+{
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	x0 = 2 * x0;
+	y0 = 2 * (instance->canvas_size.y - y0);
+	
+	x1 = 2 * x1;
+	y1 = 2 * (instance->canvas_size.y - y1);
+
+	error = xos_writec(os_VDU_SET_GRAPHICS_WINDOW);
+
+	if (error == NULL)
+		error = xos_writec(x0 & 0xff);
+
+	if (error == NULL)
+		error = xos_writec((x0 >> 8) & 0xff);
+
+	if (error == NULL)
+		error = xos_writec(y0 & 0xff);
+
+	if (error == NULL)
+		error = xos_writec((y0 >> 8) & 0xff);
+
+	if (error == NULL)
+		error = xos_writec(x1 & 0xff);
+
+	if (error == NULL)
+		error = xos_writec((x1 >> 8) & 0xff);
+
+	if (error == NULL)
+		error = xos_writec(y1 & 0xff);
+
+	if (error == NULL)
+		error = xos_writec((y1 >> 8) & 0xff);
+
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	debug_printf("Set clip to %d,%d -- %d,%d", x0, y0, x1, y1);
+
+	return TRUE;
+}
+
+/**
+ * Clear the clipping window set by set_clip()
+ * 
+ * \param *instance	The instance to plot to.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_clear_clip(struct game_window_block *instance)
+{
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	error = xos_writec(os_VDU_RESET_WINDOWS);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	debug_printf("Reset clip");
 
 	return TRUE;
 }
@@ -538,19 +671,14 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
-	error = xos_set_colour(os_ACTION_OVERWRITE, 53);
+	error = xos_plot(plot_code, 2 * x, 2 * (instance->canvas_size.y - y));
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;
 	}
 
-	error = xos_plot(plot_code, x, instance->canvas_size.y - 2 * y);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		return FALSE;
-	}
-
-	debug_printf("Plotted %x to %d, %d", plot_code, x, y);
+	debug_printf("Plotted 0x%x to %d, %d (calculated as %d, %d - %d = %d)",
+			plot_code, x, y, 2*x, instance->canvas_size.y, y, instance->canvas_size.y - y);
 
 	return TRUE;
 }
