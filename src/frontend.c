@@ -306,7 +306,9 @@ static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float
 
 static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 {
-	debug_printf("\\ODraw Update");
+	debug_printf("\\oDraw Update");
+
+	game_window_force_redraw(handle, x, y, x + w - 1, y + h - 1);
 }
 
 static void riscos_clip(void *handle, int x, int y, int w, int h)
