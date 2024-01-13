@@ -243,6 +243,9 @@ void frontend_delete_instance(struct frontend *fe)
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
 {
 	debug_printf("\\ODraw Text");
+
+	game_window_write_text(handle, x, y, fontsize, 0, 0, colour, FALSE, text);
+
 }
 
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)

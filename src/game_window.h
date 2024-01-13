@@ -180,4 +180,6 @@ osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 
 osbool game_window_end_path(struct game_window_block *instance, osbool closed, int width, int outline, int fill);
 
+osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int horizontal, int vertical, int colour, osbool monospaced, const char *text);
+
 #endif

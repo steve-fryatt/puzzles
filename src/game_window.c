@@ -37,6 +37,7 @@
 /* OSLib header files */
 
 #include "oslib/colourtrans.h"
+#include "oslib/font.h"
 #include "oslib/os.h"
 #include "oslib/osspriteop.h"
 #include "oslib/wimp.h"
@@ -67,6 +68,10 @@
 
 #define GAME_WINDOW_SPRITE_NAME "Canvas"
 #define GAME_WINDOW_SPRITE_ID (osspriteop_id) GAME_WINDOW_SPRITE_NAME
+
+/* Workspace for calculating string sizes. */
+
+static font_scan_block game_window_fonts_scan_block;
 
 /* The game window data structure. */
 
@@ -101,6 +106,13 @@ static void game_window_redraw_handler(wimp_draw *redraw);
 
 void game_window_initialise(void)
 {
+	game_window_fonts_scan_block.space.x = 0;
+	game_window_fonts_scan_block.space.y = 0;
+
+	game_window_fonts_scan_block.letter.x = 0;
+	game_window_fonts_scan_block.letter.y = 0;
+
+	game_window_fonts_scan_block.split_char = -1;
 }
 
 /**
@@ -529,6 +541,12 @@ osbool game_window_end_draw(struct game_window_block *instance)
 			instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
+	/* Reset any graphics clip window that may have been left in force. */
+
+	game_window_clear_clip(instance);
+
+	/* Restore the graphics context. */
+
 	error = xosspriteop_switch_output_to_sprite(instance->saved_context0, (osspriteop_area *) instance->saved_context1,
 			(osspriteop_id) instance->saved_context2, (osspriteop_save_area *)instance->saved_context3, NULL, NULL, NULL, NULL);
 	if (error != NULL) {
@@ -779,6 +797,102 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 	}
 
 	debug_printf("Path plotted");
+
+	return TRUE;
+}
+
+osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int horizontal, int vertical, int colour, osbool monospaced, const char *text)
+{
+	font_f face;
+	int xpt, ypt, xos, yos;
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	/* Transform the location coordinates. */
+
+	x = 2 * x;
+	y = 2 * (instance->canvas_size.y - y);
+
+	debug_printf("Print text at %d, %d (OS Units)", x, y);
+
+	game_window_set_colour(instance, colour);
+	xos_plot(os_MOVE_TO, x - 6, y);
+	xos_plot(os_PLOT_BY | os_PLOT_SOLID, 12, 0);
+	xos_plot(os_MOVE_BY, -6, -6);
+	xos_plot(os_PLOT_BY | os_PLOT_SOLID, 0, 12);
+
+
+	/* Convert the size in pixels into points. */
+
+	error = xfont_converttopoints(size, size, &xpt, &ypt);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	debug_printf("Requested size %d pixels: that's %d, %d points", size, xpt, ypt);
+
+	/* Use either Homerton or Corpus, depending on the monospace requirement. */
+
+	error = xfont_find_font((monospaced) ? "Corpus.Medium" : "Homerton.Medium", xpt / 30, ypt / 30, 0, 0, &face, NULL, NULL);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	/* Find the size of the supplies text. */
+
+	error = xfont_scan_string(face, text, font_KERN | font_GIVEN_FONT | font_GIVEN_BLOCK | font_RETURN_BBOX,
+			0x7fffffff, 0x7fffffff, &game_window_fonts_scan_block, NULL, 0, NULL, NULL, NULL, NULL);
+	if (error != NULL) {
+		font_lose_font(face);
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
+
+	/* Convert the bounding box back into OS units. */
+
+	error = xfont_convertto_os(game_window_fonts_scan_block.bbox.x1 - game_window_fonts_scan_block.bbox.x0,
+			game_window_fonts_scan_block.bbox.y1 - game_window_fonts_scan_block.bbox.y0, &xos, &yos);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		font_lose_font(face);
+		return FALSE;
+	}
+
+	debug_printf("Bounding box for '%s' is x0=%d, y0=%d, x1=%d, y1=%d", text,
+			game_window_fonts_scan_block.bbox.x0,
+			game_window_fonts_scan_block.bbox.y0,
+			game_window_fonts_scan_block.bbox.x1,
+			game_window_fonts_scan_block.bbox.y1);
+
+	debug_printf("Bounding box is %d, %d OS Units", xos, yos);
+
+	if (horizontal < 0)
+		x -= xos;
+	else if (horizontal == 0)
+		x -= (xos / 2);
+
+	if (vertical < 0)
+		y += yos;
+	else if (vertical == 0)
+		y += (yos / 2);
+
+	error = xcolourtrans_set_font_colours(face, 0xffffffff, 0x00000000, 14, NULL, NULL, NULL);
+
+	if (error == NULL)
+		error = xfont_paint(face, text, font_OS_UNITS | font_KERN | font_GIVEN_FONT, x, y, NULL, NULL, 0);
+
+	/* Free the fonts that were used. */
+
+	font_lose_font(face);
+
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
 
 	return TRUE;
 }
