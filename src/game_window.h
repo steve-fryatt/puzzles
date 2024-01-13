@@ -144,4 +144,40 @@ osbool game_window_clear_clip(struct game_window_block *instance);
 
 osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_code, int x, int y);
 
+/**
+ * Start a closed polygon path in a game window.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x		The X coordinate of the start.
+ * \param y		The Y coordinate of the start.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_start_path(struct game_window_block *instance, int x, int y);
+
+/**
+ * Add a segment to a closed polygon path in a game window.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x		The X coordinate of the end of the segment.
+ * \param y		The Y coordinate of the end of the segment.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_add_segment(struct game_window_block *instance, int x, int y);
+
+/**
+ * End a polygon path in a game window, drawing either an outline, filled
+ * shape, or both
+ * 
+ * \param *instance	The instance to plot to.
+ * \param closed	TRUE if the path should be closed; else FALSE
+ * \param width		The width of the path outline.
+ * \param outline	The required outline colour, or -1 for none.
+ * \param fill		The required fill colour, or -1 for none.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_end_path(struct game_window_block *instance, osbool closed, int width, int outline, int fill);
+
 #endif

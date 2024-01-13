@@ -61,6 +61,7 @@
 #include "game_window.h"
 
 #include "frontend.h"
+#include "game_draw.h"
 
 /* The name of the canvas sprite. */
 
@@ -464,6 +465,15 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	game_window_end_draw(instance);
 
 	game_window_start_draw(instance);
+	game_window_set_colour(instance, 4);
+	game_window_start_path(instance, 50, 50);
+	game_window_add_segment(instance, x - 50, 50);
+	game_window_add_segment(instance, x - 50, 50);
+	game_window_add_segment(instance, 50, y - 50);
+
+	game_window_end_path(instance, TRUE, 2, -1, 4);
+
+
 	game_window_end_draw(instance);
 
 	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
@@ -679,6 +689,96 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 
 	debug_printf("Plotted 0x%x to %d, %d (calculated as %d, %d - %d = %d)",
 			plot_code, x, y, 2*x, instance->canvas_size.y, y, instance->canvas_size.y - y);
+
+	return TRUE;
+}
+
+/**
+ * Start a polygon path in a game window.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x		The X coordinate of the start.
+ * \param y		The Y coordinate of the start.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_start_path(struct game_window_block *instance, int x, int y)
+{
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	game_draw_start_path();
+
+	debug_printf("Start path from %d, %d", 2 * x, 2 * (instance->canvas_size.y - y));
+
+	return game_draw_add_move(2 * x, 2 * (instance->canvas_size.y - y));
+}
+
+/**
+ * Add a segment to a polygon path in a game window.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x		The X coordinate of the end of the segment.
+ * \param y		The Y coordinate of the end of the segment.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
+{
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	debug_printf("Continue path to %d, %d", 2 * x, 2 * (instance->canvas_size.y - y));
+
+	return game_draw_add_line(2 * x, 2 * (instance->canvas_size.y - y));
+}
+
+/**
+ * End a polygon path in a game window, drawing either an outline, filled
+ * shape, or both
+ * 
+ * \param *instance	The instance to plot to.
+ * \param closed	TRUE if the path should be closed; else FALSE
+ * \param width		The width of the path outline.
+ * \param outline	The required outline colour, or -1 for none.
+ * \param fill		The required fill colour, or -1 for none.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_end_path(struct game_window_block *instance, osbool closed, int width, int outline, int fill)
+{
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	if (closed && !game_draw_close_subpath())
+		return FALSE;
+
+	if (!game_draw_end_path())
+		return FALSE;
+
+	if (fill != -1) {
+		game_window_set_colour(instance, fill);
+
+		error = game_draw_fill_path(width);
+		if (error != NULL) {
+			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+			return FALSE;
+		}
+	}
+
+	if (outline != -1) {
+		game_window_set_colour(instance, outline);
+
+		error = game_draw_plot_path(width);
+		if (error != NULL) {
+			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+			return FALSE;
+		}
+	}
+
+	debug_printf("Path plotted");
 
 	return TRUE;
 }

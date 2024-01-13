@@ -32,6 +32,7 @@ PACKAGE := Puzzles
 PACKAGELOC := Games
 
 OBJS =  frontend.o		\
+	game_draw.o		\
 	game_window.o		\
 	iconbar.o		\
 	main.o			\

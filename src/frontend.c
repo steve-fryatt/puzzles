@@ -177,7 +177,7 @@ void frontend_create_instance(void)
 
 	/* Create the midend, and agree the window size. */
 
-	new->me = midend_new(new, gamelist[1], &riscos_drawing, new->window);
+	new->me = midend_new(new, gamelist[3], &riscos_drawing, new->window);
 	if (new->me == NULL) {
 		frontend_delete_instance(new);
 		return;
@@ -265,7 +265,20 @@ static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int c
 
 static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour)
 {
-	debug_printf("\\ODraw Polygon");
+	int i;
+
+	debug_printf("\\oDraw Polygon");
+
+	if (npoints == 0)
+		return;
+
+	game_window_set_colour(handle, outlinecolour);
+
+	game_window_start_path(handle, coords[0], coords[1]);
+	for (i = 1; i < npoints; i++)
+		game_window_add_segment(handle, coords[2 * i], coords[2 * i + 1]);
+
+	game_window_end_path(handle, TRUE, 2, outlinecolour, fillcolour);
 }
 
 static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
@@ -273,7 +286,7 @@ static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fil
 	debug_printf("\\oDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
 
 	if (fillcolour != -1) {
-		game_window_set_colour(handle, outlinecolour);
+		game_window_set_colour(handle, fillcolour);
 		game_window_plot(handle, os_MOVE_TO, cx, cy);
 		game_window_plot(handle, os_PLOT_CIRCLE | os_PLOT_TO, cx + radius, cy);
 	}
