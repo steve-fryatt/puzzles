@@ -10,7 +10,7 @@
             "defines": [
                 "BUILD_DATE=\"1 Jan 1970\"",
                 "BUILD_VERSION=\"0.00\"",
-                "COMPLETE",
+                "COMBINED",
                 "NO_TGMATH_H"
             ],
             "compilerPath": "/home/steve/gccsdk/cross/arm-unknown-riscos/bin/gcc",
