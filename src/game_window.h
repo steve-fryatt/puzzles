@@ -74,24 +74,6 @@ void game_window_delete_instance(struct game_window_block *instance);
 osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours);
 
 /**
- * Request a forced redraw of part of the canvas as the next available
- * opportunity.
- * 
- * \param *instance	The instance to plot to.
- * \param x0		The X coordinate of the top left corner of
- *			the area to be redrawn (inclusive).
- * \param y0		The Y coordinate of the top left corner of
- *			the area to be redrawn (inclusive).
- * \param x1		The X coordinate of the bottom right corner
- *			of the area to be redrawn (exclusive).
- * \param y1		The Y coordinate of the bottom right corner
- *			of the area to be redrawn (exclusive).
- * \return		TRUE if successful; else FALSE.
- */
-
-osbool game_window_force_redraw(struct game_window_block *instance, int x0, int y0, int x1, int y1);
-
-/**
  * Start a drawing operation on the game window canvas, redirecting
  * VDU output to the canvas sprite.
  * 
@@ -110,6 +92,24 @@ osbool game_window_start_draw(struct game_window_block *instance);
  */
 
 osbool game_window_end_draw(struct game_window_block *instance);
+
+/**
+ * Request a forced redraw of part of the canvas as the next available
+ * opportunity.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x0		The X coordinate of the top left corner of
+ *			the area to be redrawn (inclusive).
+ * \param y0		The Y coordinate of the top left corner of
+ *			the area to be redrawn (inclusive).
+ * \param x1		The X coordinate of the bottom right corner
+ *			of the area to be redrawn (exclusive).
+ * \param y1		The Y coordinate of the bottom right corner
+ *			of the area to be redrawn (exclusive).
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_force_redraw(struct game_window_block *instance, int x0, int y0, int x1, int y1);
 
 /**
  * Set the plotting colour in a game window.

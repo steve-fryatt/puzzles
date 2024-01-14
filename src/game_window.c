@@ -557,48 +557,6 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 }
 
 /**
- * Request a forced redraw of part of the canvas as the next available
- * opportunity.
- * 
- * \param *instance	The instance to plot to.
- * \param x0		The X coordinate of the top left corner of
- *			the area to be redrawn (inclusive).
- * \param y0		The Y coordinate of the top left corner of
- *			the area to be redrawn (inclusive).
- * \param x1		The X coordinate of the bottom right corner
- *			of the area to be redrawn (inclusive).
- * \param y1		The Y coordinate of the bottom right corner
- *			of the area to be redrawn (inclusive).
- * \return		TRUE if successful; else FALSE.
- */
-
-osbool game_window_force_redraw(struct game_window_block *instance, int x0, int y0, int x1, int y1)
-{
-	os_error *error;
-
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
-		return FALSE;
-
-	/* There's no point queueing updates if the window isn't open. */
-
-	if (instance->handle == NULL || windows_get_open(instance->handle) == FALSE)
-		return TRUE;
-
-	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d",
-			2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
-
-	/* Queue the update. */
-
-	error = xwimp_force_redraw(instance->handle, 2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/**
  * Start a drawing operation on the game window canvas, redirecting
  * VDU output to the canvas sprite.
  * 
@@ -661,6 +619,48 @@ osbool game_window_end_draw(struct game_window_block *instance)
 	instance->vdu_redirection_active = FALSE;
 
 	debug_printf("VDU Redirection Inactive");
+
+	return TRUE;
+}
+
+/**
+ * Request a forced redraw of part of the canvas as the next available
+ * opportunity.
+ * 
+ * \param *instance	The instance to plot to.
+ * \param x0		The X coordinate of the top left corner of
+ *			the area to be redrawn (inclusive).
+ * \param y0		The Y coordinate of the top left corner of
+ *			the area to be redrawn (inclusive).
+ * \param x1		The X coordinate of the bottom right corner
+ *			of the area to be redrawn (inclusive).
+ * \param y1		The Y coordinate of the bottom right corner
+ *			of the area to be redrawn (inclusive).
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_force_redraw(struct game_window_block *instance, int x0, int y0, int x1, int y1)
+{
+	os_error *error;
+
+	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+		return FALSE;
+
+	/* There's no point queueing updates if the window isn't open. */
+
+	if (instance->handle == NULL || windows_get_open(instance->handle) == FALSE)
+		return TRUE;
+
+	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d",
+			2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
+
+	/* Queue the update. */
+
+	error = xwimp_force_redraw(instance->handle, 2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return FALSE;
+	}
 
 	return TRUE;
 }
