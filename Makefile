@@ -31,6 +31,13 @@ APP := !Puzzles
 PACKAGE := Puzzles
 PACKAGELOC := Games
 
+CORE := src/core
+
+GAMES := generated-games.h
+GAMESRC := games-list.txt
+
+EXTRASRCPREREQ := $(CORE)/$(GAMES)
+
 OBJS =  frontend.o		\
 	game_draw.o		\
 	game_window.o		\
@@ -55,3 +62,9 @@ OBJS =  frontend.o		\
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 
 include $(SFTOOLS_MAKE)/CApp
+
+# Copy the games list into the appropriate place.
+
+$(CORE)/$(GAMES): $(GAMESRC)
+	@$(call show-stage,GAMELIST,$(CORE)/$(GAMES))
+	@$(CP) $(GAMESRC) $(CORE)/$(GAMES)

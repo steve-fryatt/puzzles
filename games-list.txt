@@ -1,0 +1,4 @@
+GAME(galaxies)
+GAME(net)
+GAME(netslide)
+GAME(tents)
