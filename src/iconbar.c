@@ -49,6 +49,7 @@
 #include "iconbar.h"
 
 #include "frontend.h"
+#include "index_window.h"
 #include "main.h"
 
 
@@ -136,7 +137,7 @@ static void iconbar_click_handler(wimp_pointer *pointer)
 
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
-		frontend_create_instance();
+		index_window_open();
 		break;
 	}
 }

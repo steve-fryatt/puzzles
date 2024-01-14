@@ -59,6 +59,7 @@
 
 #include "main.h"
 
+#include "index_window.h"
 #include "game_window.h"
 #include "iconbar.h"
 
@@ -210,6 +211,7 @@ static void main_initialise(void)
 	ihelp_initialise();
 	dataxfer_initialise(main_task_handle, NULL);
 	iconbar_initialise();
+	index_window_initialise();
 	game_window_initialise();
 	url_initialise();
 

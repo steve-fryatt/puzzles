@@ -141,11 +141,18 @@ static const struct drawing_api riscos_drawing = {
 
 /**
  * Initialise a new game and open its window.
+ * 
+ * \param game_index	The index into gamelist[] of the required game.
  */
 
-void frontend_create_instance(void)
+void frontend_create_instance(int game_index)
 {
 	struct frontend *new;
+
+	/* Sanity check the game index that we're to use. */
+
+	if (game_index < 0 || game_index >= gamecount)
+		return;
 
 	/* Allocate the memory for the instance from the heap. */
 
@@ -177,7 +184,7 @@ void frontend_create_instance(void)
 
 	/* Create the midend, and agree the window size. */
 
-	new->me = midend_new(new, gamelist[3], &riscos_drawing, new->window);
+	new->me = midend_new(new, gamelist[game_index], &riscos_drawing, new->window);
 	if (new->me == NULL) {
 		frontend_delete_instance(new);
 		return;

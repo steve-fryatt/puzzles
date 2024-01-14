@@ -42,6 +42,7 @@ OBJS =  frontend.o		\
 	game_draw.o		\
 	game_window.o		\
 	iconbar.o		\
+	index_window.o		\
 	main.o			\
 	core/drawing.o		\
 	core/dsf.o		\

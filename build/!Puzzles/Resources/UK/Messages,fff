@@ -36,6 +36,7 @@ NoMemNewGame:There was not enough memory to create a new game.
 
 BadResource:Failed to locate suitable %0 file.
 BadTemplate:Window template '%0' not found.
+MissingIcon:Icon definition not found in template '%0'.
 
 # Interactive Help for windows and icons.
 #
@@ -43,10 +44,7 @@ BadTemplate:Window template '%0' not found.
 
 Help.IconBar:\TPuzzles application.|M\Sselect a new puzzle.
 
-Help.Choices:\Tchoices window for Puzzles.
-Help.Choices.Apply:\Sclose the choices \w and use the changes|M\Ause the changes.
-Help.Choices.Save:\Sclose the choices \w, using the changes and saving them to disc.|M\Ause the changes and save them.
-Help.Choices.Cancel:\Sclose the choices \w and forget any changes made.|M\Aforget the changes made since the window was opened.
+Help.Index:\Tpuzzle index.|M\Sto choose a puzzle to play.|M\A to choose a puzzle and close the index window.
 
 Help.ProgInfo:This \w displays information about Puzzles.
 Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
