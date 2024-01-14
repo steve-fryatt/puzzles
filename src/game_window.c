@@ -61,6 +61,7 @@
 
 #include "game_window.h"
 
+#include "core/puzzles.h"
 #include "frontend.h"
 #include "game_draw.h"
 
@@ -98,6 +99,8 @@ struct game_window_block {
 /* Static function prototypes. */
 
 static void game_window_close_handler(wimp_close *close);
+static void game_window_click_handler(wimp_pointer *pointer);
+static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_redraw_handler(wimp_draw *redraw);
 
 /**
@@ -183,7 +186,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 	window_definition.title_flags = wimp_ICON_TEXT |
 			wimp_ICON_BORDER | wimp_ICON_HCENTRED |
 			wimp_ICON_VCENTRED | wimp_ICON_FILLED;
-	window_definition.work_flags = wimp_BUTTON_NEVER << wimp_ICON_BUTTON_TYPE_SHIFT;
+	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
 	window_definition.sprite_area = wimpspriteop_AREA;
 	window_definition.xmin = 0;
 	window_definition.ymin = 0;
@@ -202,6 +205,8 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 	event_add_window_user_data(new->handle, new);
 	event_add_window_close_event(new->handle, game_window_close_handler);
 	event_add_window_redraw_event(new->handle, game_window_redraw_handler);
+	event_add_window_mouse_event(new->handle, game_window_click_handler);
+	event_add_window_key_event(new->handle, game_window_keypress_handler);
 
 	/* Open the window. */
 
@@ -260,6 +265,63 @@ static void game_window_close_handler(wimp_close *close)
 	/* Delete the parent game instance. */
 
 	frontend_delete_instance(instance->fe);
+}
+
+/**
+ * Handle mouse click events in game windows.
+ *
+ * \param *pointer	The Wimp Pointer event data block.
+ */
+
+static void game_window_click_handler(wimp_pointer *pointer)
+{
+	struct game_window_block	*instance;
+	wimp_window_state		window;
+	int				x, y;
+
+	instance = event_get_window_user_data(pointer->w);
+	if (instance == NULL)
+		return;
+
+	window.w = pointer->w;
+	wimp_get_window_state(&window);
+
+	x = (pointer->pos.x - window.visible.x0 + window.xscroll) / 2;
+	y = -((pointer->pos.y - window.visible.y1 + window.yscroll) / 2);
+
+	switch (pointer->buttons) {
+	case wimp_CLICK_SELECT:
+		frontend_handle_key_event(instance->fe, x, y, LEFT_BUTTON);
+		frontend_handle_key_event(instance->fe, x, y, LEFT_RELEASE);
+		break;
+	case wimp_CLICK_ADJUST:
+		frontend_handle_key_event(instance->fe, x, y, RIGHT_BUTTON);
+		frontend_handle_key_event(instance->fe, x, y, RIGHT_RELEASE);
+		break;
+	}
+}
+
+/**
+ * Handle keypress events in game windows.
+ *
+ * \param *key		The Wimp Key event data block.
+ * \return		TRUE if the event was handled; otherwise FALSE.
+ */
+
+static osbool game_window_keypress_handler(wimp_key *key)
+{
+	struct game_window_block *instance;
+
+	instance = event_get_window_user_data(key->w);
+	if (instance == NULL)
+		return FALSE;
+
+	/* Pass ASCII codes directly to the front-end. */
+
+	if (key->c >= 0 && key->c < 127)
+		return frontend_handle_key_event(instance->fe, key->c, 0, 0);
+
+	return FALSE;
 }
 
 /**
@@ -504,9 +566,9 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
  * \param y0		The Y coordinate of the top left corner of
  *			the area to be redrawn (inclusive).
  * \param x1		The X coordinate of the bottom right corner
- *			of the area to be redrawn (exclusive).
+ *			of the area to be redrawn (inclusive).
  * \param y1		The Y coordinate of the bottom right corner
- *			of the area to be redrawn (exclusive).
+ *			of the area to be redrawn (inclusive).
  * \return		TRUE if successful; else FALSE.
  */
 
@@ -522,10 +584,12 @@ osbool game_window_force_redraw(struct game_window_block *instance, int x0, int 
 	if (instance->handle == NULL || windows_get_open(instance->handle) == FALSE)
 		return TRUE;
 
+	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d",
+			2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
+
 	/* Queue the update. */
 
-	error = xwimp_force_redraw(instance->handle, 2 * x0, 2 * (instance->canvas_size.y - y0),
-			2 * x1, 2 * (instance->canvas_size.y - y1));
+	error = xwimp_force_redraw(instance->handle, 2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;

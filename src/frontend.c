@@ -238,6 +238,32 @@ void frontend_delete_instance(struct frontend *fe)
 	free(fe);
 }
 
+/**
+ * Process key events from the game window. These are any
+ * mouse click or keypress events handled by the midend.
+ *
+ * \param *fe		The instance to which the event relates.
+ * \param x		The X coordinate of the event.
+ * \param y		The Y coordinate of the event.
+ * \param button	The button details for the event.
+ * \return		TRUE if the event was accepted; otherwise FALSE.
+ */
+
+osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button)
+{
+	int return_value;
+
+	debug_printf("Received event: x=%d, y=%d, button=%d", x, y, button);
+
+	return_value = midend_process_key(fe->me, x, y, button);
+
+	// TODO -- Handle PKR_QUIT. This could be tricky, as if we delete
+	// ourselves now, the game window might struggle when there's no
+	// instance left on return!?
+
+	return (return_value == PKR_UNUSED) ? FALSE : TRUE;
+}
+
 /* Below this point are the draing API calls. */
 
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
@@ -303,6 +329,16 @@ static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float
 {
 	debug_printf("\\ODraw Thick Line");
 }
+
+/**
+ * Request an update of part of the window canvas.
+ *
+ * \param *handle	The game window instance pointer.
+ * \param x		The X coordinate of the top-left corner of the area.
+ * \param y		The Y coordinate of the top-left corner of the area.
+ * \param w		The width of the area.
+ * \param h		The height of the area.
+ */
 
 static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 {

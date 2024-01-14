@@ -54,4 +54,17 @@ void frontend_create_instance(void);
 
 void frontend_delete_instance(struct frontend *fe);
 
+/**
+ * Process key events from the game window. These are any
+ * mouse click or keypress events handled by the midend.
+ *
+ * \param *fe		The instance to which the event relates.
+ * \param x		The X coordinate of the event.
+ * \param y		The Y coordinate of the event.
+ * \param button	The button details for the event.
+ * \return		TRUE if the event was accepted; otherwise FALSE.
+ */
+
+osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button);
+
 #endif
