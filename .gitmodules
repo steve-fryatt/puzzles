@@ -1,0 +1,4 @@
+[submodule "src/core"]
+	path = src/core
+	url = https://git.tartarus.org/simon/puzzles.git
+	ignore = dirty
