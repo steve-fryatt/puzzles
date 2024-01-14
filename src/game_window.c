@@ -31,6 +31,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 /* Acorn C header files */
 
@@ -125,11 +126,12 @@ void game_window_initialise(void)
 /**
  * Initialise and open a new game window.
  *
- * \param *parent	The parent game collection instance.
+ * \param *fe		The parent game frontend instance.
+ * \param *title	The title of the window.
  * \return		Pointer to the new window instance, or NULL.
  */
 
-struct game_window_block *game_window_create_instance(struct frontend *fe)
+struct game_window_block *game_window_create_instance(struct frontend *fe, const char *title)
 {
 	wimp_window window_definition;
 	struct game_window_block *new;
@@ -189,14 +191,16 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 	window_definition.extent.y0 = -1200;
 	window_definition.extent.x1 = 1200;
 	window_definition.extent.y1 = 0;
-	window_definition.title_flags = wimp_ICON_TEXT |
+	window_definition.title_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
 			wimp_ICON_BORDER | wimp_ICON_HCENTRED |
 			wimp_ICON_VCENTRED | wimp_ICON_FILLED;
 	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
 	window_definition.sprite_area = wimpspriteop_AREA;
 	window_definition.xmin = 0;
 	window_definition.ymin = 0;
-	string_copy(window_definition.title_data.text, "Hello World!", 12);
+	window_definition.title_data.indirected_text.text = (char *) title;
+	window_definition.title_data.indirected_text.size = strlen(title) + 1;
+	window_definition.title_data.indirected_text.validation = NULL;
 	window_definition.icon_count = 0;
 
 	error = xwimp_create_window(&window_definition, &(new->handle));

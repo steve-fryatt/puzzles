@@ -41,11 +41,12 @@ void game_window_initialise(void);
 /**
  * Initialise and open a new game window.
  *
- * \param *parent	The parent game collection instance.
+ * \param *fe		The parent game frontend instance.
+ * \param *title	The title of the window.
  * \return		Pointer to the new window instance, or NULL.
  */
 
-struct game_window_block *game_window_create_instance(struct frontend *fe);
+struct game_window_block *game_window_create_instance(struct frontend *fe, const char *title);
 
 /**
  * Delete a game window instance and the associated window.

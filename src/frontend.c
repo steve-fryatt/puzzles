@@ -176,7 +176,7 @@ void frontend_create_instance(int game_index)
 
 	/* Create the game window. */
 
-	new->window = game_window_create_instance(new);
+	new->window = game_window_create_instance(new, gamelist[game_index]->name);
 	if (new->window == NULL) {
 		frontend_delete_instance(new);
 		return;
