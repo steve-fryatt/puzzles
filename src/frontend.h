@@ -67,4 +67,15 @@ void frontend_delete_instance(struct frontend *fe);
 
 osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button);
 
+/**
+ * Process a periodic callback from the game window, passing it on
+ * to the midend.
+ * 
+ * \param *fe			The frontend handle.
+ * \param tplus			The time in seconds since the last
+ *				callback event.
+ */
+
+void frontend_timer_callback(struct frontend *fe, float tplus);
+
 #endif

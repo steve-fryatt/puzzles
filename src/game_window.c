@@ -94,6 +94,9 @@ struct game_window_block {
 	os_coord window_size;			/**< The size of the window, in pixels.		*/
 
 	int number_of_colours;			/**< The number of colours defined.		*/
+
+	osbool callback_timer_active;		/**< Is the callback timer currently active?	*/
+	os_t last_callback;			/**< The time of the last frontend callback.	*/
 };
 
 /* Static function prototypes. */
@@ -102,6 +105,7 @@ static void game_window_close_handler(wimp_close *close);
 static void game_window_click_handler(wimp_pointer *pointer);
 static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_redraw_handler(wimp_draw *redraw);
+static osbool game_window_timer_callback(os_t time, void *data);
 
 /**
  * Initialise the game windows and their associated menus and dialogues.
@@ -155,6 +159,8 @@ struct game_window_block *game_window_create_instance(struct frontend *fe)
 	new->window_size.y = 0;
 
 	new->number_of_colours = 0;
+
+	new->callback_timer_active = FALSE;
 
 	/* Create the new window. */
 
@@ -552,6 +558,67 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
 	debug_printf("Saved sprites: outcome=0x%x", error);
+
+	return TRUE;
+}
+
+/**
+ * Start regular 20ms callbacks to the frontend, which can be passed
+ * on to the midend.
+ *
+ * \param *instance		The instance to update.
+ * \return			TRUE if successful; else FALSE.
+ */
+
+osbool game_window_start_timer(struct game_window_block *instance)
+{
+	if (instance == NULL)
+		return FALSE;
+
+	if (instance->callback_timer_active == TRUE)
+		return TRUE;
+
+	instance->callback_timer_active = TRUE;
+	instance->last_callback = os_read_monotonic_time();
+
+	return event_add_regular_callback(instance->handle, 0, 2, game_window_timer_callback, instance);
+}
+
+/**
+ * Cancel any regular 20ms callbacks to the frontend which are in progress.
+ *
+ * \param *instance		The instance to update.
+ */
+
+void game_window_stop_timer(struct game_window_block *instance)
+{
+	if (instance == NULL)
+		return;
+
+	event_delete_callback_by_data(game_window_timer_callback, instance);
+	instance->callback_timer_active = FALSE;
+}
+
+/**
+ * The callback routine for the 20ms tick events.
+ * 
+ * \param time			The time that the callback occurred.
+ * \param *data			The game window instance owning the callback.
+ * \return			TRUE if the callback is to be claimed.
+ */
+
+static osbool game_window_timer_callback(os_t time, void *data)
+{
+	struct game_window_block *instance = data;
+	float interval;
+
+	if (instance == NULL)
+		return TRUE;
+
+	interval = ((float) (time - instance->last_callback)) / 100.0f;
+	instance->last_callback = time;
+
+	frontend_timer_callback(instance->fe, interval);
 
 	return TRUE;
 }

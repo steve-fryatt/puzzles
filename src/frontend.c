@@ -264,6 +264,23 @@ osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button)
 	return (return_value == PKR_UNUSED) ? FALSE : TRUE;
 }
 
+/**
+ * Process a periodic callback from the game window, passing it on
+ * to the midend.
+ * 
+ * \param *fe			The frontend handle.
+ * \param tplus			The time in seconds since the last
+ *				callback event.
+ */
+
+void frontend_timer_callback(frontend *fe, float tplus)
+{
+	debug_printf("Timer call after %f seconds", tplus);
+
+	if (fe != NULL)
+		midend_timer(fe->me, tplus);
+}
+
 /* Below this point are the draing API calls. */
 
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
@@ -441,14 +458,33 @@ void get_random_seed(void **randseed, int *randseedsize)
 	*randseedsize = sizeof(os_date_and_time);
 }
 
+/**
+ * Activate periodic callbacks to the midend.
+ * 
+ * \param *fe			The frontend handle.
+ */
+
 void activate_timer(frontend *fe)
 {
-	debug_printf("\\OActivate Timer");
+	debug_printf("\\oActivate Timer");
+
+	if (fe == NULL)
+		return;
+
+	game_window_start_timer(fe->window);
 }
+
+/**
+ * Deactivate periodic callbacks to the midend.
+ * 
+ * \param *fe			The frontend handle.
+ */
 
 void deactivate_timer(frontend *fe)
 {
-	debug_printf("\\ODeactivate Timer");
+	debug_printf("\\oDeactivate Timer");
+
+	game_window_stop_timer(fe->window);
 }
 
 /**

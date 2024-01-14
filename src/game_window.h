@@ -74,6 +74,24 @@ void game_window_delete_instance(struct game_window_block *instance);
 osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours);
 
 /**
+ * Start regular 20ms callbacks to the frontend, which can be passed
+ * on to the midend.
+ *
+ * \param *instance		The instance to update.
+ * \return			TRUE if successful; else FALSE.
+ */
+
+osbool game_window_start_timer(struct game_window_block *instance);
+
+/**
+ * Cancel any regular 20ms callbacks to the frontend which are in progress.
+ *
+ * \param *instance		The instance to update.
+ */
+
+void game_window_stop_timer(struct game_window_block *instance);
+
+/**
  * Start a drawing operation on the game window canvas, redirecting
  * VDU output to the canvas sprite.
  * 
