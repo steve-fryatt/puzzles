@@ -37,7 +37,7 @@ This will clean the project and re-build it all, then create a distribution arch
 Additional Notes
 ----------------
 
-The RISC OS port of Puzzles uses the original sources from Simon Tatham's Git repository, which are located as a submodule at `src/core`. You will therefore need to run `git submodule init` and `git submodule update` after cloning the RISC OS front end, in order to pull these additional sources in. These files are considered a 'black box' as far as the RISC OS code is concerned, and any changes made to the code within this submodule should be directed [back to Simon directly](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/).
+The RISC OS port of Puzzles uses the original sources from Simon Tatham's Git repository, which are located as a submodule at `src/core`. You will therefore need to run `git submodule init` and `git submodule update` after cloning the RISC OS front end, in order to pull these additional sources in. These files are considered a 'black box' as far as the RISC OS code is concerned, and any changes made to the code within this submodule should be directed back to Simon using the the details at https://www.chiark.greenend.org.uk/~sgtatham/puzzles/.
 
 Unlike the normal build system, which uses CMake to identify all of the games and include them automatically, the RISC OS port maintains a manual list of available puzzles in the `games-list.txt` file in the root of the project. This is copied into an appropriate place within `src/core` as part of the build process, as if it had been created by CMake. The file contains a list of entries in the form
 
