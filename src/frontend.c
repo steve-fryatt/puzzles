@@ -459,6 +459,9 @@ void get_random_seed(void **randseed, int *randseedsize)
 
 	debug_printf("Get Random Seed");
 
+	if (randseed == NULL || randseedsize == NULL)
+		return;
+
 	rtc = malloc(sizeof(oswordreadclock_utc_block));
 	if (rtc == NULL) {
 		*randseed = NULL;
@@ -483,10 +486,8 @@ void activate_timer(frontend *fe)
 {
 	debug_printf("\\oActivate Timer");
 
-	if (fe == NULL)
-		return;
-
-	game_window_start_timer(fe->window);
+	if (fe != NULL)
+		game_window_start_timer(fe->window);
 }
 
 /**
@@ -499,7 +500,8 @@ void deactivate_timer(frontend *fe)
 {
 	debug_printf("\\oDeactivate Timer");
 
-	game_window_stop_timer(fe->window);
+	if (fe != NULL)
+		game_window_stop_timer(fe->window);
 }
 
 /**
