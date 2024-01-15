@@ -44,9 +44,10 @@ struct frontend;
  * Initialise a new game and open its window.
  * 
  * \param game_index	The index into gamelist[] of the required game.
+ * \param *pointer	The pointer at which to open the game.
  */
 
-void frontend_create_instance(int game_index);
+void frontend_create_instance(int game_index, wimp_pointer *pointer);
 
 /**
  * Delete a frontend instance.

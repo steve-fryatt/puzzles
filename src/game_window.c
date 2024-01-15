@@ -80,6 +80,8 @@ static font_scan_block game_window_fonts_scan_block;
 struct game_window_block {
 	struct frontend *fe;			/**< The parent frontend instance.		*/
 
+	const char *title;			/**< The title of the game.			*/
+
 	wimp_w handle;				/**< The handle of the game window.		*/
 
 	osspriteop_area *sprite;		/**< The sprite area for the window canvas.	*/
@@ -124,7 +126,7 @@ void game_window_initialise(void)
 }
 
 /**
- * Initialise and open a new game window.
+ * Initialise and a new game window instance.
  *
  * \param *fe		The parent game frontend instance.
  * \param *title	The title of the window.
@@ -133,9 +135,7 @@ void game_window_initialise(void)
 
 struct game_window_block *game_window_create_instance(struct frontend *fe, const char *title)
 {
-	wimp_window window_definition;
 	struct game_window_block *new;
-	os_error *error;
 
 	/* Allocate the memory for the instance from the heap. */
 
@@ -148,6 +148,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	/* Initialise critical fields in the struct. */
 
 	new->fe = fe;
+	new->title = title;
 
 	new->handle = NULL;
 	new->sprite = NULL;
@@ -166,61 +167,6 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 
 	/* Create the new window. */
 
-	window_definition.visible.x0 = 200;
-	window_definition.visible.y0 = 200;
-	window_definition.visible.x1 = 600;
-	window_definition.visible.y1 = 600;
-	window_definition.xscroll = 0;
-	window_definition.yscroll = 0;
-	window_definition.next = wimp_TOP;
-	window_definition.flags = wimp_WINDOW_NEW_FORMAT |
-			wimp_WINDOW_MOVEABLE |
-			wimp_WINDOW_BOUNDED_ONCE | wimp_WINDOW_BACK_ICON |
-			wimp_WINDOW_CLOSE_ICON | wimp_WINDOW_TITLE_ICON |
-			wimp_WINDOW_TOGGLE_ICON | wimp_WINDOW_VSCROLL |
-			wimp_WINDOW_SIZE_ICON | wimp_WINDOW_HSCROLL;
-	window_definition.title_fg = wimp_COLOUR_BLACK;
-	window_definition.title_bg = wimp_COLOUR_LIGHT_GREY;
-	window_definition.work_fg = wimp_COLOUR_BLACK;
-	window_definition.work_bg = wimp_COLOUR_TRANSPARENT;
-	window_definition.scroll_outer = wimp_COLOUR_MID_LIGHT_GREY;
-	window_definition.scroll_inner = wimp_COLOUR_VERY_LIGHT_GREY;
-	window_definition.highlight_bg = wimp_COLOUR_CREAM;
-	window_definition.extra_flags = 0;
-	window_definition.extent.x0 = 0;
-	window_definition.extent.y0 = -1200;
-	window_definition.extent.x1 = 1200;
-	window_definition.extent.y1 = 0;
-	window_definition.title_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
-			wimp_ICON_BORDER | wimp_ICON_HCENTRED |
-			wimp_ICON_VCENTRED | wimp_ICON_FILLED;
-	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
-	window_definition.sprite_area = wimpspriteop_AREA;
-	window_definition.xmin = 0;
-	window_definition.ymin = 0;
-	window_definition.title_data.indirected_text.text = (char *) title;
-	window_definition.title_data.indirected_text.size = strlen(title) + 1;
-	window_definition.title_data.indirected_text.validation = NULL;
-	window_definition.icon_count = 0;
-
-	error = xwimp_create_window(&window_definition, &(new->handle));
-	if (error != NULL) {
-		game_window_delete_instance(new);
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		return NULL;
-	}
-
-	/* Register the window events. */
-
-	event_add_window_user_data(new->handle, new);
-	event_add_window_close_event(new->handle, game_window_close_handler);
-	event_add_window_redraw_event(new->handle, game_window_redraw_handler);
-	event_add_window_mouse_event(new->handle, game_window_click_handler);
-	event_add_window_key_event(new->handle, game_window_keypress_handler);
-
-	/* Open the window. */
-
-	windows_open(new->handle);
 
 	return new;
 }
@@ -253,6 +199,78 @@ void game_window_delete_instance(struct game_window_block *instance)
 		free(instance->save_area);
 
 	free(instance);
+}
+
+/**
+ * Create and open the game window at the specified location.
+ * 
+ * \param *instance	The instance to open the window on.
+ * \param *pointer	The pointer at which to open the window.
+ */
+
+void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
+{
+	wimp_window window_definition;
+	os_error *error;
+
+	if (instance == NULL || instance->handle != NULL)
+		return;
+
+	window_definition.visible.x0 = 200; // The location will be updated when we open the window
+	window_definition.visible.y0 = 200; // at the pointer, so only width and height matter!
+	window_definition.visible.x1 = window_definition.visible.x0 + instance->window_size.x;
+	window_definition.visible.y1 = window_definition.visible.y0 + instance->window_size.y;
+	window_definition.xscroll = 0;
+	window_definition.yscroll = 0;
+	window_definition.next = wimp_TOP;
+	window_definition.flags = wimp_WINDOW_NEW_FORMAT |
+			wimp_WINDOW_MOVEABLE |
+			wimp_WINDOW_BOUNDED_ONCE | wimp_WINDOW_BACK_ICON |
+			wimp_WINDOW_CLOSE_ICON | wimp_WINDOW_TITLE_ICON |
+			wimp_WINDOW_TOGGLE_ICON | wimp_WINDOW_VSCROLL |
+			wimp_WINDOW_SIZE_ICON | wimp_WINDOW_HSCROLL;
+	window_definition.title_fg = wimp_COLOUR_BLACK;
+	window_definition.title_bg = wimp_COLOUR_LIGHT_GREY;
+	window_definition.work_fg = wimp_COLOUR_BLACK;
+	window_definition.work_bg = wimp_COLOUR_TRANSPARENT;
+	window_definition.scroll_outer = wimp_COLOUR_MID_LIGHT_GREY;
+	window_definition.scroll_inner = wimp_COLOUR_VERY_LIGHT_GREY;
+	window_definition.highlight_bg = wimp_COLOUR_CREAM;
+	window_definition.extra_flags = 0;
+	window_definition.extent.x0 = 0;
+	window_definition.extent.y0 = -instance->window_size.y;
+	window_definition.extent.x1 = instance->window_size.x;
+	window_definition.extent.y1 = 0;
+	window_definition.title_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
+			wimp_ICON_BORDER | wimp_ICON_HCENTRED |
+			wimp_ICON_VCENTRED | wimp_ICON_FILLED;
+	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
+	window_definition.sprite_area = wimpspriteop_AREA;
+	window_definition.xmin = 0;
+	window_definition.ymin = 0;
+	window_definition.title_data.indirected_text.text = (char *) instance->title;
+	window_definition.title_data.indirected_text.size = strlen(instance->title) + 1;
+	window_definition.title_data.indirected_text.validation = NULL;
+	window_definition.icon_count = 0;
+
+	error = xwimp_create_window(&window_definition, &(instance->handle));
+	if (error != NULL) {
+		game_window_delete_instance(instance);
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		return;
+	}
+
+	/* Register the window events. */
+
+	event_add_window_user_data(instance->handle, instance);
+	event_add_window_close_event(instance->handle, game_window_close_handler);
+	event_add_window_redraw_event(instance->handle, game_window_redraw_handler);
+	event_add_window_mouse_event(instance->handle, game_window_click_handler);
+	event_add_window_key_event(instance->handle, game_window_keypress_handler);
+
+	/* Open the window. */
+
+	windows_open_centred_at_pointer(instance->handle, pointer);
 }
 
 /**
@@ -515,18 +533,21 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	/* Set the window extent. */
 
+	instance->window_size.x = 2 * x;
+	instance->window_size.y = 2 * y;
+
 	if (instance->handle != NULL) {
 		extent.x0 = 0;
 		extent.x1 = 2 * x;
 		extent.y0 = -2 * y;
 		extent.y1 = 0;
 		wimp_set_extent(instance->handle, &extent);
-
-		instance->window_size.x = 2 * x;
-		instance->window_size.y = 2 * y;
 	}
 
 	/* TODO -- Bodge to clear the screen. */
+	/* The code from here down is debug to test the drawing routines.
+	 * It should be removed once the development is complete!
+	 */
 
 	game_window_start_draw(instance);
 	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 0);
@@ -556,12 +577,12 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	game_window_add_segment(instance, 50, y - 50);
 
 	game_window_end_path(instance, TRUE, 2, -1, 4);
-
-
 	game_window_end_draw(instance);
 
 	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
 	debug_printf("Saved sprites: outcome=0x%x", error);
+
+	/* TODO -- Remove the code down to here! */
 
 	return TRUE;
 }

@@ -38,6 +38,7 @@
 
 #include "oslib/types.h"
 #include "oslib/osword.h"
+#include "oslib/wimp.h"
 
 /* SF-Lib header files. */
 
@@ -143,9 +144,10 @@ static const struct drawing_api riscos_drawing = {
  * Initialise a new game and open its window.
  * 
  * \param game_index	The index into gamelist[] of the required game.
+ * \param *pointer	The pointer at which to open the game.
  */
 
-void frontend_create_instance(int game_index)
+void frontend_create_instance(int game_index, wimp_pointer *pointer)
 {
 	struct frontend *new;
 
@@ -200,9 +202,9 @@ void frontend_create_instance(int game_index)
 	float *colours = midend_colours(new->me, &number_of_colours);
 
 	game_window_create_canvas(new->window, new->x_size, new->y_size, colours, number_of_colours);
+	game_window_open(new->window, pointer);
 
 	midend_redraw(new->me);
-
 }
 
 /**

@@ -39,7 +39,7 @@
 void game_window_initialise(void);
 
 /**
- * Initialise and open a new game window.
+ * Initialise a new game window instance.
  *
  * \param *fe		The parent game frontend instance.
  * \param *title	The title of the window.
@@ -55,6 +55,15 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
  */
 
 void game_window_delete_instance(struct game_window_block *instance);
+
+/**
+ * Create and open the game window at the specified location.
+ * 
+ * \param *instance	The instance to open the window on.
+ * \param *pointer	The pointer at which to open the window.
+ */
+
+void game_window_open(struct game_window_block *instance, wimp_pointer *pointer);
 
 /**
  * Create or update the drawing canvas associated with a window

@@ -179,7 +179,7 @@ static void index_window_click_handler(wimp_pointer *pointer)
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
 	case wimp_CLICK_ADJUST:
-		frontend_create_instance(pointer->i);
+		frontend_create_instance(pointer->i, pointer);
 
 		if (pointer->buttons == wimp_CLICK_ADJUST)
 			wimp_close_window(pointer->w);
