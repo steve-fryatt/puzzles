@@ -42,12 +42,14 @@ MissingIcon:Icon definition not found in template '%0'.
 #
 # Window icon data (particularly toolbar items) may be in menu data when duplicates exist.
 
-Help.IconBar:\TPuzzles application.|M\Sselect a new puzzle.
+Help.IconBar:\TPuzzles application: a version of Simon Tatham's Portable Puzzles.|M\Schoose a new puzzle to play.
 
-Help.Index:\Tpuzzle index.|M\Sto choose a puzzle to play.|M\A to choose a puzzle and close the index window.
+Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|M\Sover a puzzle to open a copy in a new window.|M\Aopen a copy of the puzzle and close the index window.
 
 Help.ProgInfo:This \w displays information about Puzzles.
 Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
+Help.ProgInfo.Author:This \w displays information about Puzzles.|MSimon created and maintains the cross-platform puzzles and the infrastructure to make them work.
+Help.ProgInfo.Porter:This \w displays information about Puzzles.|MSteve created the front-end which allows the puzzles to be played on RISC OS.
 
 # Interactive help for menus.
 #
