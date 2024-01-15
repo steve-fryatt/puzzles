@@ -37,6 +37,7 @@
 /* OSLib header files */
 
 #include "oslib/types.h"
+#include "oslib/os.h"
 #include "oslib/osword.h"
 #include "oslib/wimp.h"
 
@@ -173,8 +174,13 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->window = NULL;
 
-	new->x_size = 800;
-	new->y_size = 800;
+	/* Allow the puzzles to fill up to 3/4 of the screen area. */
+
+	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_XWIND_LIMIT, &(new->x_size));
+	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_YWIND_LIMIT, &(new->y_size));
+
+	new->x_size *= 0.75;
+	new->y_size *= 0.75;
 
 	/* Create the game window. */
 
