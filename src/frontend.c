@@ -64,7 +64,7 @@ struct frontend {
 
 	struct game_window_block *window;	/**< The associated game window instance.	*/
 
-	struct frontend *next;	/**< The next game in the list, or null.	*/
+	struct frontend *next;			/**< The next game in the list, or null.	*/
 };
 
 /* Constants. */
@@ -151,6 +151,7 @@ static const struct drawing_api riscos_drawing = {
 void frontend_create_instance(int game_index, wimp_pointer *pointer)
 {
 	struct frontend *new;
+	osbool status_bar = FALSE;
 
 	/* Sanity check the game index that we're to use. */
 
@@ -202,13 +203,15 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	midend_size(new->me, &(new->x_size), &(new->y_size), false, 1.0);
 
+	status_bar = midend_wants_statusbar(new->me) ? TRUE : FALSE;
+
 	debug_printf("Agreed on canvas x=%d, y=%d", new->x_size, new->y_size);
 
 	int number_of_colours = 0;
 	float *colours = midend_colours(new->me, &number_of_colours);
 
 	game_window_create_canvas(new->window, new->x_size, new->y_size, colours, number_of_colours);
-	game_window_open(new->window, pointer);
+	game_window_open(new->window, status_bar, pointer);
 
 	midend_redraw(new->me);
 }
@@ -407,9 +410,16 @@ static void riscos_end_draw(void *handle)
 	game_window_end_draw(handle);
 }
 
+/**
+ * Update the text in the status bar.
+ * 
+ * \param *handle	The game window instance pointer.
+ * \param *text		The new text to display in the bar.
+ */
+
 static void riscos_status_bar(void *handle, const char *text)
 {
-	debug_printf("\\OStatus Bar");
+	game_window_set_status_text(handle, text);
 }
 
 static blitter *riscos_blitter_new(void *handle, int w, int h)

@@ -60,10 +60,11 @@ void game_window_delete_instance(struct game_window_block *instance);
  * Create and open the game window at the specified location.
  * 
  * \param *instance	The instance to open the window on.
+ * \param status_bar	TRUE if the window should have a status bar.
  * \param *pointer	The pointer at which to open the window.
  */
 
-void game_window_open(struct game_window_block *instance, wimp_pointer *pointer);
+void game_window_open(struct game_window_block *instance, osbool status_bar, wimp_pointer *pointer);
 
 /**
  * Create or update the drawing canvas associated with a window
@@ -82,6 +83,16 @@ void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
  */
 
 osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours);
+
+/**
+ * Update the text in the status bar.
+ * 
+ * \param *instance		The instance to update.
+ * \param *text			The new status bar text.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool game_window_set_status_text(struct game_window_block *instance, const char *text);
 
 /**
  * Start regular 20ms callbacks to the frontend, which can be passed

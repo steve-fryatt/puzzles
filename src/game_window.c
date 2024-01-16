@@ -50,7 +50,7 @@
 #include "sflib/errors.h"
 #include "sflib/event.h"
 #include "sflib/string.h"
-//#include "sflib/icons.h"
+#include "sflib/icons.h"
 //#include "sflib/ihelp.h"
 //#include "sflib/menus.h"
 //#include "sflib/msgs.h"
@@ -71,6 +71,11 @@
 #define GAME_WINDOW_SPRITE_NAME "Canvas"
 #define GAME_WINDOW_SPRITE_ID (osspriteop_id) GAME_WINDOW_SPRITE_NAME
 
+/* The height of the status bar. */
+
+#define GAME_WINDOW_STATUS_BAR_HEIGHT 52
+#define GAME_WINDOW_STATUS_BAR_LENGTH 128
+
 /* Workspace for calculating string sizes. */
 
 static font_scan_block game_window_fonts_scan_block;
@@ -83,9 +88,13 @@ struct game_window_block {
 	const char *title;			/**< The title of the game.			*/
 
 	wimp_w handle;				/**< The handle of the game window.		*/
+	wimp_w status_bar;			/**< The handle of the status bar.		*/
+	wimp_i status_icon;			/**< The handle of the status bar icon.		*/
 
 	osspriteop_area *sprite;		/**< The sprite area for the window canvas.	*/
 	osspriteop_save_area *save_area;	/**< The save area for redirecting VDU output.	*/
+
+	char *status_text;			/**< The status bar text.			*/
 
 	osbool vdu_redirection_active;
 	int saved_context0;
@@ -151,9 +160,11 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->title = title;
 
 	new->handle = NULL;
+	new->status_bar = NULL;
 	new->sprite = NULL;
 	new->save_area = NULL;
 	new->vdu_redirection_active = FALSE;
+	new->status_text = NULL;
 
 	new->canvas_size.x = 0;
 	new->canvas_size.y = 0;
@@ -186,11 +197,16 @@ void game_window_delete_instance(struct game_window_block *instance)
 
 	/* Delete the window. */
 
-	if (instance->handle != NULL) {
+	if (instance->handle != NULL)
 		wimp_delete_window(instance->handle);
-	}
+
+	if (instance->status_bar != NULL)
+		wimp_delete_window(instance->status_bar);
 
 	/* Deallocate the instance block. */
+
+	if (instance->status_text != NULL)
+		free(instance->status_text);
 
 	if (instance->sprite != NULL)
 		free(instance->sprite);
@@ -205,30 +221,41 @@ void game_window_delete_instance(struct game_window_block *instance)
  * Create and open the game window at the specified location.
  * 
  * \param *instance	The instance to open the window on.
+ * \param status_bar	TRUE if the window should have a status bar.
  * \param *pointer	The pointer at which to open the window.
  */
 
-void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
+void game_window_open(struct game_window_block *instance, osbool status_bar, wimp_pointer *pointer)
 {
 	wimp_window window_definition;
+	wimp_icon_create icon;
 	os_error *error;
 
 	if (instance == NULL || instance->handle != NULL)
 		return;
 
+	/* Create the main window. */
+
 	window_definition.visible.x0 = 200; // The location will be updated when we open the window
 	window_definition.visible.y0 = 200; // at the pointer, so only width and height matter!
 	window_definition.visible.x1 = window_definition.visible.x0 + instance->window_size.x;
-	window_definition.visible.y1 = window_definition.visible.y0 + instance->window_size.y;
+	window_definition.visible.y1 = window_definition.visible.y0 + instance->window_size.y +
+			((status_bar == TRUE) ? GAME_WINDOW_STATUS_BAR_HEIGHT : 0);
+
 	window_definition.xscroll = 0;
 	window_definition.yscroll = 0;
 	window_definition.next = wimp_TOP;
-	window_definition.flags = wimp_WINDOW_NEW_FORMAT |
+	window_definition.flags =
+			wimp_WINDOW_NEW_FORMAT |
 			wimp_WINDOW_MOVEABLE |
-			wimp_WINDOW_BOUNDED_ONCE | wimp_WINDOW_BACK_ICON |
-			wimp_WINDOW_CLOSE_ICON | wimp_WINDOW_TITLE_ICON |
-			wimp_WINDOW_TOGGLE_ICON | wimp_WINDOW_VSCROLL |
-			wimp_WINDOW_SIZE_ICON | wimp_WINDOW_HSCROLL;
+			wimp_WINDOW_BOUNDED_ONCE |
+			wimp_WINDOW_BACK_ICON |
+			wimp_WINDOW_CLOSE_ICON |
+			wimp_WINDOW_TITLE_ICON |
+			wimp_WINDOW_TOGGLE_ICON |
+			wimp_WINDOW_VSCROLL |
+			wimp_WINDOW_SIZE_ICON |
+			wimp_WINDOW_HSCROLL;
 	window_definition.title_fg = wimp_COLOUR_BLACK;
 	window_definition.title_bg = wimp_COLOUR_LIGHT_GREY;
 	window_definition.work_fg = wimp_COLOUR_BLACK;
@@ -238,12 +265,17 @@ void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
 	window_definition.highlight_bg = wimp_COLOUR_CREAM;
 	window_definition.extra_flags = 0;
 	window_definition.extent.x0 = 0;
-	window_definition.extent.y0 = -instance->window_size.y;
+	window_definition.extent.y0 = -(instance->window_size.y +
+			((status_bar == TRUE) ? GAME_WINDOW_STATUS_BAR_HEIGHT : 0));
 	window_definition.extent.x1 = instance->window_size.x;
 	window_definition.extent.y1 = 0;
-	window_definition.title_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
-			wimp_ICON_BORDER | wimp_ICON_HCENTRED |
-			wimp_ICON_VCENTRED | wimp_ICON_FILLED;
+	window_definition.title_flags =
+			wimp_ICON_TEXT |
+			wimp_ICON_INDIRECTED |
+			wimp_ICON_BORDER |
+			wimp_ICON_HCENTRED |
+			wimp_ICON_VCENTRED |
+			wimp_ICON_FILLED;
 	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
 	window_definition.sprite_area = wimpspriteop_AREA;
 	window_definition.xmin = 0;
@@ -260,6 +292,62 @@ void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
 		return;
 	}
 
+	/* Create the status bar. */
+
+	if (status_bar == TRUE) {
+		window_definition.flags =
+				wimp_WINDOW_NEW_FORMAT |
+				wimp_WINDOW_AUTO_REDRAW | 
+				wimp_WINDOW_MOVEABLE |
+				wimp_WINDOW_BOUNDED_ONCE;
+		window_definition.extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
+		window_definition.work_bg = wimp_COLOUR_VERY_LIGHT_GREY;
+		window_definition.title_flags =
+				wimp_ICON_TEXT |
+				wimp_ICON_BORDER |
+				wimp_ICON_HCENTRED |
+				wimp_ICON_VCENTRED |
+				wimp_ICON_FILLED;
+		strncpy(window_definition.title_data.text, "Status Bar", 12);
+
+		error = xwimp_create_window(&window_definition, &(instance->status_bar));
+		if (error != NULL) {
+			game_window_delete_instance(instance);
+			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+			return;
+		}
+
+		instance->status_text = malloc(GAME_WINDOW_STATUS_BAR_LENGTH);
+		if (instance->status_text == NULL) {
+			game_window_delete_instance(instance);
+			error_msgs_report_error("NoMemNewGame");
+			return;
+		}
+
+		*(instance->status_text) = '\0';
+
+		icon.w = instance->status_bar;
+		icon.icon.extent.x0 = window_definition.extent.x0;
+		icon.icon.extent.y0 = window_definition.extent.y0;
+		icon.icon.extent.x1 = window_definition.extent.x1;
+		icon.icon.extent.y1 = window_definition.extent.y1;
+		icon.icon.flags = 
+				wimp_ICON_TEXT |
+				wimp_ICON_INDIRECTED |
+				wimp_ICON_VCENTRED |
+				(wimp_COLOUR_BLACK << wimp_ICON_FG_COLOUR_SHIFT) |
+				(wimp_COLOUR_VERY_LIGHT_GREY << wimp_ICON_BG_COLOUR_SHIFT);
+		icon.icon.data.indirected_text.text = instance->status_text;
+		icon.icon.data.indirected_text.size = GAME_WINDOW_STATUS_BAR_LENGTH;
+		icon.icon.data.indirected_text.validation = NULL;
+		error = xwimp_create_icon(&icon, &(instance->status_icon));
+		if (error != NULL) {
+			game_window_delete_instance(instance);
+			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+			return;
+		}
+	}
+
 	/* Register the window events. */
 
 	event_add_window_user_data(instance->handle, instance);
@@ -271,6 +359,8 @@ void game_window_open(struct game_window_block *instance, wimp_pointer *pointer)
 	/* Open the window. */
 
 	windows_open_centred_at_pointer(instance->handle, pointer);
+	if (instance->status_bar != NULL)
+		windows_open_nested_as_footer(instance->status_bar, instance->handle, GAME_WINDOW_STATUS_BAR_HEIGHT, TRUE);
 }
 
 /**
@@ -583,6 +673,25 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	debug_printf("Saved sprites: outcome=0x%x", error);
 
 	/* TODO -- Remove the code down to here! */
+
+	return TRUE;
+}
+
+/**
+ * Update the text in the status bar.
+ * 
+ * \param *instance		The instance to update.
+ * \param *text			The new status bar text.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool game_window_set_status_text(struct game_window_block *instance, const char *text)
+{
+	if (instance == NULL || instance->status_bar == NULL)
+		return false;
+
+	icons_strncpy(instance->status_bar, instance->status_icon, (char *) text);
+	wimp_set_icon_state(instance->status_bar, instance->status_icon, 0, 0);
 
 	return TRUE;
 }
