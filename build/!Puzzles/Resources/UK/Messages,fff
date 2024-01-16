@@ -46,6 +46,8 @@ Help.IconBar:\TPuzzles application: a version of Simon Tatham's Portable Puzzles
 
 Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|M\Sover a puzzle to open a copy in a new window.|M\Aopen a copy of the puzzle and close the index window.
 
+Help.Game:\Tone of Simon Tatham's Portable Puzzles.
+
 Help.ProgInfo:This \w displays information about Puzzles.
 Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
 Help.ProgInfo.Author:This \w displays information about Puzzles.|MSimon created and maintains the cross-platform puzzles and the infrastructure to make them work.

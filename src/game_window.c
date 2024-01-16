@@ -346,9 +346,13 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 			return;
 		}
+
+		ihelp_add_window(instance->status_bar, "Game", NULL);
 	}
 
 	/* Register the window events. */
+
+	ihelp_add_window(instance->handle, "Game", NULL);
 
 	event_add_window_user_data(instance->handle, instance);
 	event_add_window_close_event(instance->handle, game_window_close_handler);
