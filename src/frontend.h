@@ -81,4 +81,11 @@ osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button);
 
 void frontend_timer_callback(struct frontend *fe, float tplus);
 
+/**
+ * Return details that the game window might need in order to open
+ * a window menu.
+ */
+
+void frontend_get_menu_info(struct frontend *fe, osbool *can_undo, osbool *can_redo);
+
 #endif

@@ -51,10 +51,10 @@
 #include "sflib/event.h"
 #include "sflib/string.h"
 #include "sflib/icons.h"
-//#include "sflib/ihelp.h"
-//#include "sflib/menus.h"
+#include "sflib/ihelp.h"
+#include "sflib/menus.h"
 //#include "sflib/msgs.h"
-//#include "sflib/templates.h"
+#include "sflib/templates.h"
 //#include "sflib/url.h"
 #include "sflib/windows.h"
 
@@ -65,6 +65,14 @@
 #include "core/puzzles.h"
 #include "frontend.h"
 #include "game_draw.h"
+
+/* Game Window menu */
+
+#define GAME_WINDOW_MENU_NEW 0
+#define GAME_WINDOW_MENU_RESTART 1
+#define GAME_WINDOW_MENU_SOLVE 2
+#define GAME_WINDOW_MENU_UNDO 3
+#define GAME_WINDOW_MENU_REDO 4
 
 /* The name of the canvas sprite. */
 
@@ -111,12 +119,17 @@ struct game_window_block {
 	os_t last_callback;			/**< The time of the last frontend callback.	*/
 };
 
+/* The Game Window menu. */
+
+static wimp_menu *game_window_menu = NULL;
+
 /* Static function prototypes. */
 
 static void game_window_close_handler(wimp_close *close);
 static void game_window_click_handler(wimp_pointer *pointer);
 static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_redraw_handler(wimp_draw *redraw);
+static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
 static osbool game_window_timer_callback(os_t time, void *data);
 
 /**
@@ -125,6 +138,8 @@ static osbool game_window_timer_callback(os_t time, void *data);
 
 void game_window_initialise(void)
 {
+	/* Font_ScanString block set-up. */
+
 	game_window_fonts_scan_block.space.x = 0;
 	game_window_fonts_scan_block.space.y = 0;
 
@@ -132,6 +147,11 @@ void game_window_initialise(void)
 	game_window_fonts_scan_block.letter.y = 0;
 
 	game_window_fonts_scan_block.split_char = -1;
+
+	/* The window menu. */
+
+	game_window_menu = templates_get_menu("GameWindowMenu");
+	ihelp_add_menu(game_window_menu, "GameWindowMenu");
 }
 
 /**
@@ -197,11 +217,17 @@ void game_window_delete_instance(struct game_window_block *instance)
 
 	/* Delete the window. */
 
-	if (instance->handle != NULL)
+	if (instance->handle != NULL) {
+		ihelp_remove_window(instance->handle);
+		event_delete_window(instance->handle);
 		wimp_delete_window(instance->handle);
+	}
 
-	if (instance->status_bar != NULL)
+	if (instance->status_bar != NULL) {
+		ihelp_remove_window(instance->status_bar);
+		event_delete_window(instance->status_bar);
 		wimp_delete_window(instance->status_bar);
+	}
 
 	/* Deallocate the instance block. */
 
@@ -292,6 +318,18 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 		return;
 	}
 
+	/* Register the window events. */
+
+	ihelp_add_window(instance->handle, "Game", NULL);
+	event_add_window_menu(instance->handle, game_window_menu);
+	event_add_window_menu_prepare(instance->handle, game_window_menu_prepare_handler);
+
+	event_add_window_user_data(instance->handle, instance);
+	event_add_window_close_event(instance->handle, game_window_close_handler);
+	event_add_window_redraw_event(instance->handle, game_window_redraw_handler);
+	event_add_window_mouse_event(instance->handle, game_window_click_handler);
+	event_add_window_key_event(instance->handle, game_window_keypress_handler);
+
 	/* Create the status bar. */
 
 	if (status_bar == TRUE) {
@@ -347,18 +385,13 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 			return;
 		}
 
+		/* Register the window events. */
+
 		ihelp_add_window(instance->status_bar, "Game", NULL);
+
+		event_add_window_menu(instance->status_bar, game_window_menu);
+		event_add_window_menu_prepare(instance->status_bar, game_window_menu_prepare_handler);
 	}
-
-	/* Register the window events. */
-
-	ihelp_add_window(instance->handle, "Game", NULL);
-
-	event_add_window_user_data(instance->handle, instance);
-	event_add_window_close_event(instance->handle, game_window_close_handler);
-	event_add_window_redraw_event(instance->handle, game_window_redraw_handler);
-	event_add_window_mouse_event(instance->handle, game_window_click_handler);
-	event_add_window_key_event(instance->handle, game_window_keypress_handler);
 
 	/* Open the window. */
 
@@ -485,6 +518,31 @@ static void game_window_redraw_handler(wimp_draw *redraw)
 
 		more = wimp_get_rectangle(redraw);
 	}
+}
+
+/**
+ * Handle Menu Prepare events from game windows
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *pointer	The pointer position, or NULL for a re-open.
+ */
+
+static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer)
+{
+	struct game_window_block *instance;
+	osbool can_undo = FALSE, can_redo = FALSE;
+
+	instance = event_get_window_user_data(w);
+	if (instance == NULL)
+		return;
+
+	frontend_get_menu_info(instance->fe, &can_undo, &can_redo);
+
+	menu->title_data.indirected_text.text = (char *) instance->title;
+
+	menus_shade_entry(menu, GAME_WINDOW_MENU_UNDO, !can_undo);
+	menus_shade_entry(menu, GAME_WINDOW_MENU_REDO, !can_redo);
 }
 
 /**

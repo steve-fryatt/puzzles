@@ -38,3 +38,19 @@ menu(IconBarMenu, "Puzzles")
 	}
 	item("Quit");
 }
+
+/**
+ * Game window menu.
+ */
+
+menu(GameWindowMenu, "")
+{
+	indirected(1);
+	item("New");
+	item("Restart");
+	item("Solve") {
+		dotted;
+	}
+	item("Undo    F8");
+	item("Redo    F9");
+}

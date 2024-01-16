@@ -299,6 +299,23 @@ void frontend_timer_callback(frontend *fe, float tplus)
 		midend_timer(fe->me, tplus);
 }
 
+/**
+ * Return details that the game window might need in order to open
+ * a window menu.
+ */
+
+void frontend_get_menu_info(struct frontend *fe, osbool *can_undo, osbool *can_redo)
+{
+	if (fe == NULL)
+		return;
+
+	if (can_undo != NULL)
+		*can_undo = midend_can_undo(fe->me) ? TRUE : FALSE;
+
+	if (can_redo != NULL)
+		*can_redo = midend_can_redo(fe->me) ? TRUE : FALSE;
+}
+
 /* Below this point are the draing API calls. */
 
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
