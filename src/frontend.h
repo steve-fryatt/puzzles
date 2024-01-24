@@ -34,6 +34,8 @@
 #ifndef PUZZLES_FRONTEND
 #define PUZZLES_FRONTEND
 
+#include "core/puzzles.h"
+
 /**
  * A game collection instance.
  */
@@ -84,8 +86,20 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
 /**
  * Return details that the game window might need in order to open
  * a window menu.
+ *
+ * \param *fe			The frontend handle.
+ * \param **presets		Pointer to variable in which to return
+ *				a pointer to the midend presets menu.
+ * \param *limit		Pointer to a variable in which to return
+ *				the number of entries in the presets menu.
+ * \param *current_preset	Pointer to a variable in which to return
+ *				the currently-active preset.
+ * \param *can_undo		Pointer to variable in which to return
+ *				the undo state of the midend.
+ * \param *can_redo		Pointer to variable in which to return
+ *				the redo state of the midend.
  */
 
-void frontend_get_menu_info(struct frontend *fe, osbool *can_undo, osbool *can_redo);
+void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit, int * current_preset, osbool *can_undo, osbool *can_redo);
 
 #endif

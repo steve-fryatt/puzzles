@@ -38,26 +38,34 @@ GAMESRC := games-list.txt
 
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
 
-OBJS =  frontend.o		\
-	game_draw.o		\
-	game_window.o		\
-	iconbar.o		\
-	index_window.o		\
-	main.o			\
-	core/drawing.o		\
-	core/dsf.o		\
-	core/findloop.o		\
-	core/galaxies.o		\
-	core/list.o		\
-	core/malloc.o		\
-	core/matching.o		\
-	core/misc.o		\
-	core/midend.o		\
-	core/net.o		\
-	core/netslide.o		\
-	core/printing.o		\
-	core/random.o		\
-	core/tents.o		\
+OBJS =  frontend.o			\
+	game_draw.o			\
+	game_window.o			\
+	game_window_backend_menu.o	\
+	iconbar.o			\
+	index_window.o			\
+	main.o				\
+	core/drawing.o			\
+	core/dsf.o			\
+	core/findloop.o			\
+	core/galaxies.o			\
+	core/grid.o			\
+	core/hat.o			\
+	core/list.o			\
+	core/loopgen.o			\
+	core/loopy.o			\
+	core/malloc.o			\
+	core/matching.o			\
+	core/misc.o			\
+	core/midend.o			\
+	core/net.o			\
+	core/netslide.o			\
+	core/penrose.o			\
+	core/penrose-legacy.o		\
+	core/printing.o			\
+	core/random.o			\
+	core/spectre.o			\
+	core/tents.o			\
 	core/tree234.o
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H

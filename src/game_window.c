@@ -65,14 +65,16 @@
 #include "core/puzzles.h"
 #include "frontend.h"
 #include "game_draw.h"
+#include "game_window_backend_menu.h"
 
 /* Game Window menu */
 
-#define GAME_WINDOW_MENU_NEW 0
-#define GAME_WINDOW_MENU_RESTART 1
-#define GAME_WINDOW_MENU_SOLVE 2
-#define GAME_WINDOW_MENU_UNDO 3
-#define GAME_WINDOW_MENU_REDO 4
+#define GAME_WINDOW_MENU_PRESETS 0
+#define GAME_WINDOW_MENU_NEW 1
+#define GAME_WINDOW_MENU_RESTART 2
+#define GAME_WINDOW_MENU_SOLVE 3
+#define GAME_WINDOW_MENU_UNDO 4
+#define GAME_WINDOW_MENU_REDO 5
 
 /* The name of the canvas sprite. */
 
@@ -130,6 +132,7 @@ static void game_window_click_handler(wimp_pointer *pointer);
 static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_redraw_handler(wimp_draw *redraw);
 static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
+static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu);
 static osbool game_window_timer_callback(os_t time, void *data);
 
 /**
@@ -323,6 +326,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 	ihelp_add_window(instance->handle, "Game", NULL);
 	event_add_window_menu(instance->handle, game_window_menu);
 	event_add_window_menu_prepare(instance->handle, game_window_menu_prepare_handler);
+	event_add_window_menu_close(instance->handle, game_window_menu_close_handler);
 
 	event_add_window_user_data(instance->handle, instance);
 	event_add_window_close_event(instance->handle, game_window_close_handler);
@@ -391,6 +395,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 
 		event_add_window_menu(instance->status_bar, game_window_menu);
 		event_add_window_menu_prepare(instance->status_bar, game_window_menu_prepare_handler);
+		event_add_window_menu_close(instance->status_bar, game_window_menu_close_handler);
 	}
 
 	/* Open the window. */
@@ -531,18 +536,58 @@ static void game_window_redraw_handler(wimp_draw *redraw)
 static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer)
 {
 	struct game_window_block *instance;
+	struct preset_menu *presets = NULL;
+	wimp_menu *presets_submenu = NULL;
+	int presets_limit = 0, current_preset = 0;
 	osbool can_undo = FALSE, can_redo = FALSE;
+
+	if (menu != game_window_menu)
+		return;
 
 	instance = event_get_window_user_data(w);
 	if (instance == NULL)
 		return;
 
-	frontend_get_menu_info(instance->fe, &can_undo, &can_redo);
+	frontend_get_menu_info(instance->fe, &presets, &presets_limit, &current_preset, &can_undo, &can_redo);
 
-	menu->title_data.indirected_text.text = (char *) instance->title;
+	/* The menu is being newly opened, so set up the one-off data. */
+
+	if (pointer != NULL) {
+
+		/* Set the menu title. */
+
+		menu->title_data.indirected_text.text = (char *) instance->title;
+
+		/* Build the presets submenus. */
+
+		presets_submenu = game_window_backend_menu_create(presets, presets_limit);
+
+		menu->entries[GAME_WINDOW_MENU_PRESETS].sub_menu = presets_submenu;
+		menus_shade_entry(menu, GAME_WINDOW_MENU_PRESETS, (presets_submenu == NULL) ? TRUE : FALSE);
+	}
+
+	/* Update the menu state. */
+
+//	current_preset = midend_which_preset(fe->me);
+	game_window_backend_menu_update_state(current_preset);
 
 	menus_shade_entry(menu, GAME_WINDOW_MENU_UNDO, !can_undo);
 	menus_shade_entry(menu, GAME_WINDOW_MENU_REDO, !can_redo);
+}
+
+/**
+ * Handle Menu Close events from game windows
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ */
+
+static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu)
+{
+	if (menu != game_window_menu)
+		return;
+
+	game_window_backend_menu_destroy();
 }
 
 /**

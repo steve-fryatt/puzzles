@@ -46,6 +46,10 @@ menu(IconBarMenu, "Puzzles")
 menu(GameWindowMenu, "")
 {
 	indirected(1);
+
+	item("Type") {
+		dotted;
+	}
 	item("New");
 	item("Restart");
 	item("Solve") {
