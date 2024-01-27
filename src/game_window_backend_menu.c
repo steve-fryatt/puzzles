@@ -72,6 +72,7 @@ static struct preset_menu *game_window_backend_menu_definition = NULL;
 
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool root);
 static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struct preset_menu *definition, int id, osbool root);
+static int game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root);
 static void game_window_backend_menu_destroy_submenu(wimp_menu *menu);
 
 /**
@@ -187,6 +188,66 @@ static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struc
 }
 
 /**
+ * Decode a selection from the backend submenu, returning
+ * a Preset ID value for the midend.
+ * 
+ * \param *selection	The menu selection details.
+ * \param index		The index into the selection at which the
+ *			submenu starts.
+ * \return		A midend preset Id value.
+ */
+
+int game_window_backend_menu_decode(wimp_selection *selection, int index)
+{
+	return game_window_backend_menu_decode_submenu(selection, game_window_backend_menu_definition, index, TRUE);
+}
+
+/**
+ * Decode a selection from the backend submenu, returning
+ * a Preset ID value for the midend.
+ * 
+ * \param *selection	The menu selection details.
+ * \param *definition	The menu definition from the backend.
+ * \param index		The index into the selection at which the
+ *			submenu starts.
+ * \param root		True if this is the first submenu in
+ *			the structure; False for subsequent calls.
+ * \return		A midend preset Id value.
+ */
+
+static int game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root)
+{
+	int selected_item;
+
+	if (selection == NULL || definition == NULL)
+		return -1;
+
+	selected_item = selection->items[index];
+
+	/* If the selection index is outside the bounds of the current
+	 * submenu, give up.
+	 */
+
+	if ((selected_item < 0) || (selected_item >= definition->n_entries))
+		return -1;
+
+	/* If we're not at the end of the selection, try to step down
+	 * the menu tree another level.
+	 */
+
+	if (index < 8 && selection->items[index + 1] > -1) {
+		if (definition->entries[selected_item].submenu != NULL)
+			return game_window_backend_menu_decode_submenu(selection, definition->entries[selected_item].submenu, index + 1, FALSE);
+		else
+			return -1;
+	}
+
+	/* This must be the selected item. */
+
+	return definition->entries[selected_item].id;
+}
+
+/**
  * Destroy any backend menu which is currently defined, and free
  * any RISC OS-specific memory which it was using.
  */
@@ -222,6 +283,8 @@ static void game_window_backend_menu_destroy_submenu(wimp_menu *menu)
 		if (!(entry->menu_flags & wimp_MENU_LAST))
 			entry++;
 	} while (!(entry->menu_flags & wimp_MENU_LAST));
+
+	debug_printf("Freeing 0x%x from menu", menu);
 
 	free(menu);
 }

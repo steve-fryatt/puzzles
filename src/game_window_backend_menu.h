@@ -59,6 +59,18 @@ wimp_menu *game_window_backend_menu_create(struct preset_menu *source, int size)
 void game_window_backend_menu_update_state(int id);
 
 /**
+ * Decode a selection from the backend submenu, returning
+ * a Preset ID value for the midend.
+ * 
+ * \param *selection	The menu selection details.
+ * \param index		The index into the selection at which the
+ *			submenu starts.
+ * \return		A midend preset Id value.
+ */
+
+int game_window_backend_menu_decode(wimp_selection *selection, int index);
+
+/**
  * Destroy any backend menu which is currently defined, and free
  * any RISC OS-specific memory which it was using.
  */
