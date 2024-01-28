@@ -37,6 +37,7 @@
 /* OSLib header files */
 
 #include "oslib/types.h"
+#include "oslib/hourglass.h"
 #include "oslib/os.h"
 #include "oslib/osword.h"
 #include "oslib/wimp.h"
@@ -152,19 +153,29 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 {
 	struct frontend *new;
 	osbool status_bar = FALSE;
+	int number_of_colours = 0;
+	float *colours = NULL;
 
 	/* Sanity check the game index that we're to use. */
 
 	if (game_index < 0 || game_index >= gamecount)
 		return;
 
+	hourglass_on();
+
 	/* Allocate the memory for the instance from the heap. */
 
 	new = malloc(sizeof(struct frontend));
 	if (new == NULL) {
+		hourglass_off();
 		error_msgs_report_error("NoMemNewGame");
 		return;
 	}
+
+	/* Initialise the critical entries. */
+
+	new->me = NULL;
+	new->window = NULL;
 
 	debug_printf("Creating a new game collection instance: block=0x%x", new);
 
@@ -187,6 +198,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->window = game_window_create_instance(new, gamelist[game_index]->name);
 	if (new->window == NULL) {
+		hourglass_off();
 		frontend_delete_instance(new);
 		return;
 	}
@@ -195,6 +207,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->me = midend_new(new, gamelist[game_index], &riscos_drawing, new->window);
 	if (new->me == NULL) {
+		hourglass_off();
 		frontend_delete_instance(new);
 		return;
 	}
@@ -207,13 +220,14 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	debug_printf("Agreed on canvas x=%d, y=%d", new->x_size, new->y_size);
 
-	int number_of_colours = 0;
-	float *colours = midend_colours(new->me, &number_of_colours);
+	colours = midend_colours(new->me, &number_of_colours);
 
 	game_window_create_canvas(new->window, new->x_size, new->y_size, colours, number_of_colours);
 	game_window_open(new->window, status_bar, pointer);
 
 	midend_redraw(new->me);
+
+	hourglass_off();
 }
 
 /**
@@ -269,11 +283,12 @@ void frontend_delete_instance(struct frontend *fe)
 
 osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button)
 {
-	int return_value;
+	int return_value = PKR_UNUSED;
 
 	debug_printf("Received event: x=%d, y=%d, button=%d", x, y, button);
 
-	return_value = midend_process_key(fe->me, x, y, button);
+	if (fe != NULL && fe->me != NULL)
+		return_value = midend_process_key(fe->me, x, y, button);
 
 	// TODO -- Handle PKR_QUIT. This could be tricky, as if we delete
 	// ourselves now, the game window might struggle when there's no
@@ -295,7 +310,7 @@ void frontend_timer_callback(frontend *fe, float tplus)
 {
 	debug_printf("Timer call after %f seconds", tplus);
 
-	if (fe != NULL)
+	if (fe != NULL && fe->me != NULL)
 		midend_timer(fe->me, tplus);
 }
 
@@ -318,7 +333,7 @@ void frontend_timer_callback(frontend *fe, float tplus)
 
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit, int *current_preset, osbool *can_undo, osbool *can_redo)
 {
-	if (fe == NULL)
+	if (fe == NULL || fe->me == NULL)
 		return;
 
 	if (can_undo != NULL)
@@ -519,6 +534,8 @@ void get_random_seed(void **randseed, int *randseedsize)
 
 	*randseed = &(rtc->utc);
 	*randseedsize = sizeof(os_date_and_time);
+
+	debug_printf("Returned seed.");
 }
 
 /**
