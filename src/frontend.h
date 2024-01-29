@@ -37,6 +37,17 @@
 #include "core/puzzles.h"
 
 /**
+ * Return codes from GUI events.
+ */
+
+enum frontend_event_outcome {
+	FRONTEND_EVENT_UNKNOWN,
+	FRONTEND_EVENT_ACCEPTED,
+	FRONTEND_EVENT_REJECTED,
+	FRONTEND_EVENT_EXIT
+};
+
+/**
  * A game collection instance.
  */
 
@@ -67,10 +78,10 @@ void frontend_delete_instance(struct frontend *fe);
  * \param x		The X coordinate of the event.
  * \param y		The Y coordinate of the event.
  * \param button	The button details for the event.
- * \return		TRUE if the event was accepted; otherwise FALSE.
+ * \return		The outcome of the event.
  */
 
-osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button);
+enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x, int y, int button);
 
 /**
  * Process a periodic callback from the game window, passing it on

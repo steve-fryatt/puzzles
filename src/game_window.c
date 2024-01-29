@@ -440,7 +440,8 @@ static void game_window_click_handler(wimp_pointer *pointer)
 {
 	struct game_window_block	*instance;
 	wimp_window_state		window;
-	int				x, y;
+	enum frontend_event_outcome	outcome = FRONTEND_EVENT_UNKNOWN;
+	int				x, y, i, buttons[5], button_count = 0;
 
 	instance = event_get_window_user_data(pointer->w);
 	if (instance == NULL)
@@ -452,15 +453,33 @@ static void game_window_click_handler(wimp_pointer *pointer)
 	x = (pointer->pos.x - window.visible.x0 + window.xscroll) / 2;
 	y = -((pointer->pos.y - window.visible.y1 + window.yscroll) / 2);
 
+	/* NB: We rely on only adding fixed sequences to the buttons[]
+	 * array to ensure that we don't run off the end! If adding
+	 * sequences, check that they remain within bounds!
+	 */
+
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
-		frontend_handle_key_event(instance->fe, x, y, LEFT_BUTTON);
-		frontend_handle_key_event(instance->fe, x, y, LEFT_RELEASE);
+		buttons[button_count++] = LEFT_BUTTON;
+		buttons[button_count++] = LEFT_RELEASE;
 		break;
 	case wimp_CLICK_ADJUST:
-		frontend_handle_key_event(instance->fe, x, y, RIGHT_BUTTON);
-		frontend_handle_key_event(instance->fe, x, y, RIGHT_RELEASE);
+		buttons[button_count++] = RIGHT_BUTTON;
+		buttons[button_count++] = RIGHT_RELEASE;
 		break;
+	}
+
+	/* Process the button sequence. */
+
+	for (i = 0; i < button_count; i++) {
+		outcome = frontend_handle_key_event(instance->fe, x, y, buttons[i]);
+
+		/* If the event outcome was "Quit", just exit now. */
+
+		if (outcome == FRONTEND_EVENT_EXIT) {
+			frontend_delete_instance(instance->fe);
+			break;
+		}
 	}
 }
 
@@ -473,7 +492,8 @@ static void game_window_click_handler(wimp_pointer *pointer)
 
 static osbool game_window_keypress_handler(wimp_key *key)
 {
-	struct game_window_block *instance;
+	struct game_window_block	*instance;
+	enum frontend_event_outcome	outcome = FRONTEND_EVENT_UNKNOWN;
 
 	instance = event_get_window_user_data(key->w);
 	if (instance == NULL)
@@ -482,9 +502,15 @@ static osbool game_window_keypress_handler(wimp_key *key)
 	/* Pass ASCII codes directly to the front-end. */
 
 	if (key->c >= 0 && key->c < 127)
-		return frontend_handle_key_event(instance->fe, key->c, 0, 0);
+		outcome = frontend_handle_key_event(instance->fe, key->c, 0, 0);
 
-	return FALSE;
+	if (outcome == FRONTEND_EVENT_UNKNOWN)
+		return FALSE;
+
+	if (outcome == FRONTEND_EVENT_EXIT)
+		frontend_delete_instance(instance->fe);
+
+	return (outcome == FRONTEND_EVENT_REJECTED) ? FALSE : TRUE;
 }
 
 /**
@@ -653,6 +679,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	instance->canvas_size.x = 0;
 	instance->canvas_size.y = 0;
 
+	debug_printf("Requesting canvas of x=%d, y=%d", x, y);
+
 	/* The size of the area is 16 for the area header, 44 for the sprite
 	 * header, (x * y) bytes for the sprite with the rows rounded up to,
 	 * a full number of words, and 2048 for the 256 double-word
@@ -676,6 +704,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	if (instance->sprite == NULL)
 		return FALSE;
 
+	debug_printf("\\GSetting up sprite areas...");
+
 	/* Initialise the area. */
 
 	instance->sprite->size = area_size;
@@ -688,12 +718,18 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 		return FALSE;
 	}
 
+	debug_printf("Allocated Sprite Area at 0x%x, size at 0x%x, first at 0x%x, used=%d, size=%d",
+			instance->sprite, &(instance->sprite->size), &(instance->sprite->first), instance->sprite->used, area_size);
+
 	error = xosspriteop_create_sprite(osspriteop_USER_AREA, instance->sprite, GAME_WINDOW_SPRITE_NAME, FALSE, x, y, (os_mode) 21);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		instance->sprite = NULL;
 		return FALSE;
 	}
+
+	debug_printf("Created Sprite: area at 0x%x, size at 0x%x, first at 0x%x, used=%d",
+			instance->sprite, &(instance->sprite->size), &(instance->sprite->first), instance->sprite->used);
 
 	instance->canvas_size.x = x;
 	instance->canvas_size.y = y;
@@ -704,7 +740,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	sprite = (osspriteop_header *) ((byte *) instance->sprite + instance->sprite->first);
 
-	debug_printf("Sprite at 0x%x, size=%d, image at %d", sprite, sprite->size, sprite->image);
+	debug_printf("Added space for pallette: sprite at 0x%x, size=%d, image=%d, mask=%d, used=%d, size=%d",
+			sprite, sprite->size, sprite->image, sprite->mask, instance->sprite->used, area_size);
 
 	sprite->size += 2048;
 	sprite->image += 2048;
@@ -712,7 +749,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	palette = (os_sprite_palette *) ((byte *) sprite + 44);
 
-	debug_printf("Palette at 0x%x, sprite at 0x%x, size=%d, image at %d", palette, sprite, sprite->size, sprite->image);
+	debug_printf("Insterted palette at 0x%x, sprite at 0x%x, size=%d, image=%d, mask=%d, used=%d, size=%d",
+			palette, sprite, sprite->size, sprite->image, sprite->mask, instance->sprite->used, area_size);
 
 	for (entry = 0; entry < 256; entry++) {
 		if (entry < number_of_colours) {
@@ -724,6 +762,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 		}
 
 		palette->entries[entry].off = palette->entries[entry].on;
+
+		debug_printf("Created palette entry %d at 0x%x as 0x%8x", entry, &(palette->entries[entry]), palette->entries[entry].off);
 	}
 
 	instance->number_of_colours = number_of_colours;
@@ -771,7 +811,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	/* The code from here down is debug to test the drawing routines.
 	 * It should be removed once the development is complete!
 	 */
-
+/*
 	game_window_start_draw(instance);
 	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 0);
 	os_writec(os_VDU_CLG);
@@ -801,7 +841,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	game_window_end_path(instance, TRUE, 2, -1, 4);
 	game_window_end_draw(instance);
-
+*/
 	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
 	debug_printf("Saved sprites: outcome=0x%x", error);
 

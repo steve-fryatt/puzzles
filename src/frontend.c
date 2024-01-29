@@ -278,23 +278,22 @@ void frontend_delete_instance(struct frontend *fe)
  * \param x		The X coordinate of the event.
  * \param y		The Y coordinate of the event.
  * \param button	The button details for the event.
- * \return		TRUE if the event was accepted; otherwise FALSE.
+ * \return		The outcome of the event.
  */
 
-osbool frontend_handle_key_event(struct frontend *fe, int x, int y, int button)
+enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x, int y, int button)
 {
-	int return_value = PKR_UNUSED;
-
-	debug_printf("Received event: x=%d, y=%d, button=%d", x, y, button);
+	int outcome = PKR_UNUSED;
 
 	if (fe != NULL && fe->me != NULL)
-		return_value = midend_process_key(fe->me, x, y, button);
+		outcome = midend_process_key(fe->me, x, y, button);
 
-	// TODO -- Handle PKR_QUIT. This could be tricky, as if we delete
-	// ourselves now, the game window might struggle when there's no
-	// instance left on return!?
+	debug_printf("Received event: x=%d, y=%d, button=%d, outcome=%d", x, y, button, outcome);
 
-	return (return_value == PKR_UNUSED) ? FALSE : TRUE;
+	if (outcome == PKR_QUIT)
+		return FRONTEND_EVENT_EXIT;
+
+	return (outcome == PKR_UNUSED) ? FRONTEND_EVENT_REJECTED : FRONTEND_EVENT_ACCEPTED;
 }
 
 /**
