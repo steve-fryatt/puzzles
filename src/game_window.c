@@ -130,10 +130,10 @@ static wimp_menu *game_window_menu = NULL;
 static void game_window_close_handler(wimp_close *close);
 static void game_window_click_handler(wimp_pointer *pointer);
 static osbool game_window_keypress_handler(wimp_key *key);
+static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static void game_window_redraw_handler(wimp_draw *redraw);
 static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
 static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu);
-static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static osbool game_window_timer_callback(os_t time, void *data);
 
 /**
@@ -502,7 +502,7 @@ static osbool game_window_keypress_handler(wimp_key *key)
 	/* Pass ASCII codes directly to the front-end. */
 
 	if (key->c >= 0 && key->c < 127)
-		outcome = frontend_handle_key_event(instance->fe, key->c, 0, 0);
+		outcome = frontend_handle_key_event(instance->fe, 0, 0, key->c);
 
 	if (outcome == FRONTEND_EVENT_UNKNOWN)
 		return FALSE;
@@ -511,6 +511,45 @@ static osbool game_window_keypress_handler(wimp_key *key)
 		frontend_delete_instance(instance->fe);
 
 	return (outcome == FRONTEND_EVENT_REJECTED) ? FALSE : TRUE;
+}
+
+/**
+ * Handle Menu Selection events from game windows.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *selection	The menu selection details.
+ */
+
+static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection)
+{
+	struct game_window_block	*instance;
+
+	if (menu != game_window_menu)
+		return;
+
+	instance = event_get_window_user_data(w);
+	if (instance == NULL)
+		return;
+
+	switch (selection->items[0]) {
+	case GAME_WINDOW_MENU_NEW:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_NEWGAME);
+		break;
+	case GAME_WINDOW_MENU_UNDO:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_UNDO);
+		break;
+	case GAME_WINDOW_MENU_REDO:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_REDO);
+		break;
+	case GAME_WINDOW_MENU_SOLVE:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_SOLVE);
+		break;
+	}
+
+//	debug_printf("Menu selection: %d", selection->items[0]);
+//	if (selection->items[0] == GAME_WINDOW_MENU_PRESETS)
+//		debug_printf("Preset ID: %d", game_window_backend_menu_decode(selection, 1));
 }
 
 /**
@@ -616,30 +655,6 @@ static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu)
 		return;
 
 	game_window_backend_menu_destroy();
-}
-
-/**
- * Handle Menu Selection events from game windows.
- *
- * \param w		The handle of the owning window.
- * \param *menu		The menu handle.
- * \param *selection	The menu selection details.
- */
-
-static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection)
-{
-	struct game_window_block *instance;
-
-	if (menu != game_window_menu)
-		return;
-
-	instance = event_get_window_user_data(w);
-	if (instance == NULL)
-		return;
-
-	debug_printf("Menu selection: %d", selection->items[0]);
-	if (selection->items[0] == GAME_WINDOW_MENU_PRESETS)
-		debug_printf("Preset ID: %d", game_window_backend_menu_decode(selection, 1));
 }
 
 /**
