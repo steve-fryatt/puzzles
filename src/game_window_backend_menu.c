@@ -109,7 +109,7 @@ wimp_menu *game_window_backend_menu_create(struct preset_menu *source, int size)
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool root)
 {
 	wimp_menu *menu = NULL;
-	int i = 0;
+	int i, width, len;
 
 	menu = malloc(wimp_SIZEOF_MENU(definition->n_entries));
 	if (menu == NULL)
@@ -126,6 +126,8 @@ static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* def
 	menu->gap = wimp_MENU_ITEM_GAP;
 
 	for (i = 0; i < definition->n_entries; i++) {
+		len = strlen(definition->entries[i].title);
+
 		menu->entries[i].menu_flags = ((i + 1) < definition->n_entries) ? 0 : wimp_MENU_LAST;
 		menu->entries[i].icon_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
 				wimp_ICON_FILLED |
@@ -133,8 +135,12 @@ static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* def
 				(wimp_COLOUR_WHITE << wimp_ICON_BG_COLOUR_SHIFT);
 
 		menu->entries[i].data.indirected_text.text = definition->entries[i].title;
-		menu->entries[i].data.indirected_text.size = strlen(definition->entries[i].title) + 1;
+		menu->entries[i].data.indirected_text.size = len + 1;
 		menu->entries[i].data.indirected_text.validation = NULL;
+
+		width = (16 * len) + 16;
+		if (width > menu->width)
+			menu->width = width;
 
 		if (definition->entries[i].submenu != NULL) {
 			menu->entries[i].sub_menu = game_window_backend_menu_build_submenu(definition->entries[i].submenu, FALSE);
