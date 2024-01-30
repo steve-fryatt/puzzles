@@ -72,7 +72,7 @@ static struct preset_menu *game_window_backend_menu_definition = NULL;
 
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool root);
 static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struct preset_menu *definition, int id, osbool root);
-static int game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root);
+static struct game_params *game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root);
 static void game_window_backend_menu_destroy_submenu(wimp_menu *menu);
 
 /**
@@ -195,22 +195,22 @@ static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struc
 
 /**
  * Decode a selection from the backend submenu, returning
- * a Preset ID value for the midend.
+ * a pointer to a set of game parameters for the midend.
  * 
  * \param *selection	The menu selection details.
  * \param index		The index into the selection at which the
  *			submenu starts.
- * \return		A midend preset Id value.
+ * \return		Pointer to a set of midend game parameters.
  */
 
-int game_window_backend_menu_decode(wimp_selection *selection, int index)
+struct game_params *game_window_backend_menu_decode(wimp_selection *selection, int index)
 {
 	return game_window_backend_menu_decode_submenu(selection, game_window_backend_menu_definition, index, TRUE);
 }
 
 /**
  * Decode a selection from the backend submenu, returning
- * a Preset ID value for the midend.
+ * a pointer to a set of game parameters for the midend.
  * 
  * \param *selection	The menu selection details.
  * \param *definition	The menu definition from the backend.
@@ -218,15 +218,15 @@ int game_window_backend_menu_decode(wimp_selection *selection, int index)
  *			submenu starts.
  * \param root		True if this is the first submenu in
  *			the structure; False for subsequent calls.
- * \return		A midend preset Id value.
+ * \return		Pointer to a set of midend game parameters.
  */
 
-static int game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root)
+static struct game_params *game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root)
 {
 	int selected_item;
 
 	if (selection == NULL || definition == NULL)
-		return -1;
+		return NULL;
 
 	selected_item = selection->items[index];
 
@@ -235,7 +235,7 @@ static int game_window_backend_menu_decode_submenu(wimp_selection *selection, st
 	 */
 
 	if ((selected_item < 0) || (selected_item >= definition->n_entries))
-		return -1;
+		return NULL;
 
 	/* If we're not at the end of the selection, try to step down
 	 * the menu tree another level.
@@ -245,12 +245,12 @@ static int game_window_backend_menu_decode_submenu(wimp_selection *selection, st
 		if (definition->entries[selected_item].submenu != NULL)
 			return game_window_backend_menu_decode_submenu(selection, definition->entries[selected_item].submenu, index + 1, FALSE);
 		else
-			return -1;
+			return NULL;
 	}
 
 	/* This must be the selected item. */
 
-	return definition->entries[selected_item].id;
+	return definition->entries[selected_item].params;
 }
 
 /**

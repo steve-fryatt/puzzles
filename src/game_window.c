@@ -84,6 +84,9 @@
 /* The height of the status bar. */
 
 #define GAME_WINDOW_STATUS_BAR_HEIGHT 52
+
+/* The length of the status bar text. */
+
 #define GAME_WINDOW_STATUS_BAR_LENGTH 128
 
 /* Workspace for calculating string sizes. */
@@ -155,7 +158,7 @@ void game_window_initialise(void)
 	/* The window menu. */
 
 	game_window_menu = templates_get_menu("GameWindowMenu");
-	ihelp_add_menu(game_window_menu, "GameWindowMenu");
+	ihelp_add_menu(game_window_menu, "GameMenu");
 }
 
 /**
@@ -523,7 +526,8 @@ static osbool game_window_keypress_handler(wimp_key *key)
 
 static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection)
 {
-	struct game_window_block	*instance;
+	struct game_window_block *instance;
+	struct game_params *params;
 
 	if (menu != game_window_menu)
 		return;
@@ -534,7 +538,13 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 
 	switch (selection->items[0]) {
 	case GAME_WINDOW_MENU_NEW:
-		frontend_handle_key_event(instance->fe, 0, 0, UI_NEWGAME);
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_SIMPLE_NEW);
+		break;
+	case GAME_WINDOW_MENU_RESTART:
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_RESTART);
+		break;
+	case GAME_WINDOW_MENU_SOLVE:
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_SOLVE);
 		break;
 	case GAME_WINDOW_MENU_UNDO:
 		frontend_handle_key_event(instance->fe, 0, 0, UI_UNDO);
@@ -542,14 +552,12 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 	case GAME_WINDOW_MENU_REDO:
 		frontend_handle_key_event(instance->fe, 0, 0, UI_REDO);
 		break;
-	case GAME_WINDOW_MENU_SOLVE:
-		frontend_handle_key_event(instance->fe, 0, 0, UI_SOLVE);
+	case GAME_WINDOW_MENU_PRESETS:
+		params = game_window_backend_menu_decode(selection, 1);
+		if (params != NULL)
+			frontend_start_new_game_from_parameters(instance->fe, params);
 		break;
 	}
-
-//	debug_printf("Menu selection: %d", selection->items[0]);
-//	if (selection->items[0] == GAME_WINDOW_MENU_PRESETS)
-//		debug_printf("Preset ID: %d", game_window_backend_menu_decode(selection, 1));
 }
 
 /**
@@ -809,7 +817,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	debug_printf("Set canvas: sprite area size=%d, area=0x%x, save size=%d, save=0x%x", area_size, instance->sprite, save_area_size, instance->save_area);
 
-	/* Set the window extent. */
+	/* Set the window and status bar extent. */
 
 	instance->window_size.x = 2 * x;
 	instance->window_size.y = 2 * y;
@@ -817,9 +825,17 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 	if (instance->handle != NULL) {
 		extent.x0 = 0;
 		extent.x1 = 2 * x;
-		extent.y0 = -2 * y;
+		extent.y0 = -((2 * y) + ((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT));
 		extent.y1 = 0;
 		wimp_set_extent(instance->handle, &extent);
+	}
+
+	if (instance->status_bar != NULL) {
+		extent.x0 = 0;
+		extent.x1 = 2 * x;
+		extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
+		extent.y1 = 0;
+		wimp_set_extent(instance->status_bar, &extent);
 	}
 
 	/* TODO -- Bodge to clear the screen. */

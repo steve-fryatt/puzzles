@@ -50,7 +50,7 @@ menu(GameWindowMenu, "")
 	item("Type") {
 		dotted;
 	}
-	item("New");
+	item("New Game");
 	item("Restart");
 	item("Solve") {
 		dotted;

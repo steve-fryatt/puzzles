@@ -86,6 +86,7 @@ static struct frontend *frontend_list = NULL;
 
 /* Static function prototypes. */
 
+static void frontend_negotiate_game_size(struct frontend *fe);
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour);
 static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour);
@@ -153,8 +154,6 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 {
 	struct frontend *new;
 	osbool status_bar = FALSE;
-	int number_of_colours = 0;
-	float *colours = NULL;
 
 	/* Sanity check the game index that we're to use. */
 
@@ -186,14 +185,6 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->window = NULL;
 
-	/* Allow the puzzles to fill up to 3/4 of the screen area. */
-
-	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_XWIND_LIMIT, &(new->x_size));
-	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_YWIND_LIMIT, &(new->y_size));
-
-	new->x_size *= 0.75;
-	new->y_size *= 0.75;
-
 	/* Create the game window. */
 
 	new->window = game_window_create_instance(new, gamelist[game_index]->name);
@@ -214,18 +205,11 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	midend_new_game(new->me);
 
-	midend_size(new->me, &(new->x_size), &(new->y_size), false, 1.0);
+	frontend_negotiate_game_size(new);
 
 	status_bar = midend_wants_statusbar(new->me) ? TRUE : FALSE;
 
-	debug_printf("Agreed on canvas x=%d, y=%d", new->x_size, new->y_size);
-
-	colours = midend_colours(new->me, &number_of_colours);
-
-	game_window_create_canvas(new->window, new->x_size, new->y_size, colours, number_of_colours);
 	game_window_open(new->window, status_bar, pointer);
-
-	midend_redraw(new->me);
 
 	hourglass_off();
 }
@@ -268,6 +252,62 @@ void frontend_delete_instance(struct frontend *fe)
 	/* Deallocate the instance block. */
 
 	free(fe);
+}
+
+/**
+ * Perform an action through the frontend.
+ * 
+ * \param *fe		The instance to which the action relates.
+ * \param action	The action to carry out.
+ * \return		The outcome of the action.
+ */
+
+enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum frontend_action action)
+{
+	enum frontend_event_outcome outcome = FRONTEND_EVENT_UNKNOWN;
+
+	if (fe == NULL || fe->me == NULL)
+		return FRONTEND_EVENT_REJECTED;
+
+	switch (action) {
+	case FRONTEND_ACTION_SIMPLE_NEW:
+		midend_restart_game(fe->me);
+		outcome = FRONTEND_EVENT_ACCEPTED;
+		break;
+	case FRONTEND_ACTION_RESTART:
+		midend_restart_game(fe->me);
+		outcome = FRONTEND_EVENT_ACCEPTED;
+		break;
+	case FRONTEND_ACTION_SOLVE:
+		midend_solve(fe->me);
+		outcome = FRONTEND_EVENT_ACCEPTED;
+		break;
+	default:
+		outcome = FRONTEND_EVENT_REJECTED;
+		break;
+	}
+
+	return outcome;
+}
+
+/**
+ * Start a new game from the supplied parameters.
+ * 
+ * \param *fe		The instance to which the action relates.
+ * \param *params	The parameters to use for the new game.
+ */
+
+void frontend_start_new_game_from_parameters(struct frontend *fe, struct game_params *params)
+{
+	int number_of_colours = 0;
+	float *colours = NULL;
+
+	if (fe == NULL || fe->me == NULL || params == NULL)
+		return;
+
+	midend_set_params(fe->me, params);
+	midend_new_game(fe->me);
+	frontend_negotiate_game_size(fe);
 }
 
 /**
@@ -346,6 +386,39 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 
 	if (current_preset != NULL)
 		*current_preset = midend_which_preset(fe->me);
+}
+
+/**
+ * Struct re-negotiate the size of the game canvas with the midend.
+ * 
+ * \param *fe			The frontend handle.
+ */
+
+static void frontend_negotiate_game_size(struct frontend *fe)
+{
+	int number_of_colours = 0;
+	float *colours = NULL;
+
+	if (fe == NULL || fe->me == NULL)
+		return;
+
+	/* Allow the puzzles to fill up to 3/4 of the screen area. */
+
+	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_XWIND_LIMIT, &(fe->x_size));
+	os_read_mode_variable(os_CURRENT_MODE, os_MODEVAR_YWIND_LIMIT, &(fe->y_size));
+
+	fe->x_size *= 0.75;
+	fe->y_size *= 0.75;
+
+	midend_size(fe->me, &(fe->x_size), &(fe->y_size), false, 1.0);
+
+	debug_printf("Agreed on canvas x=%d, y=%d", fe->x_size, fe->y_size);
+
+	colours = midend_colours(fe->me, &number_of_colours);
+
+	game_window_create_canvas(fe->window, fe->x_size, fe->y_size, colours, number_of_colours);
+
+	midend_redraw(fe->me);
 }
 
 /* Below this point are the draing API calls. */

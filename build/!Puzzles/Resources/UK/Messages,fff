@@ -57,6 +57,13 @@ Help.ProgInfo.Porter:This \w displays information about Puzzles.|MSteve created 
 #
 # Where duplicate menu entries exist, items may be grouped and numbering will not be contiguous.
 
+Help.GameMenu.00:\Rselect a new game configuration.
+Help.GameMenu.01:\Sstart a new game.
+Help.GameMenu.02:\Sre-start the current game.
+Help.GameMenu.03:\Sshow the solution to the current game.
+Help.GameMenu.04:\Sundo the most recent move in the current game.
+Help.GameMenu.05:\Sredo the most recent move to have been undone in the current game.
+
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.
 Help.IconBarMenu.02:\Schange the Puzzles options.

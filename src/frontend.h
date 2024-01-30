@@ -48,6 +48,17 @@ enum frontend_event_outcome {
 };
 
 /**
+ * Actions which can be carried out by the frontend.
+ */
+
+enum frontend_action {
+	FRONTEND_ACTION_NONE,
+	FRONTEND_ACTION_SIMPLE_NEW,
+	FRONTEND_ACTION_SOLVE,
+	FRONTEND_ACTION_RESTART
+};
+
+/**
  * A game collection instance.
  */
 
@@ -69,6 +80,25 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer);
  */
 
 void frontend_delete_instance(struct frontend *fe);
+
+/**
+ * Perform an action through the frontend.
+ * 
+ * \param *fe		The instance to which the action relates.
+ * \param action	The action to carry out.
+ * \return		The outcome of the action.
+ */
+
+enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum frontend_action action);
+
+/**
+ * Start a new game from the supplied parameters.
+ * 
+ * \param *fe		The instance to which the action relates.
+ * \param *params	The parameters to use for the new game.
+ */
+
+void frontend_start_new_game_from_parameters(struct frontend *fe, struct game_params *params);
 
 /**
  * Process key events from the game window. These are any
