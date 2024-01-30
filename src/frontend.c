@@ -46,6 +46,7 @@
 
 #include "sflib/debug.h"
 #include "sflib/errors.h"
+#include "sflib/event.h"
 
 /* Application header files */
 
@@ -86,6 +87,7 @@ static struct frontend *frontend_list = NULL;
 
 /* Static function prototypes. */
 
+static osbool frontend_message_mode_change(wimp_message *message);
 static void frontend_negotiate_game_size(struct frontend *fe);
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour);
@@ -142,6 +144,15 @@ static const struct drawing_api riscos_drawing = {
 
 	NULL, // riscos_draw_thick_line,
 };
+
+/**
+ * Initialise the front-end.
+ */
+
+void frontend_initialise(void)
+{
+	event_add_message_handler(message_MODE_CHANGE, EVENT_MESSAGE_INCOMING, frontend_message_mode_change);
+}
 
 /**
  * Initialise a new game and open its window.
@@ -299,9 +310,6 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 
 void frontend_start_new_game_from_parameters(struct frontend *fe, struct game_params *params)
 {
-	int number_of_colours = 0;
-	float *colours = NULL;
-
 	if (fe == NULL || fe->me == NULL || params == NULL)
 		return;
 
@@ -386,6 +394,26 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 
 	if (current_preset != NULL)
 		*current_preset = midend_which_preset(fe->me);
+}
+
+/**
+ * Handle incoming Message_ModeChange.
+ *
+ * \param *message		The message data block from the Wimp.
+ */
+
+static osbool frontend_message_mode_change(wimp_message *message)
+{
+	struct frontend *fe = frontend_list;
+
+	debug_printf("\\LMessage Mode Change!!");
+
+	while (fe != NULL) {
+		frontend_negotiate_game_size(fe);
+		fe = fe->next;
+	}
+
+	return TRUE;
 }
 
 /**

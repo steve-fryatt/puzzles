@@ -65,6 +65,12 @@ enum frontend_action {
 struct frontend;
 
 /**
+ * Initialise the front-end.
+ */
+
+void frontend_initialise(void);
+
+/**
  * Initialise a new game and open its window.
  * 
  * \param game_index	The index into gamelist[] of the required game.

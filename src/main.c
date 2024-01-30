@@ -59,6 +59,7 @@
 
 #include "main.h"
 
+#include "frontend.h"
 #include "index_window.h"
 #include "game_window.h"
 #include "iconbar.h"
@@ -213,6 +214,7 @@ static void main_initialise(void)
 	iconbar_initialise();
 	index_window_initialise();
 	game_window_initialise();
+	frontend_initialise();
 	url_initialise();
 
 	templates_close();
