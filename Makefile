@@ -45,6 +45,7 @@ OBJS =  frontend.o			\
 	iconbar.o			\
 	index_window.o			\
 	main.o				\
+	riscos_test.o			\
 	core/drawing.o			\
 	core/dsf.o			\
 	core/findloop.o			\

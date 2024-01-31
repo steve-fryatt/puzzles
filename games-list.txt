@@ -1,3 +1,4 @@
 GAME(galaxies)
 GAME(net)
 GAME(tents)
+GAME(riscostest)
