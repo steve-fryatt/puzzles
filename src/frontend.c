@@ -459,29 +459,62 @@ static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fonts
 
 }
 
+/**
+ * Draw a filled rectangle in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param x		The X coordinate of the top-left of the rectangle (inclusive).
+ * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
+ * \param w		The width of the rectangle.
+ * \param h		The height of the rectangle.
+ * \param colour	The colour in which to draw the line.
+ */
+
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
 {
-	debug_printf("\\oDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, h, h, colour);
+	debug_printf("\\vDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, w, h, colour);
 
 	game_window_set_colour(handle, colour);
-	game_window_plot(handle, os_MOVE_TO, x, y);
-	game_window_plot(handle, os_PLOT_RECTANGLE | os_PLOT_TO, x + w - 1, y + h - 1);
+	game_window_plot(handle, os_MOVE_TO, x, y + h - 1);
+	game_window_plot(handle, os_PLOT_RECTANGLE | os_PLOT_TO, x + w - 1, y);
 }
+
+/**
+ * Draw a straight line in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param x1		The X coordinate of the start of the line (inclusive).
+ * \param y1		The Y coordinate of the start of the line (inclusive).
+ * \param x2		The X coordinate of the end of the line (inclusive).
+ * \param y2		The Y coordinate of the end of the line (inclusive).
+ * \param colour	The colour in which to draw the line.
+ */
 
 static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
 {
-	debug_printf("\\oDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
+	debug_printf("\\vDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
 
 	game_window_set_colour(handle, colour);
 	game_window_plot(handle, os_MOVE_TO, x1, y1);
 	game_window_plot(handle, os_PLOT_SOLID | os_PLOT_TO, x2, y2);
 }
 
+/**
+ * Draw a closed polygon in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param *coords	An array of pairs of X, Y coordinates of the points on
+ *			the outline (inclusive).
+ * \param npoints	The number of points on the outline.
+ * \param fillcolour	The colour to use for the fill, or -1 for none.
+ * \param outlinecolour	The colour to use for the outline, or -1 for none.
+ */
+
 static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour)
 {
 	int i;
 
-	debug_printf("\\oDraw Polygon");
+	debug_printf("\\vDraw Polygon...");
 
 	if (npoints == 0)
 		return;
@@ -495,9 +528,20 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
 	game_window_end_path(handle, TRUE, 2, outlinecolour, fillcolour);
 }
 
+/**
+ * Draw a circle in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param cx		The X coordinate of the centre of the circle.
+ * \param cy		The Y coordinate of the centre of the circle.
+ * \param radius	The radius of the circle.
+ * \param fillcolour	The colour to use for the fill, or -1 for none.
+ * \param outlinecolour	The colour to use for the outline, or -1 for none.
+ */
+
 static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
 {
-	debug_printf("\\oDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
+	debug_printf("\\vDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
 
 	if (fillcolour != -1) {
 		game_window_set_colour(handle, fillcolour);
@@ -532,19 +576,41 @@ static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 	game_window_force_redraw(handle, x, y, x + w - 1, y + h - 1);
 }
 
+/**
+ * Set a graphics clipping rectangle in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param x		The X coordinate of the top-left of the rectangle (inclusive).
+ * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
+ * \param w		The width of the rectangle.
+ * \param h		The height of the rectangle.
+ */
+
 static void riscos_clip(void *handle, int x, int y, int w, int h)
 {
-	debug_printf("\\oClip");
+	debug_printf("\\vClip from %d,%d, width %d, height %d", x, y, w, h);
 
-	game_window_set_clip(handle, x, y, x + w - 1, y + h - 1);
+	game_window_set_clip(handle, x, y + h - 1, x + w - 1, y);
 }
+
+/**
+ * Clear a graphics clipping rectangle from a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ */
 
 static void riscos_unclip(void *handle)
 {
-	debug_printf("\\oUnclip");
+	debug_printf("\\vUnclip");
 
 	game_window_clear_clip(handle);
 }
+
+/**
+ * Start the drawing process within a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ */
 
 static void riscos_start_draw(void *handle)
 {
@@ -552,6 +618,12 @@ static void riscos_start_draw(void *handle)
 
 	game_window_start_draw(handle);
 }
+
+/**
+ * End the drawing process within a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ */
 
 static void riscos_end_draw(void *handle)
 {

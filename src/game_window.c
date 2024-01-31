@@ -89,6 +89,12 @@
 
 #define GAME_WINDOW_STATUS_BAR_LENGTH 128
 
+/* Conversion from midend to RISC OS units. */
+
+#define GAME_WINDOW_PIXEL_SIZE 2
+#define game_window_convert_x_coordinate_to_canvas(canvas_x, x) (GAME_WINDOW_PIXEL_SIZE * (x))
+#define game_window_convert_y_coordinate_to_canvas(canvas_y, y) (GAME_WINDOW_PIXEL_SIZE * ((canvas_y) - ((y) + 1)))
+
 /* Workspace for calculating string sizes. */
 
 static font_scan_block game_window_fonts_scan_block;
@@ -421,6 +427,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 static void game_window_close_handler(wimp_close *close)
 {
 	struct game_window_block	*instance;
+	os_error *error;
 
 	debug_printf("\\RClosing game window");
 
@@ -430,7 +437,10 @@ static void game_window_close_handler(wimp_close *close)
 
 	/* Save the sprite for analysis. */
 
-	xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.PuzzleSprite");
+	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
+	debug_printf("Saved sprites: outcome=0x%x", error);
+	if (error != NULL)
+		debug_printf("\\RFailed to save: %s", error->errmess);
 
 	/* Delete the parent game instance. */
 
@@ -1058,7 +1068,7 @@ osbool game_window_set_colour(struct game_window_block *instance, int colour)
 		return FALSE;
 	}
 
-	debug_printf("Select colour %d", colour);
+	debug_printf("\\lSelect colour %d", colour);
 
 	return TRUE;
 }
@@ -1086,11 +1096,11 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
-	x0 = 2 * x0;
-	y0 = 2 * (instance->canvas_size.y - y0);
-	
-	x1 = 2 * x1;
-	y1 = 2 * (instance->canvas_size.y - y1);
+	x0 = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x0);
+	y0 = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y0);
+
+	x1 = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x1);
+	y1 = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y1);
 
 	error = xos_writec(os_VDU_SET_GRAPHICS_WINDOW);
 
@@ -1123,7 +1133,7 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 		return FALSE;
 	}
 
-	debug_printf("Set clip to %d,%d -- %d,%d", x0, y0, x1, y1);
+	debug_printf("\\lSet clip to %d,%d -- %d,%d", x0, y0, x1, y1);
 
 	return TRUE;
 }
@@ -1172,14 +1182,16 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
-	error = xos_plot(plot_code, 2 * x, 2 * (instance->canvas_size.y - y));
+	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
+
+	debug_printf("\\lPlotted 0x%x to %d, %d", plot_code, x, y);
+
+	error = xos_plot(plot_code, x, y);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;
 	}
-
-	debug_printf("Plotted 0x%x to %d, %d (calculated as %d, %d - %d = %d)",
-			plot_code, x, y, 2*x, instance->canvas_size.y, y, instance->canvas_size.y - y);
 
 	return TRUE;
 }
@@ -1200,9 +1212,12 @@ osbool game_window_start_path(struct game_window_block *instance, int x, int y)
 
 	game_draw_start_path();
 
-	debug_printf("Start path from %d, %d", 2 * x, 2 * (instance->canvas_size.y - y));
+	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
 
-	return game_draw_add_move(2 * x, 2 * (instance->canvas_size.y - y));
+	debug_printf("\\lStart path from %d, %d", x, y);
+
+	return game_draw_add_move(x, y);
 }
 
 /**
@@ -1219,9 +1234,12 @@ osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
-	debug_printf("Continue path to %d, %d", 2 * x, 2 * (instance->canvas_size.y - y));
+	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
 
-	return game_draw_add_line(2 * x, 2 * (instance->canvas_size.y - y));
+	debug_printf("\\lContinue path to %d, %d", x, y);
+
+	return game_draw_add_line(x, y);
 }
 
 /**
@@ -1269,7 +1287,7 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 		}
 	}
 
-	debug_printf("Path plotted");
+	debug_printf("\\lPath plotted");
 
 	return TRUE;
 }
