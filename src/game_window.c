@@ -428,6 +428,10 @@ static void game_window_close_handler(wimp_close *close)
 	if (instance == NULL)
 		return;
 
+	/* Save the sprite for analysis. */
+
+	xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.PuzzleSprite");
+
 	/* Delete the parent game instance. */
 
 	frontend_delete_instance(instance->fe);
@@ -837,46 +841,6 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 		extent.y1 = 0;
 		wimp_set_extent(instance->status_bar, &extent);
 	}
-
-	/* TODO -- Bodge to clear the screen. */
-	/* The code from here down is debug to test the drawing routines.
-	 * It should be removed once the development is complete!
-	 */
-/*
-	game_window_start_draw(instance);
-	os_set_colour(os_ACTION_OVERWRITE | os_COLOUR_SET_BG, 0);
-	os_writec(os_VDU_CLG);
-	game_window_end_draw(instance);
-
-	game_window_start_draw(instance);
-	os_set_colour(os_ACTION_OVERWRITE, 1);
-	game_window_plot(instance, os_PLOT_SOLID | os_MOVE_TO, 20, 20);
-	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, 20, y - 20);
-	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, x - 20, y - 20);
-	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, x - 20, 20);
-	game_window_plot(instance, os_PLOT_SOLID | os_PLOT_TO, 20, 20);
-	game_window_end_draw(instance);
-
-	game_window_start_draw(instance);
-	game_window_set_colour(instance, 2);
-	game_window_plot(instance, os_PLOT_SOLID | os_MOVE_TO, 100, 100);
-	game_window_plot(instance, os_PLOT_RECTANGLE | os_PLOT_SOLID | os_PLOT_TO, x - 100, y - 100);
-	game_window_end_draw(instance);
-
-	game_window_start_draw(instance);
-	game_window_set_colour(instance, 4);
-	game_window_start_path(instance, 50, 50);
-	game_window_add_segment(instance, x - 50, 50);
-	game_window_add_segment(instance, x - 50, 50);
-	game_window_add_segment(instance, 50, y - 50);
-
-	game_window_end_path(instance, TRUE, 2, -1, 4);
-	game_window_end_draw(instance);
-*/
-	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
-	debug_printf("Saved sprites: outcome=0x%x", error);
-
-	/* TODO -- Remove the code down to here! */
 
 	return TRUE;
 }
