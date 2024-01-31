@@ -111,6 +111,9 @@ static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* def
 	wimp_menu *menu = NULL;
 	int i, width, len;
 
+	if (definition == NULL || definition->n_entries == 0)
+		return NULL;
+
 	menu = malloc(wimp_SIZEOF_MENU(definition->n_entries));
 	if (menu == NULL)
 		return NULL;
