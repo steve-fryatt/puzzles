@@ -30,12 +30,7 @@ menu(IconBarMenu, "Puzzles")
 	item("Info") {
 		d_box(ProgInfo);
 	}
-	item("Help") {
-		dotted;
-	}
-	item("Choices...") {
-		dotted;
-	}
+	item("Help");
 	item("Quit");
 }
 
