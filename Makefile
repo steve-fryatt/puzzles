@@ -52,6 +52,7 @@ OBJS =  frontend.o			\
 	core/galaxies.o			\
 	core/grid.o			\
 	core/hat.o			\
+	core/latin.o			\
 	core/list.o			\
 	core/loopgen.o			\
 	core/loopy.o			\
@@ -59,6 +60,7 @@ OBJS =  frontend.o			\
 	core/matching.o			\
 	core/misc.o			\
 	core/midend.o			\
+	core/mines.o			\
 	core/net.o			\
 	core/netslide.o			\
 	core/penrose.o			\
@@ -67,7 +69,9 @@ OBJS =  frontend.o			\
 	core/random.o			\
 	core/spectre.o			\
 	core/tents.o			\
-	core/tree234.o
+	core/towers.o			\
+	core/tree234.o			\
+	core/undead.o
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 

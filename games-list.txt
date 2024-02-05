@@ -1,4 +1,7 @@
 GAME(galaxies)
+GAME(mines)
 GAME(net)
 GAME(tents)
+GAME(towers)
+GAME(undead)
 GAME(riscostest)
