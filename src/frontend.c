@@ -451,12 +451,23 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 
 /* Below this point are the draing API calls. */
 
+/**
+ * Write a line of text in a puzzle window.
+ * 
+ * \param *handle	The handle of the target Game Window.
+ * \param x		The X coordinate at which to write the text.
+ * \param y		The Y coordinate at which to write the text.
+ * \param fonttype	The type of font face to be used.
+ * \param fontsize	The size of the text in pixels.
+ * \param align		The alignment of the text around the coordinates.
+ * \param *text		The text to write.
+ */
+
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
 {
 	debug_printf("\\ODraw Text");
 
-	game_window_write_text(handle, x, y, fontsize, 0, 0, colour, FALSE, text);
-
+	game_window_write_text(handle, x, y, fontsize, align, colour, (fonttype == FONT_FIXED) ? TRUE : FALSE, text);
 }
 
 /**

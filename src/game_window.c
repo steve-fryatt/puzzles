@@ -1292,10 +1292,25 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 	return TRUE;
 }
 
-osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int horizontal, int vertical, int colour, osbool monospaced, const char *text)
+/**
+ * Write a line of text in a game window.
+ * 
+ * \param *instance	The instance to write to.
+ * \param x		The X coordinate at which to write the text.
+ * \param y		The Y coordinate at which to write the text.
+ * \param size		The size of the text in pixels.
+ * \param align		The alignment of the text around the coordinates.
+ * \param colour	The colour of the text.
+ * \param monospaced	TRUE to use a monospaced font.
+ * \param *text		The text to write.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int align, int colour, osbool monospaced, const char *text)
 {
 	font_f face;
-	int xpt, ypt, xos, yos;
+	os_sprite_palette *palette;
+	int xpt, ypt, width, height, xoffset = 0, yoffset = 0;
 	os_error *error;
 
 	if (instance == NULL || instance->vdu_redirection_active == FALSE)
@@ -1303,17 +1318,14 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 
 	/* Transform the location coordinates. */
 
-	x = 2 * x;
-	y = 2 * (instance->canvas_size.y - y);
+	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
 
-	debug_printf("Print text at %d, %d (OS Units)", x, y);
+	size *= GAME_WINDOW_PIXEL_SIZE;
 
-	game_window_set_colour(instance, colour);
-	xos_plot(os_MOVE_TO, x - 6, y);
-	xos_plot(os_PLOT_BY | os_PLOT_SOLID, 12, 0);
-	xos_plot(os_MOVE_BY, -6, -6);
-	xos_plot(os_PLOT_BY | os_PLOT_SOLID, 0, 12);
+	debug_printf("\\lPrint text at %d, %d (OS Units)", x, y);
 
+	palette = (os_sprite_palette *) ((byte *) instance->sprite + instance->sprite->first + 44);
 
 	/* Convert the size in pixels into points. */
 
@@ -1323,17 +1335,15 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 		return FALSE;
 	}
 
-	debug_printf("Requested size %d pixels: that's %d, %d points", size, xpt, ypt);
-
 	/* Use either Homerton or Corpus, depending on the monospace requirement. */
 
-	error = xfont_find_font((monospaced) ? "Corpus.Medium" : "Homerton.Medium", xpt / 30, ypt / 30, 0, 0, &face, NULL, NULL);
+	error = xfont_find_font((monospaced) ? "Corpus.Bold" : "Homerton.Bold", xpt / 62.5, ypt / 62.5, 0, 0, &face, NULL, NULL);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;
 	}
 
-	/* Find the size of the supplies text. */
+	/* Find the size of the supplied text. */
 
 	error = xfont_scan_string(face, text, font_KERN | font_GIVEN_FONT | font_GIVEN_BLOCK | font_RETURN_BBOX,
 			0x7fffffff, 0x7fffffff, &game_window_fonts_scan_block, NULL, 0, NULL, NULL, NULL, NULL);
@@ -1343,38 +1353,41 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 		return FALSE;
 	}
 
-	/* Convert the bounding box back into OS units. */
+	/* Align the text around the coordinates. */
 
-	error = xfont_convertto_os(game_window_fonts_scan_block.bbox.x1 - game_window_fonts_scan_block.bbox.x0,
-			game_window_fonts_scan_block.bbox.y1 - game_window_fonts_scan_block.bbox.y0, &xos, &yos);
+	/* TODO -- The vertical alignment is oncorrect, as ALIGN_VCENTRE should
+	 * align a standard line of capitals. We instead align each piece of
+	 * text in isolation.
+	 */
+
+	width = game_window_fonts_scan_block.bbox.x1 - game_window_fonts_scan_block.bbox.x0;
+	height = game_window_fonts_scan_block.bbox.y1 - game_window_fonts_scan_block.bbox.y0;
+
+	if (align & ALIGN_HLEFT)
+		xoffset = - (game_window_fonts_scan_block.bbox.x0 + width);
+	else if (align & ALIGN_HCENTRE)
+		xoffset = - (game_window_fonts_scan_block.bbox.x0 + (width / 2));
+	else if (align & ALIGN_HRIGHT)
+		xoffset = - game_window_fonts_scan_block.bbox.x0;
+
+	if (align & ALIGN_VCENTRE)
+		yoffset = - (game_window_fonts_scan_block.bbox.y0 + (height / 2));
+
+	/* Convert the offsets back into OS units. */
+
+	error = xfont_convertto_os(xoffset, yoffset, &xoffset, &yoffset);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		font_lose_font(face);
 		return FALSE;
 	}
 
-	debug_printf("Bounding box for '%s' is x0=%d, y0=%d, x1=%d, y1=%d", text,
-			game_window_fonts_scan_block.bbox.x0,
-			game_window_fonts_scan_block.bbox.y0,
-			game_window_fonts_scan_block.bbox.x1,
-			game_window_fonts_scan_block.bbox.y1);
+	/* Set the colours and plot the text. */
 
-	debug_printf("Bounding box is %d, %d OS Units", xos, yos);
-
-	if (horizontal < 0)
-		x -= xos;
-	else if (horizontal == 0)
-		x -= (xos / 2);
-
-	if (vertical < 0)
-		y += yos;
-	else if (vertical == 0)
-		y += (yos / 2);
-
-	error = xcolourtrans_set_font_colours(face, 0xffffffff, 0x00000000, 14, NULL, NULL, NULL);
+	error = xcolourtrans_set_font_colours(face, palette->entries[0].on, palette->entries[colour].on, 14, NULL, NULL, NULL);
 
 	if (error == NULL)
-		error = xfont_paint(face, text, font_OS_UNITS | font_KERN | font_GIVEN_FONT, x, y, NULL, NULL, 0);
+		error = xfont_paint(face, text, font_OS_UNITS | font_KERN | font_GIVEN_FONT, x + xoffset, y + yoffset, NULL, NULL, 0);
 
 	/* Free the fonts that were used. */
 

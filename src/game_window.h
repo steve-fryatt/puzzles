@@ -237,6 +237,20 @@ osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 
 osbool game_window_end_path(struct game_window_block *instance, osbool closed, int width, int outline, int fill);
 
-osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int horizontal, int vertical, int colour, osbool monospaced, const char *text);
+/**
+ * Write a line of text in a game window.
+ * 
+ * \param *instance	The instance to write to.
+ * \param x		The X coordinate at which to write the text.
+ * \param y		The Y coordinate at which to write the text.
+ * \param size		The size of the text in pixels.
+ * \param align		The alignment of the text around the coordinates.
+ * \param colour	The colour of the text.
+ * \param monospaced	TRUE to use a monospaced font.
+ * \param *text		The text to write.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int align, int colour, osbool monospaced, const char *text);
 
 #endif
