@@ -282,7 +282,8 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 
 	switch (action) {
 	case FRONTEND_ACTION_SIMPLE_NEW:
-		midend_restart_game(fe->me);
+		midend_new_game(fe->me);
+		frontend_negotiate_game_size(fe);
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
 	case FRONTEND_ACTION_RESTART:
@@ -314,8 +315,7 @@ void frontend_start_new_game_from_parameters(struct frontend *fe, struct game_pa
 		return;
 
 	midend_set_params(fe->me, params);
-	midend_new_game(fe->me);
-	frontend_negotiate_game_size(fe);
+	frontend_perform_action(fe, FRONTEND_ACTION_SIMPLE_NEW);
 }
 
 /**
