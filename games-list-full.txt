@@ -1,3 +1,10 @@
+This is a full list of the available puzzles, which can be used for
+reference when assembling the games-list.txt file.
+
+When adding games to games-list.txt, their names should be enclosed
+in GAME(...) -- for example GAME(blackbox). Each entry should be on
+its own line.
+
 blackbox
 bridges
 cube

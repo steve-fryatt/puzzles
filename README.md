@@ -7,7 +7,7 @@ Simon Tatham's Portable Puzzle Collection on RISC OS
 Introduction
 ------------
 
-Puzzles is a RISC OS port of [Simon Tatham's Portable Puzzle Collection](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/).
+Puzzles is a RISC OS front end for [Simon Tatham's Portable Puzzle Collection](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/).
 
 
 
@@ -37,7 +37,7 @@ This will clean the project and re-build it all, then create a distribution arch
 Additional Notes
 ----------------
 
-The RISC OS port of Puzzles uses the original sources from Simon Tatham's Git repository, which are located as a submodule at `src/core`. You will therefore need to run `git submodule init` and `git submodule update` after cloning the RISC OS front end, in order to pull these additional sources in. These files are considered a 'black box' as far as the RISC OS code is concerned, and any changes made to the code within this submodule should be directed back to Simon using the the details at https://www.chiark.greenend.org.uk/~sgtatham/puzzles/.
+The RISC OS port of Puzzles uses the original sources from Simon Tatham's Git repository, which are located as a submodule at `src/core`. You will therefore need to run `git submodule init` and `git submodule update` after cloning the RISC OS front end, in order to pull these additional sources in. These files are considered a 'black box' as far as the RISC OS code is concerned: for more details on the code within this submodule, take a look at Simon's website at https://www.chiark.greenend.org.uk/~sgtatham/puzzles/.
 
 Unlike the normal build system, which uses CMake to identify all of the games and include them automatically, the RISC OS port maintains a manual list of available puzzles in the `games-list.txt` file in the root of the project. This is copied into an appropriate place within `src/core` as part of the build process, as if it had been created by CMake. The file contains a list of entries in the form
 
@@ -45,7 +45,7 @@ Unlike the normal build system, which uses CMake to identify all of the games an
     GAME(net)
     GAME(tents)
 
-which define the game backends which should be compiled into the final application. The source files for the backends should also be added to the `OBJS` definition in the Makefile:
+which define the game backends which should be compiled into the final application. A full list of game names is provided in the `games-list-full.txt` file for reference, to save running a build of another platform's front end. The source files for the backends should also be added to the `OBJS` definition in the Makefile:
 
     OBJS =  frontend.o        \
             game_draw.o       \
@@ -68,4 +68,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 See the Licence for the specific language governing permissions and limitations under the Licence.
 
-The core Puzzles code is licenced separately: see the LICENCE file within the `src/core` submodule for details.
+The core Puzzles code, not included in this repository, is licenced separately: see the LICENCE file within the `src/core` submodule for details.
