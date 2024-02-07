@@ -40,6 +40,7 @@
 #include "oslib/colourtrans.h"
 #include "oslib/font.h"
 #include "oslib/os.h"
+#include "oslib/osbyte.h"
 #include "oslib/osspriteop.h"
 #include "oslib/wimp.h"
 #include "oslib/wimpspriteop.h"
@@ -415,6 +416,8 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 	windows_open_centred_at_pointer(instance->handle, pointer);
 	if (instance->status_bar != NULL)
 		windows_open_nested_as_footer(instance->status_bar, instance->handle, GAME_WINDOW_STATUS_BAR_HEIGHT, TRUE);
+
+	wimp_set_caret_position(instance->handle, wimp_ICON_WINDOW, 0, 0, -1, -1);
 }
 
 /**
@@ -459,6 +462,7 @@ static void game_window_click_handler(wimp_pointer *pointer)
 	wimp_window_state		window;
 	enum frontend_event_outcome	outcome = FRONTEND_EVENT_UNKNOWN;
 	int				x, y, i, buttons[5], button_count = 0;
+	osbool				set_caret = FALSE;
 
 	instance = event_get_window_user_data(pointer->w);
 	if (instance == NULL)
@@ -496,8 +500,13 @@ static void game_window_click_handler(wimp_pointer *pointer)
 		if (outcome == FRONTEND_EVENT_EXIT) {
 			frontend_delete_instance(instance->fe);
 			break;
+		} else if (outcome == FRONTEND_EVENT_REJECTED) {
+			set_caret = TRUE;
 		}
 	}
+
+	if (set_caret == TRUE)
+		wimp_set_caret_position(instance->handle, wimp_ICON_WINDOW, 0, 0, -1, -1);
 }
 
 /**
@@ -511,15 +520,149 @@ static osbool game_window_keypress_handler(wimp_key *key)
 {
 	struct game_window_block	*instance;
 	enum frontend_event_outcome	outcome = FRONTEND_EVENT_UNKNOWN;
+	int				button = -1, numpad = -1;
 
 	instance = event_get_window_user_data(key->w);
 	if (instance == NULL)
 		return FALSE;
 
-	/* Pass ASCII codes directly to the front-end. */
+	/* Convert RISC OS-specifc key codes.
+	 *
+	 * The handling of the numeric keypad is probably not compatible
+	 * with pre-RiscPC hardware (and possibly non-UK keyboard layouts).
+	 * This may need revisiting in the future!
+	 */
 
-	if (key->c >= 0 && key->c < 127)
-		outcome = frontend_handle_key_event(instance->fe, 0, 0, key->c);
+	switch (key->c) {
+	case wimp_KEY_LEFT:
+		button = CURSOR_LEFT;
+		break;
+	case wimp_KEY_LEFT | wimp_KEY_SHIFT:
+		button = CURSOR_LEFT | MOD_SHFT;
+		break;
+	case wimp_KEY_LEFT | wimp_KEY_CONTROL:
+		button = CURSOR_LEFT | MOD_CTRL;
+		break;
+	case wimp_KEY_LEFT | wimp_KEY_SHIFT | wimp_KEY_CONTROL:
+		button = CURSOR_LEFT | MOD_SHFT | MOD_CTRL;
+		break;
+	case wimp_KEY_RIGHT:
+		button = CURSOR_RIGHT;
+		break;
+	case wimp_KEY_RIGHT | wimp_KEY_SHIFT:
+		button = CURSOR_RIGHT | MOD_SHFT;
+		break;
+	case wimp_KEY_RIGHT | wimp_KEY_CONTROL:
+		button = CURSOR_RIGHT | MOD_CTRL;
+		break;
+	case wimp_KEY_RIGHT | wimp_KEY_SHIFT | wimp_KEY_CONTROL:
+		button = CURSOR_RIGHT | MOD_SHFT | MOD_CTRL;
+		break;
+	case wimp_KEY_UP:
+		button = CURSOR_UP;
+		break;
+	case wimp_KEY_UP | wimp_KEY_SHIFT:
+		button = CURSOR_UP | MOD_SHFT;
+		break;
+	case wimp_KEY_UP | wimp_KEY_CONTROL:
+		button = CURSOR_UP | MOD_CTRL;
+		break;
+	case wimp_KEY_UP | wimp_KEY_SHIFT | wimp_KEY_CONTROL:
+		button = CURSOR_UP | MOD_SHFT | MOD_CTRL;
+		break;
+	case wimp_KEY_DOWN:
+		button = CURSOR_DOWN;
+		break;
+	case wimp_KEY_DOWN | wimp_KEY_SHIFT:
+		button = CURSOR_DOWN | MOD_SHFT;
+		break;
+	case wimp_KEY_DOWN | wimp_KEY_CONTROL:
+		button = CURSOR_DOWN | MOD_CTRL;
+		break;
+	case wimp_KEY_DOWN | wimp_KEY_SHIFT | wimp_KEY_CONTROL:
+		button = CURSOR_DOWN | MOD_SHFT | MOD_CTRL;
+		break;
+	case '1':
+		button = key->c;
+		numpad = 107;
+		break;
+	case '2':
+		button = key->c;
+		numpad = 124;
+		break;
+	case '3':
+		button = key->c;
+		numpad = 108;
+		break;
+	case '4':
+		button = key->c;
+		numpad = 122;
+		break;
+	case '5':
+		button = key->c;
+		numpad = 123;
+		break;
+	case '6':
+		button = key->c;
+		numpad = 26;
+		break;
+	case '7':
+		button = key->c;
+		numpad = 27;
+		break;
+	case '8':
+		button = key->c;
+		numpad = 42;
+		break;
+	case '9':
+		button = key->c;
+		numpad = 43;
+		break;
+	case '0':
+		button = key->c;
+		numpad = 106;
+		break;
+	case '/':
+		button = key->c;
+		numpad = 74;
+		break;
+	case '*':
+		button = key->c;
+		numpad = 91;
+		break;
+	case '-':
+		button = key->c;
+		numpad = 59;
+		break;
+	case '+':
+		button = key->c;
+		numpad = 58;
+		break;
+	case '.':
+		button = key->c;
+		numpad = 76;
+		break;
+	case '\r':
+		button = key->c;
+		numpad = 60;
+		break;
+	default:
+		if (key->c >= 0 && key->c < 127)
+			button = key->c;
+		break;
+	}
+
+	/* Check for number pad keys being down, and flag them. */
+
+	if (numpad >= 0) {
+		if (osbyte1(osbyte_SCAN_KEYBOARD, numpad ^ 0x80, 0) == 0xff)
+			button |= MOD_NUM_KEYPAD;
+	}
+
+	/* Process any code that we found. */
+
+	if (button >= 0)
+		outcome = frontend_handle_key_event(instance->fe, 0, 0, button);
 
 	if (outcome == FRONTEND_EVENT_UNKNOWN)
 		return FALSE;
