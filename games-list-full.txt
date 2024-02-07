@@ -5,43 +5,43 @@ When adding games to games-list.txt, their names should be enclosed
 in GAME(...) -- for example GAME(blackbox). Each entry should be on
 its own line.
 
-blackbox
-bridges
-cube
-dominosa
-fifteen
-filling
-flip
-flood
-*	galaxies
-guess
-inertia
-keen
-lightup
-loopy
-magnets
-map
+	blackbox
+*	bridges
+	cube
+	dominosa
+	fifteen
+*	filling
+	flip
+	flood
+*	galaxies (B)
+	guess (B)
+	inertia (B)
+	keen
+	lightup
+	loopy
+	magnets
+	map (B)
 *	mines
-mosaic
+	mosaic
 *	net
-netslide
-palisade
-pattern
-pearl
-pegs
-range
-rect
-samegame
-signpost
-singles
-sixteen
-slant
-solo
+	netslide
+	palisade
+	pattern
+	pearl
+	pegs (B)
+	range
+	rect
+	samegame
+	signpost (B)
+	singles
+	sixteen
+	slant
+	solo
 *	tents
 *	towers
-tracks
-twiddle
+	tracks
+	twiddle
 *	undead
-unequal
-unruly
-untangle
+	unequal
+	unruly
+	untangle

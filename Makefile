@@ -46,8 +46,10 @@ OBJS =  frontend.o			\
 	index_window.o			\
 	main.o				\
 	riscos_test.o			\
+	core/bridges.o			\
 	core/drawing.o			\
 	core/dsf.o			\
+	core/filling.o			\
 	core/findloop.o			\
 	core/galaxies.o			\
 	core/grid.o			\
