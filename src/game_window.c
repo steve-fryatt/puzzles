@@ -90,15 +90,31 @@
 
 #define GAME_WINDOW_STATUS_BAR_LENGTH 128
 
+/* The autoscroll border. */
+
+#define GAME_WINDOW_AUTOSCROLL_BORDER 80
+
 /* Conversion from midend to RISC OS units. */
 
 #define GAME_WINDOW_PIXEL_SIZE 2
 #define game_window_convert_x_coordinate_to_canvas(canvas_x, x) (GAME_WINDOW_PIXEL_SIZE * (x))
 #define game_window_convert_y_coordinate_to_canvas(canvas_y, y) (GAME_WINDOW_PIXEL_SIZE * ((canvas_y) - ((y) + 1)))
 
+/* Conversion from desktop to window coordinates. */
+
+#define game_window_convert_to_window_x_coordinate(window, x) (((x) - (window)->visible.x0 + (window)->xscroll) / GAME_WINDOW_PIXEL_SIZE)
+#define game_window_convert_to_window_y_coordinate(window, y) (-(((y) - (window)->visible.y1 + (window)->yscroll) / GAME_WINDOW_PIXEL_SIZE))
+
 /* Workspace for calculating string sizes. */
 
 static font_scan_block game_window_fonts_scan_block;
+
+enum game_window_drag_type {
+	GAME_WINDOW_DRAG_NONE,
+	GAME_WINDOW_DRAG_SELECT,
+	GAME_WINDOW_DRAG_MENU,
+	GAME_WINDOW_DRAG_ADJUST
+};
 
 /* The game window data structure. */
 
@@ -129,6 +145,8 @@ struct game_window_block {
 
 	osbool callback_timer_active;		/**< Is the callback timer currently active?	*/
 	os_t last_callback;			/**< The time of the last frontend callback.	*/
+
+	enum game_window_drag_type drag_type;	/**< The current drag type.			*/
 };
 
 /* The Game Window menu. */
@@ -139,6 +157,10 @@ static wimp_menu *game_window_menu = NULL;
 
 static void game_window_close_handler(wimp_close *close);
 static void game_window_click_handler(wimp_pointer *pointer);
+static int game_window_click_and_release(struct game_window_block *instance, wimp_pointer *pointer, wimp_window_state *state);
+static int game_window_start_drag(struct game_window_block *instance, wimp_pointer *pointer, wimp_window_state *state);
+static osbool game_window_drag_in_progress(void *data);
+static void game_window_drag_end(wimp_dragged *drag, void *data);
 static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static void game_window_redraw_handler(wimp_draw *redraw);
@@ -209,9 +231,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->number_of_colours = 0;
 
 	new->callback_timer_active = FALSE;
-
-	/* Create the new window. */
-
+	new->drag_type = GAME_WINDOW_DRAG_NONE;
 
 	return new;
 }
@@ -316,7 +336,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 			wimp_ICON_HCENTRED |
 			wimp_ICON_VCENTRED |
 			wimp_ICON_FILLED;
-	window_definition.work_flags = wimp_BUTTON_CLICK_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
+	window_definition.work_flags = wimp_BUTTON_RELEASE_DRAG << wimp_ICON_BUTTON_TYPE_SHIFT;
 	window_definition.sprite_area = wimpspriteop_AREA;
 	window_definition.xmin = 0;
 	window_definition.ymin = 0;
@@ -461,8 +481,6 @@ static void game_window_click_handler(wimp_pointer *pointer)
 	struct game_window_block	*instance;
 	wimp_window_state		window;
 	enum frontend_event_outcome	outcome = FRONTEND_EVENT_UNKNOWN;
-	int				x, y, i, buttons[5], button_count = 0;
-	osbool				set_caret = FALSE;
 
 	instance = event_get_window_user_data(pointer->w);
 	if (instance == NULL)
@@ -471,42 +489,245 @@ static void game_window_click_handler(wimp_pointer *pointer)
 	window.w = pointer->w;
 	wimp_get_window_state(&window);
 
-	x = (pointer->pos.x - window.visible.x0 + window.xscroll) / 2;
-	y = -((pointer->pos.y - window.visible.y1 + window.yscroll) / 2);
-
-	/* NB: We rely on only adding fixed sequences to the buttons[]
-	 * array to ensure that we don't run off the end! If adding
-	 * sequences, check that they remain within bounds!
+	/* Process the click event. We're collecting clicks on release, to
+	 * allow us to spot and handle drags correctly. If a click comes
+	 * in while a drag is flagged as active, we've already supplied
+	 * the *_RELEASE on the Drag_End event and can simply reset the
+	 * dragging flag and discard the event.
 	 */
 
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
-		buttons[button_count++] = LEFT_BUTTON;
-		buttons[button_count++] = LEFT_RELEASE;
+	case wimp_CLICK_ADJUST:
+		if (instance->drag_type == GAME_WINDOW_DRAG_NONE)
+			outcome = game_window_click_and_release(instance, pointer, &window);
+		else
+			instance->drag_type = GAME_WINDOW_DRAG_NONE;
+		break;
+	case wimp_DRAG_SELECT:
+	case wimp_DRAG_ADJUST:
+		outcome = game_window_start_drag(instance, pointer, &window);
+		break;
+	}
+
+	/* If the event outcome was "Quit", just exit now. Otherwise, set focus to our window */
+	
+	if (outcome == FRONTEND_EVENT_EXIT)
+		frontend_delete_instance(instance->fe);
+	else
+		wimp_set_caret_position(instance->handle, wimp_ICON_WINDOW, 0, 0, -1, -1);
+}
+
+/**
+ * Handle a simple mouse click (and release) event.
+ * 
+ * \param *instance	The instance from which the event originates.
+ * \param *pointer	The pointer details.
+ * \param *state	The window state for the window.
+ * \return		The outcome of passing the event to the frontend.
+ */
+
+static int game_window_click_and_release(struct game_window_block *instance, wimp_pointer *pointer, wimp_window_state *state)
+{
+	int x, y, up, down, outcome;
+
+	if (instance == NULL || instance->fe == NULL)
+		return FRONTEND_EVENT_REJECTED;
+
+	switch (pointer->buttons) {
+	case wimp_CLICK_SELECT:
+		/* Some things appear to use middle click, so Ctrl-Select emulates Menu. */
+
+		if (osbyte1(osbyte_IN_KEY, 0xfb, 0xff) == 0xff || osbyte1(osbyte_IN_KEY, 0xf8, 0xff) == 0xff) {
+			down = MIDDLE_BUTTON;
+			up = MIDDLE_RELEASE;
+		} else {
+			down = LEFT_BUTTON;
+			up = LEFT_RELEASE;
+		}
 		break;
 	case wimp_CLICK_ADJUST:
-		buttons[button_count++] = RIGHT_BUTTON;
-		buttons[button_count++] = RIGHT_RELEASE;
+		down = RIGHT_BUTTON;
+		up = RIGHT_RELEASE;
 		break;
+	default:
+		return FRONTEND_EVENT_REJECTED;
 	}
 
-	/* Process the button sequence. */
+	x = game_window_convert_to_window_x_coordinate(state, pointer->pos.x);
+	y = game_window_convert_to_window_y_coordinate(state, pointer->pos.y);
 
-	for (i = 0; i < button_count; i++) {
-		outcome = frontend_handle_key_event(instance->fe, x, y, buttons[i]);
+	outcome = frontend_handle_key_event(instance->fe, x, y, down);
+	if (outcome == FRONTEND_EVENT_EXIT)
+		return outcome;
 
-		/* If the event outcome was "Quit", just exit now. */
+	return frontend_handle_key_event(instance->fe, x, y, up);
+}
 
-		if (outcome == FRONTEND_EVENT_EXIT) {
-			frontend_delete_instance(instance->fe);
-			break;
-		} else if (outcome == FRONTEND_EVENT_REJECTED) {
-			set_caret = TRUE;
+/**
+ * Handle the start of a drag event.
+ * 
+ * \param *instance	The instance from which the event originates.
+ * \param *pointer	The pointer details.
+ * \param *state	The window state for the window.
+ * \return		The outcome of passing the event to the frontend.
+ */
+
+static int game_window_start_drag(struct game_window_block *instance, wimp_pointer *pointer, wimp_window_state *state)
+{
+	wimp_drag drag;
+	wimp_auto_scroll_info scroll;
+	int x, y, down;
+
+	if (instance == NULL || instance->fe == NULL || instance->drag_type != GAME_WINDOW_DRAG_NONE)
+		return FRONTEND_EVENT_REJECTED;
+
+	drag.w = instance->handle;
+	drag.type = wimp_DRAG_USER_POINT;
+
+	drag.initial.x0 = pointer->pos.x;
+	drag.initial.y0 = pointer->pos.y;
+	drag.initial.x1 = pointer->pos.x;
+	drag.initial.y1 = pointer->pos.y;
+
+	drag.bbox.x0 = state->visible.x0;
+	drag.bbox.y0 = state->visible.y0 +
+			((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT);
+	drag.bbox.x1 = state->visible.x1;
+	drag.bbox.y1 = state->visible.y1;
+
+	scroll.w = instance->handle;
+
+	scroll.pause_zone_sizes.x0 = GAME_WINDOW_AUTOSCROLL_BORDER;
+	scroll.pause_zone_sizes.y0 = GAME_WINDOW_AUTOSCROLL_BORDER +
+			((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT);
+	scroll.pause_zone_sizes.x1 = GAME_WINDOW_AUTOSCROLL_BORDER;
+	scroll.pause_zone_sizes.y1 = GAME_WINDOW_AUTOSCROLL_BORDER;
+
+	scroll.pause_duration = 0;
+	scroll.state_change = wimp_AUTO_SCROLL_DEFAULT_HANDLER;
+
+	wimp_drag_box(&drag);
+	wimp_auto_scroll(wimp_AUTO_SCROLL_ENABLE_HORIZONTAL | wimp_AUTO_SCROLL_ENABLE_VERTICAL, &scroll);
+	event_set_drag_handler(game_window_drag_end, game_window_drag_in_progress, instance);
+
+	switch (pointer->buttons) {
+	case wimp_DRAG_SELECT:
+		/* Some things appear to use middle drag, so Ctrl-Select emulates Menu. */
+
+		if (osbyte1(osbyte_IN_KEY, 0xfb, 0xff) == 0xff || osbyte1(osbyte_IN_KEY, 0xf8, 0xff) == 0xff) {
+			instance->drag_type = GAME_WINDOW_DRAG_MENU;
+			down = MIDDLE_BUTTON;
+		} else {
+			instance->drag_type = GAME_WINDOW_DRAG_SELECT;
+			down = LEFT_BUTTON;
 		}
+		break;
+	case wimp_DRAG_ADJUST:
+		instance->drag_type = GAME_WINDOW_DRAG_ADJUST;
+		down = RIGHT_BUTTON;
+		break;
+	default:
+		return FRONTEND_EVENT_REJECTED;
 	}
 
-	if (set_caret == TRUE)
-		wimp_set_caret_position(instance->handle, wimp_ICON_WINDOW, 0, 0, -1, -1);
+	x = game_window_convert_to_window_x_coordinate(state, pointer->pos.x);
+	y = game_window_convert_to_window_y_coordinate(state, pointer->pos.y);
+
+	return frontend_handle_key_event(instance->fe, x, y, down);
+}
+
+/**
+ * Handle Null Events from the Wimp during a drag operation.
+ * 
+ * \param *data		Pointer to the instance from which the event originates.
+ * \return		TRUE if the event was handled.
+ */
+
+static osbool game_window_drag_in_progress(void *data)
+{
+	struct game_window_block *instance = data;
+	wimp_pointer pointer;
+	wimp_window_state window;
+	int x, y, drag;
+
+	if (instance == NULL || instance->fe == NULL)
+		return TRUE;
+
+	switch (instance->drag_type) {
+	case GAME_WINDOW_DRAG_SELECT:
+		drag = LEFT_DRAG;
+		break;
+	case GAME_WINDOW_DRAG_MENU:
+		drag = MIDDLE_DRAG;
+		break;
+	case GAME_WINDOW_DRAG_ADJUST:
+		drag = RIGHT_DRAG;
+		break;
+	default:
+		return TRUE;
+	}
+
+	if (xwimp_get_pointer_info(&pointer) != NULL)
+		return TRUE;
+
+	window.w = instance->handle;
+	if (xwimp_get_window_state(&window) != NULL)
+		return TRUE;
+
+	x = game_window_convert_to_window_x_coordinate(&window, pointer.pos.x);
+	y = game_window_convert_to_window_y_coordinate(&window, pointer.pos.y);
+
+	debug_printf("Drag in progress: x=%d, y=%d", pointer.pos.x, pointer.pos.y);
+
+	frontend_handle_key_event(instance->fe, x, y, drag);
+
+	return TRUE;
+}
+
+/**
+ * Handle the Drag End event from the Wimp at the end of a drag operation.
+ * 
+ * \param *drag		The Wimp event data block.
+ * \param *data		Pointer to the instance from which the event originates.
+ */
+
+static void game_window_drag_end(wimp_dragged *drag, void *data)
+{
+	struct game_window_block *instance = data;
+	wimp_window_state window;
+	int x, y, release;
+
+	if (instance == NULL || instance->fe == NULL)
+		return;
+
+	/* Terminate the scroll process. */
+
+	if (xwimp_auto_scroll(NONE, NULL, NULL) != NULL)
+		return;
+
+	switch (instance->drag_type) {
+	case GAME_WINDOW_DRAG_SELECT:
+		release = LEFT_RELEASE;
+		break;
+	case GAME_WINDOW_DRAG_MENU:
+		release = MIDDLE_RELEASE;
+		break;
+	case GAME_WINDOW_DRAG_ADJUST:
+		release = RIGHT_RELEASE;
+		break;
+	default:
+		return;
+	}
+
+	window.w = instance->handle;
+	if (xwimp_get_window_state(&window) != NULL)
+		return;
+
+	x = game_window_convert_to_window_x_coordinate(&window, drag->final.x0);
+	y = game_window_convert_to_window_y_coordinate(&window, drag->final.y0);
+
+	frontend_handle_key_event(instance->fe, x, y, release);
 }
 
 /**
@@ -655,7 +876,7 @@ static osbool game_window_keypress_handler(wimp_key *key)
 	/* Check for number pad keys being down, and flag them. */
 
 	if (numpad >= 0) {
-		if (osbyte1(osbyte_SCAN_KEYBOARD, numpad ^ 0x80, 0) == 0xff)
+		if (osbyte1(osbyte_IN_KEY, numpad ^ 0xff, 0xff) == 0xff)
 			button |= MOD_NUM_KEYPAD;
 	}
 
