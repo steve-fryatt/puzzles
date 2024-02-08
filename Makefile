@@ -73,7 +73,9 @@ OBJS =  frontend.o			\
 	core/tents.o			\
 	core/towers.o			\
 	core/tree234.o			\
-	core/undead.o
+	core/undead.o			\
+	core/unequal.o			\
+	core/untangle.o
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 

@@ -42,6 +42,6 @@ its own line.
 	tracks
 	twiddle
 *	undead
-	unequal
+*	unequal
 	unruly
-	untangle
+*	untangle
