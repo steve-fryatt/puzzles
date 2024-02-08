@@ -333,10 +333,10 @@ enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x
 {
 	int outcome = PKR_UNUSED;
 
+	debug_printf("Received event: x=%d, y=%d, button=%d, outcome=%d", x, y, button, outcome);
+
 	if (fe != NULL && fe->me != NULL)
 		outcome = midend_process_key(fe->me, x, y, button);
-
-	debug_printf("Received event: x=%d, y=%d, button=%d, outcome=%d", x, y, button, outcome);
 
 	if (outcome == PKR_QUIT)
 		return FRONTEND_EVENT_EXIT;
