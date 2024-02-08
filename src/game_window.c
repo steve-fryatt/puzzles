@@ -755,6 +755,12 @@ static osbool game_window_keypress_handler(wimp_key *key)
 	 */
 
 	switch (key->c) {
+	case wimp_KEY_F8:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_UNDO);
+		break;
+	case wimp_KEY_F9:
+		frontend_handle_key_event(instance->fe, 0, 0, UI_REDO);
+		break;
 	case wimp_KEY_LEFT:
 		button = CURSOR_LEFT;
 		break;
