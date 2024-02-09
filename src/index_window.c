@@ -63,9 +63,12 @@
 
 #define INDEX_WINDOW_INITIAL_MAX_ROWS 6
 
+#define INDEX_WINDOW_HORIZONTAL_SCROLL 52
+
 /* Static function prototypes. */
 
-static void	index_window_click_handler(wimp_pointer *pointer);
+static void index_window_click_handler(wimp_pointer *pointer);
+static void index_window_scroll_event_handler(wimp_scroll *scroll);
 
 /* Global variables. */
 
@@ -75,6 +78,18 @@ static void	index_window_click_handler(wimp_pointer *pointer);
 
 static wimp_w		index_window_handle = NULL;
 
+/**
+ * The width of an icon in the index window.
+ */
+
+static int		index_window_icon_width = 0;
+
+/**
+ * The height of an icon in the index window.
+ */
+
+static int		index_window_icon_height = 0;
+
 
 /**
  * Initialise the index window and its associated menus and dialogues.
@@ -82,7 +97,7 @@ static wimp_w		index_window_handle = NULL;
 
 void index_window_initialise(void)
 {
-	int			i, height;
+	int			i;
 	wimp_window 		*window_def;
 	wimp_icon_create	*icon_def;
 	wimp_i			icon_handle;
@@ -104,14 +119,15 @@ void index_window_initialise(void)
 	window_def->icon_count = 0;
 	icon_def = (wimp_icon_create *) &(window_def->icon_count);
 
-	height = icon_def->icon.extent.y1 - icon_def->icon.extent.y0;
+	index_window_icon_width = icon_def->icon.extent.x1 - icon_def->icon.extent.x0;
+	index_window_icon_height = icon_def->icon.extent.y1 - icon_def->icon.extent.y0;
 
 	window_def->extent.y0 = window_def->extent.y1 -
-			((gamecount * (height + INDEX_WINDOW_ICON_GUTTER)) + INDEX_WINDOW_ICON_GUTTER);
+			((gamecount * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER)) + INDEX_WINDOW_ICON_GUTTER);
 
 	window_def->visible.y0 = window_def->visible.y1 -
 			((((gamecount > INDEX_WINDOW_INITIAL_MAX_ROWS) ? INDEX_WINDOW_INITIAL_MAX_ROWS : gamecount) *
-					(height + INDEX_WINDOW_ICON_GUTTER)) + INDEX_WINDOW_ICON_GUTTER);
+					(index_window_icon_height + INDEX_WINDOW_ICON_GUTTER)) + INDEX_WINDOW_ICON_GUTTER);
 
 	error = xwimp_create_window(window_def, &index_window_handle);
 	if (error != NULL) {
@@ -133,8 +149,8 @@ void index_window_initialise(void)
 	icon_def->icon.extent.x1 = window_def->extent.x1 - INDEX_WINDOW_ICON_GUTTER;
 
 	for (i = 0; i < gamecount; i++) {
-		icon_def->icon.extent.y0 = -(i + 1) * (height + INDEX_WINDOW_ICON_GUTTER);
-		icon_def->icon.extent.y1 = icon_def->icon.extent.y0 + height;
+		icon_def->icon.extent.y0 = -(i + 1) * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+		icon_def->icon.extent.y1 = icon_def->icon.extent.y0 + index_window_icon_height;
 
 		/* We're assuming that the names in the game definitions aren't going to move. */
 
@@ -153,6 +169,7 @@ void index_window_initialise(void)
 	ihelp_add_window(index_window_handle, "Index", NULL);
 
 	event_add_window_mouse_event(index_window_handle, index_window_click_handler);
+	event_add_window_scroll_event(index_window_handle, index_window_scroll_event_handler);
 }
 
 /**
@@ -166,7 +183,7 @@ void index_window_open(void)
 }
 
 /**
- * Handle mouse clicks on the iconbar icon.
+ * Handle mouse clicks in the index window.
  *
  * \param *pointer		The Wimp mouse click event data.
  */
@@ -185,4 +202,97 @@ static void index_window_click_handler(wimp_pointer *pointer)
 			wimp_close_window(pointer->w);
 		break;
 	}
+}
+
+/**
+ * Handle scroll events in the index window.
+ *
+ * \param *scroll		The scroll event data to be processed.
+ */
+
+static void index_window_scroll_event_handler(wimp_scroll *scroll)
+{
+	int width, height, error, distance;
+
+	/* Add in the X scroll offset. */
+
+	width = scroll->visible.x1 - scroll->visible.x0;
+	distance = 0;
+
+	switch (scroll->xmin) {
+	case wimp_SCROLL_COLUMN_LEFT:
+		distance = -(index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+		break;
+
+	case wimp_SCROLL_COLUMN_RIGHT:
+		distance = +(index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+		break;
+
+	case wimp_SCROLL_PAGE_LEFT:
+		distance = -width;
+		break;
+
+	case wimp_SCROLL_PAGE_RIGHT:
+		distance = +width;
+		break;
+
+	case wimp_SCROLL_AUTO_LEFT:
+	case wimp_SCROLL_AUTO_RIGHT:
+		/* We don't support Auto Scroll. */
+		break;
+
+	default: /* Extended Scroll */
+		if (scroll->xmin > 0)
+			distance = (scroll->xmin >> 2) * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+		else if (scroll->xmin < 0)
+			distance = -((-scroll->xmin) >> 2) * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+		break;
+	}
+
+	scroll->xscroll += distance;
+
+	/* Add in the Y scroll offset. */
+
+	height = (scroll->visible.y1 - scroll->visible.y0);
+	distance = 0;
+
+	switch (scroll->ymin) {
+	case wimp_SCROLL_LINE_UP:
+		distance = +(index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+		break;
+
+	case wimp_SCROLL_LINE_DOWN:
+		distance = -(index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+		break;
+
+	case wimp_SCROLL_PAGE_UP:
+		distance = +height;
+		break;
+
+	case wimp_SCROLL_PAGE_DOWN:
+		distance = -height;
+		break;
+	
+	case wimp_SCROLL_AUTO_UP:
+	case wimp_SCROLL_AUTO_DOWN:
+		/* We don't support Auto Scroll. */
+		break;
+
+	default: /* Extended Scroll */
+		if (scroll->ymin > 0)
+			distance = +(scroll->ymin >> 2) * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+		else if (scroll->ymin < 0)
+			distance = -((-scroll->ymin) >> 2) * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+		break;
+	}
+
+	/* Align to an icon boundary in the direction of scroll. */
+
+	scroll->yscroll += distance;
+	if ((error = ((scroll->yscroll - ((distance > 0) ? 0 : height)) % (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER))))
+		scroll->yscroll -= ((distance > 0) ? (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER) : INDEX_WINDOW_ICON_GUTTER) + error;
+
+	/* Apply the new scroll offsets. */
+
+	wimp_open_window((wimp_open *) scroll);
 }
