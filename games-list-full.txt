@@ -20,7 +20,7 @@ its own line.
 	lightup
 	loopy
 	magnets
-	map (B)
+*	map (B)
 *	mines
 	mosaic
 *	net

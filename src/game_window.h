@@ -33,6 +33,12 @@
 #include "frontend.h"
 
 /**
+ * A Game Window instance.
+ */
+
+struct game_window_block;
+
+/**
  * Initialise the game windows and their associated menus and dialogues.
  */
 
@@ -252,5 +258,28 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
  */
 
 osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int align, int colour, osbool monospaced, const char *text);
+
+/**
+ * Create a new blitter within a game window.
+ * 
+ * \param *instance	The instance to take the blitter.
+ * \param width		The width of the blitter, in pixels.
+ * \param height	The height of the blitter, in pixels.
+ */
+
+blitter *game_window_create_blitter(struct game_window_block *instance, int width, int height);
+
+/**
+ * Delete a blitter from within a game window.
+ * 
+ * \param *instance	The instance containing the blitter.
+ * \param *blitter	The blitter to be deleted.
+ */
+
+osbool game_window_delete_blitter(struct game_window_block *instance, blitter *blitter);
+
+osbool game_window_save_blitter(struct game_window_block *instance, blitter *blitter, int x, int y);
+
+osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *blitter, int x, int y);
 
 #endif

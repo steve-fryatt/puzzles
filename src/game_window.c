@@ -65,6 +65,7 @@
 
 #include "core/puzzles.h"
 #include "frontend.h"
+#include "blitter.h"
 #include "game_draw.h"
 #include "game_window_backend_menu.h"
 
@@ -126,6 +127,8 @@ struct game_window_block {
 	wimp_w handle;				/**< The handle of the game window.		*/
 	wimp_w status_bar;			/**< The handle of the status bar.		*/
 	wimp_i status_icon;			/**< The handle of the status bar icon.		*/
+
+	struct blitter_set_block *blitters;	/**< The list of associated blitters.		*/
 
 	osspriteop_area *sprite;		/**< The sprite area for the window canvas.	*/
 	osspriteop_save_area *save_area;	/**< The save area for redirecting VDU output.	*/
@@ -233,6 +236,8 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->callback_timer_active = FALSE;
 	new->drag_type = GAME_WINDOW_DRAG_NONE;
 
+	new->blitters = blitter_create_set();
+
 	return new;
 }
 
@@ -273,6 +278,9 @@ void game_window_delete_instance(struct game_window_block *instance)
 
 	if (instance->save_area != NULL)
 		free(instance->save_area);
+
+	if (instance->blitters != NULL)
+		blitter_delete_set(instance->blitters);
 
 	free(instance);
 }
@@ -1769,4 +1777,53 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 	}
 
 	return TRUE;
+}
+
+/**
+ * Create a new blitter within a game window.
+ * 
+ * \param *instance	The instance to take the blitter.
+ * \param width		The width of the blitter, in pixels.
+ * \param height	The height of the blitter, in pixels.
+ */
+
+blitter *game_window_create_blitter(struct game_window_block *instance, int width, int height)
+{
+	if (instance == NULL)
+		return NULL;
+
+	debug_printf("\\OBlitter New");
+
+	return (blitter *) blitter_create(instance->blitters, width * GAME_WINDOW_PIXEL_SIZE, height * GAME_WINDOW_PIXEL_SIZE);
+}
+
+/**
+ * Delete a blitter from within a game window.
+ * 
+ * \param *instance	The instance containing the blitter.
+ * \param *blitter	The blitter to be deleted.
+ */
+
+osbool game_window_delete_blitter(struct game_window_block *instance, blitter *blitter)
+{
+	if (instance == NULL)
+		return FALSE;
+
+	debug_printf("\\OBlitter Free");
+
+	return blitter_delete(instance->blitters, (struct blitter_block *) blitter);
+}
+
+osbool game_window_save_blitter(struct game_window_block *instance, blitter *blitter, int x, int y)
+{
+	debug_printf("\\OBlitter Save");
+
+	return FALSE;
+}
+
+osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *blitter, int x, int y)
+{
+	debug_printf("\\OBlitter Load");
+
+	return FALSE;
 }

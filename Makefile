@@ -38,7 +38,8 @@ GAMESRC := games-list.txt
 
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
 
-OBJS =  frontend.o			\
+OBJS =  blitter.o			\
+	frontend.o			\
 	game_draw.o			\
 	game_window.o			\
 	game_window_backend_menu.o	\
@@ -46,6 +47,7 @@ OBJS =  frontend.o			\
 	index_window.o			\
 	main.o				\
 	riscos_test.o			\
+	sprite_support.o		\
 	core/bridges.o			\
 	core/drawing.o			\
 	core/dsf.o			\
@@ -59,6 +61,7 @@ OBJS =  frontend.o			\
 	core/loopgen.o			\
 	core/loopy.o			\
 	core/malloc.o			\
+	core/map.o			\
 	core/matching.o			\
 	core/misc.o			\
 	core/midend.o			\

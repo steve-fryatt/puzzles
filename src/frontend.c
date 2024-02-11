@@ -250,15 +250,19 @@ void frontend_delete_instance(struct frontend *fe)
 	if (*list != NULL)
 		*list = fe->next;
 
-	/* Delete the window. */
-
-	if (fe->window != NULL)
-		game_window_delete_instance(fe->window);
-
-	/* Delete the midend. */
+	/* Delete the midend first, so that our infrastructure
+	 * remains in place.
+	 */
 
 	if (fe->me != NULL)
 		midend_free(fe->me);
+
+	/* Then delete the window, and tidy up anything that the
+	 * midend doesn't do.
+	 */
+
+	if (fe->window != NULL)
+		game_window_delete_instance(fe->window);
 
 	/* Deallocate the instance block. */
 
@@ -655,28 +659,59 @@ static void riscos_status_bar(void *handle, const char *text)
 	game_window_set_status_text(handle, text);
 }
 
+/**
+ * Create a new blitter
+ * 
+ * \param *handle	The game window instance pointer.
+ * \param w		The required width of the blitter.
+ * \param h		The required height of the blitter.
+ * \return		Pointer to the new blitter, or NULL.
+ */
+
 static blitter *riscos_blitter_new(void *handle, int w, int h)
 {
-	debug_printf("\\OBlitter New");
-
-	return NULL;
+	return game_window_create_blitter(handle, w, h);
 }
+
+/**
+ * Free the resources related to a blitter.
+ * 
+ * \param *handle	The game window instance pointer.
+ * \param *bl		The blitter to be freed.
+ */
 
 static void riscos_blitter_free(void *handle, blitter *bl)
 {
-	debug_printf("\\OBlitter Free");
+	game_window_delete_blitter(handle, bl);
 }
+
+/**
+ * Save a copy of the game canvas on to a blitter.
+ *
+ * \param *handle	The game window instance pointer.
+ * \param *bl		The blitter to be used.
+ * \param x		The X coordinate of the area to copy.
+ * \param y		The Y coordinate of the area to copy.
+ */
 
 static void riscos_blitter_save(void *handle, blitter *bl, int x, int y)
 {
-	debug_printf("\\OBlitter Save");
+	game_window_save_blitter(handle, bl, x, y);
 }
+
+/**
+ * Draw the contents of a blitter on to the game canvas.
+ *
+ * \param *handle	The game window instance pointer.
+ * \param *bl		The blitter to be used.
+ * \param x		The X coordinate of the area to write to.
+ * \param y		The Y coordinate of the area to write to.
+ */
 
 static void riscos_blitter_load(void *handle, blitter *bl, int x, int y)
 {
-	debug_printf("\\OBlitter Load");
+	game_windoow_load_blitter(handle, bl, x, y);
 }
-
 
 
 /* Below this point are the functions that the frontend must provide
