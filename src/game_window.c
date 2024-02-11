@@ -66,6 +66,7 @@
 #include "core/puzzles.h"
 #include "frontend.h"
 #include "blitter.h"
+#include "sprite_support.h"
 #include "game_draw.h"
 #include "game_window_backend_menu.h"
 
@@ -130,8 +131,7 @@ struct game_window_block {
 
 	struct blitter_set_block *blitters;	/**< The list of associated blitters.		*/
 
-	osspriteop_area *sprite;		/**< The sprite area for the window canvas.	*/
-	osspriteop_save_area *save_area;	/**< The save area for redirecting VDU output.	*/
+	struct sprite_support_block *canvas;	/**< The details for the window canvas.		*/
 
 	char *status_text;			/**< The status bar text.			*/
 
@@ -220,8 +220,6 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 
 	new->handle = NULL;
 	new->status_bar = NULL;
-	new->sprite = NULL;
-	new->save_area = NULL;
 	new->vdu_redirection_active = FALSE;
 	new->status_text = NULL;
 
@@ -236,7 +234,13 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->callback_timer_active = FALSE;
 	new->drag_type = GAME_WINDOW_DRAG_NONE;
 
+	new->canvas = sprite_support_create_instance();
 	new->blitters = blitter_create_set();
+
+	if (new->canvas == NULL || new->blitters == NULL) {
+		game_window_delete_instance(new);
+		return NULL;
+	}
 
 	return new;
 }
@@ -273,11 +277,8 @@ void game_window_delete_instance(struct game_window_block *instance)
 	if (instance->status_text != NULL)
 		free(instance->status_text);
 
-	if (instance->sprite != NULL)
-		free(instance->sprite);
-
-	if (instance->save_area != NULL)
-		free(instance->save_area);
+	if (instance->canvas != NULL)
+		sprite_support_delete_instance(instance->canvas);
 
 	if (instance->blitters != NULL)
 		blitter_delete_set(instance->blitters);
@@ -468,7 +469,7 @@ static void game_window_close_handler(wimp_close *close)
 
 	/* Save the sprite for analysis. */
 
-	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite, "RAM::RamDisc0.$.Sprites");
+	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->canvas->sprite_area, "RAM::RamDisc0.$.Sprites");
 	debug_printf("Saved sprites: outcome=0x%x", error);
 	if (error != NULL)
 		debug_printf("\\RFailed to save: %s", error->errmess);
@@ -977,14 +978,14 @@ static void game_window_redraw_handler(wimp_draw *redraw)
 	ox = redraw->box.x0 - redraw->xscroll;
 	oy = redraw->box.y1 - redraw->yscroll;
 
-	error = xwimp_read_pix_trans(osspriteop_USER_AREA, instance->sprite,
+	error = xwimp_read_pix_trans(osspriteop_USER_AREA, instance->canvas->sprite_area,
 		GAME_WINDOW_SPRITE_ID, &factors, NULL);
 
-	error = xcolourtrans_select_table_for_sprite(instance->sprite, GAME_WINDOW_SPRITE_ID, os_CURRENT_MODE, (os_palette *) -1, translation_table, 0);
+	error = xcolourtrans_select_table_for_sprite(instance->canvas->sprite_area, GAME_WINDOW_SPRITE_ID, os_CURRENT_MODE, (os_palette *) -1, translation_table, 0);
 
 	while (more) {
 		if (instance != NULL && error == NULL) {
-			xosspriteop_put_sprite_scaled(osspriteop_USER_AREA, instance->sprite,
+			xosspriteop_put_sprite_scaled(osspriteop_USER_AREA, instance->canvas->sprite_area,
 				GAME_WINDOW_SPRITE_ID, ox, oy - instance->window_size.y,
 				(osspriteop_action) 0, &factors, translation_table);
 		}
@@ -1093,121 +1094,54 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	instance->canvas_size.x = 0;
 	instance->canvas_size.y = 0;
+	instance->number_of_colours = 0;
 
 	debug_printf("Requesting canvas of x=%d, y=%d", x, y);
 
-	/* The size of the area is 16 for the area header, 44 for the sprite
-	 * header, (x * y) bytes for the sprite with the rows rounded up to,
-	 * a full number of words, and 2048 for the 256 double-word
-	 * palette entries that we're going to add in.
-	 */
-
-	area_size = 16 + 44 + 2048 + (((x + 3) & 0xfffffffc) * y);
-
 	/* If there's already a save area, zero its first word to reset it. */
 
-	if (instance->save_area != NULL)
-		*((int32_t *) instance->save_area) = 0;
+	if (instance->canvas->save_area != NULL)
+		*((int32_t *) instance->canvas->save_area) = 0;
 
 	/* Allocate, or adjust, the required area. */
 
-	if (instance->sprite == NULL)
-		instance->sprite = malloc(area_size);
-	else
-		instance->sprite = realloc(instance->sprite, area_size);
-
-	if (instance->sprite == NULL)
+	if (sprite_support_configure_area(&(instance->canvas->sprite_area), x, y, TRUE) == FALSE)
 		return FALSE;
-
-	debug_printf("\\GSetting up sprite areas...");
-
-	/* Initialise the area. */
-
-	instance->sprite->size = area_size;
-	instance->sprite->first = 16;
-
-	error = xosspriteop_clear_sprites(osspriteop_USER_AREA, instance->sprite);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		instance->sprite = NULL;
-		return FALSE;
-	}
-
-	debug_printf("Allocated Sprite Area at 0x%x, size at 0x%x, first at 0x%x, used=%d, size=%d",
-			instance->sprite, &(instance->sprite->size), &(instance->sprite->first), instance->sprite->used, area_size);
-
-	error = xosspriteop_create_sprite(osspriteop_USER_AREA, instance->sprite, GAME_WINDOW_SPRITE_NAME, FALSE, x, y, (os_mode) 21);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		instance->sprite = NULL;
-		return FALSE;
-	}
-
-	debug_printf("Created Sprite: area at 0x%x, size at 0x%x, first at 0x%x, used=%d",
-			instance->sprite, &(instance->sprite->size), &(instance->sprite->first), instance->sprite->used);
 
 	instance->canvas_size.x = x;
 	instance->canvas_size.y = y;
 
-	/* Now add a palette by hand (see page 1-833 of the PRM). */
+	/* Add a palette and configure the game colours. */
 
-	instance->sprite->used += 2048;
-
-	sprite = (osspriteop_header *) ((byte *) instance->sprite + instance->sprite->first);
-
-	debug_printf("Added space for pallette: sprite at 0x%x, size=%d, image=%d, mask=%d, used=%d, size=%d",
-			sprite, sprite->size, sprite->image, sprite->mask, instance->sprite->used, area_size);
-
-	sprite->size += 2048;
-	sprite->image += 2048;
-	sprite->mask += 2048;
-
-	palette = (os_sprite_palette *) ((byte *) sprite + 44);
-
-	debug_printf("Insterted palette at 0x%x, sprite at 0x%x, size=%d, image=%d, mask=%d, used=%d, size=%d",
-			palette, sprite, sprite->size, sprite->image, sprite->mask, instance->sprite->used, area_size);
-
-	for (entry = 0; entry < 256; entry++) {
-		if (entry < number_of_colours) {
-			palette->entries[entry].on = ((int) (colours[entry * 3] * 0xff) << 8) |
-					((int) (colours[entry * 3 + 1] * 0xff) << 16) |
-					((int) (colours[entry * 3 + 2] * 0xff) << 24);
-		} else {
-			palette->entries[entry].on = 0xffffff00;
-		}
-
-		palette->entries[entry].off = palette->entries[entry].on;
-
-		debug_printf("Created palette entry %d at 0x%x as 0x%8x", entry, &(palette->entries[entry]), palette->entries[entry].off);
-	}
-
+	sprite_support_insert_265_palette(instance->canvas->sprite_area);
+	sprite_support_set_game_colours(instance->canvas->sprite_area, colours, number_of_colours);
 	instance->number_of_colours = number_of_colours;
 
 	/* Initialise the save area. */
 
-	error = xosspriteop_read_save_area_size(osspriteop_USER_AREA, instance->sprite,
+	error = xosspriteop_read_save_area_size(osspriteop_USER_AREA, instance->canvas->sprite_area,
 			GAME_WINDOW_SPRITE_ID, &save_area_size);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		instance->sprite = NULL;
+		instance->canvas->sprite_area = NULL;
 		return FALSE;
 	}
 
 	/* Allocate, or adjust, the required save area. */
 
-	if (instance->save_area == NULL)
-		instance->save_area = malloc(save_area_size);
+	if (instance->canvas->save_area == NULL)
+		instance->canvas->save_area = malloc(save_area_size);
 	else
-		instance->save_area = realloc(instance->save_area, save_area_size);
+		instance->canvas->save_area = realloc(instance->canvas->save_area, save_area_size);
 
- 	if (instance->save_area == NULL) {
-		instance->sprite = NULL;
+ 	if (instance->canvas->save_area == NULL) {
+		instance->canvas->sprite_area = NULL;
 		return FALSE;
 	}
 
-	*((int32_t *) instance->save_area) = 0;
+	*((int32_t *) instance->canvas->save_area) = 0;
 
-	debug_printf("Set canvas: sprite area size=%d, area=0x%x, save size=%d, save=0x%x", area_size, instance->sprite, save_area_size, instance->save_area);
+	debug_printf("Set canvas: sprite area size=%d, area=0x%x, save size=%d, save=0x%x", area_size, instance->canvas->sprite_area, save_area_size, instance->canvas->save_area);
 
 	/* Set the window and status bar extent. */
 
@@ -1325,12 +1259,12 @@ osbool game_window_start_draw(struct game_window_block *instance)
 {
 	os_error *error;
 
-	if (instance == NULL || instance->sprite == NULL || instance->save_area == NULL ||
+	if (instance == NULL || instance->canvas->sprite_area == NULL || instance->canvas->save_area == NULL ||
 			instance->vdu_redirection_active == TRUE)
 		return FALSE;
 
-	error = xosspriteop_switch_output_to_sprite(osspriteop_USER_AREA, instance->sprite,
-			GAME_WINDOW_SPRITE_ID, instance->save_area,
+	error = xosspriteop_switch_output_to_sprite(osspriteop_USER_AREA, instance->canvas->sprite_area,
+			GAME_WINDOW_SPRITE_ID, instance->canvas->save_area,
 			&(instance->saved_context0), &(instance->saved_context1), &(instance->saved_context2), &(instance->saved_context3));
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
@@ -1356,7 +1290,7 @@ osbool game_window_end_draw(struct game_window_block *instance)
 {
 	os_error *error;
 
-	if (instance == NULL || instance->sprite == NULL || instance->save_area == NULL ||
+	if (instance == NULL || instance->canvas->sprite_area == NULL || instance->canvas->save_area == NULL ||
 			instance->vdu_redirection_active == FALSE)
 		return FALSE;
 
@@ -1703,7 +1637,7 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 
 	debug_printf("\\lPrint text at %d, %d (OS Units)", x, y);
 
-	palette = (os_sprite_palette *) ((byte *) instance->sprite + instance->sprite->first + 44);
+	palette = (os_sprite_palette *) ((byte *) instance->canvas->sprite_area + instance->canvas->sprite_area->first + 44);
 
 	/* Convert the size in pixels into points. */
 

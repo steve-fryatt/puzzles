@@ -38,6 +38,9 @@ BadResource:Failed to locate suitable %0 file.
 BadTemplate:Window template '%0' not found.
 MissingIcon:Icon definition not found in template '%0'.
 
+SpriteBadArea:We can only work with sprite areas containing single sprites.
+SpriteNoSpaceForPalette:There isn't enough space for the palette.
+
 BadBlitterSet:The blitter to be deleted was not found in the set.
 
 # Interactive Help for windows and icons.
