@@ -66,7 +66,7 @@
 #include "core/puzzles.h"
 #include "frontend.h"
 #include "blitter.h"
-#include "sprite_support.h"
+#include "canvas.h"
 #include "game_draw.h"
 #include "game_window_backend_menu.h"
 
@@ -78,11 +78,6 @@
 #define GAME_WINDOW_MENU_SOLVE 3
 #define GAME_WINDOW_MENU_UNDO 4
 #define GAME_WINDOW_MENU_REDO 5
-
-/* The name of the canvas sprite. */
-
-#define GAME_WINDOW_SPRITE_NAME "Canvas"
-#define GAME_WINDOW_SPRITE_ID (osspriteop_id) GAME_WINDOW_SPRITE_NAME
 
 /* The height of the status bar. */
 
@@ -131,17 +126,10 @@ struct game_window_block {
 
 	struct blitter_set_block *blitters;	/**< The list of associated blitters.		*/
 
-	struct sprite_support_block *canvas;	/**< The details for the window canvas.		*/
+	struct canvas_block *canvas;		/**< The details for the window canvas.		*/
 
 	char *status_text;			/**< The status bar text.			*/
 
-	osbool vdu_redirection_active;
-	int saved_context0;
-	int saved_context1;
-	int saved_context2;
-	int saved_context3;
-
-	os_coord canvas_size;			/**< The size of the drawing canvas, in pixels.	*/
 	os_coord window_size;			/**< The size of the window, in pixels.		*/
 
 	int number_of_colours;			/**< The number of colours defined.		*/
@@ -220,11 +208,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 
 	new->handle = NULL;
 	new->status_bar = NULL;
-	new->vdu_redirection_active = FALSE;
 	new->status_text = NULL;
-
-	new->canvas_size.x = 0;
-	new->canvas_size.y = 0;
 
 	new->window_size.x = 0;
 	new->window_size.y = 0;
@@ -234,7 +218,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->callback_timer_active = FALSE;
 	new->drag_type = GAME_WINDOW_DRAG_NONE;
 
-	new->canvas = sprite_support_create_instance();
+	new->canvas = canvas_create_instance();
 	new->blitters = blitter_create_set();
 
 	if (new->canvas == NULL || new->blitters == NULL) {
@@ -278,7 +262,7 @@ void game_window_delete_instance(struct game_window_block *instance)
 		free(instance->status_text);
 
 	if (instance->canvas != NULL)
-		sprite_support_delete_instance(instance->canvas);
+		canvas_delete_instance(instance->canvas);
 
 	if (instance->blitters != NULL)
 		blitter_delete_set(instance->blitters);
@@ -459,7 +443,6 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 static void game_window_close_handler(wimp_close *close)
 {
 	struct game_window_block	*instance;
-	os_error *error;
 
 	debug_printf("\\RClosing game window");
 
@@ -467,12 +450,12 @@ static void game_window_close_handler(wimp_close *close)
 	if (instance == NULL)
 		return;
 
-	/* Save the sprite for analysis. */
+	/* Save the sprite for analysis.
+	 *
+	 * TODO -- Remove!
+	 */
 
-	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->canvas->sprite_area, "RAM::RamDisc0.$.Sprites");
-	debug_printf("Saved sprites: outcome=0x%x", error);
-	if (error != NULL)
-		debug_printf("\\RFailed to save: %s", error->errmess);
+	canvas_save_sprite(instance->canvas, "RAM::RamDisc0.$.Sprites");
 
 	/* Delete the parent game instance. */
 
@@ -966,8 +949,7 @@ static void game_window_redraw_handler(wimp_draw *redraw)
 	os_factors			factors;
 	byte				table[256];
 	osspriteop_trans_tab		*translation_table;
-	osbool				more;
-	os_error			*error;
+	osbool				canvas_ready = FALSE, more;
 
 	translation_table = (osspriteop_trans_tab *) &table;
 
@@ -978,17 +960,12 @@ static void game_window_redraw_handler(wimp_draw *redraw)
 	ox = redraw->box.x0 - redraw->xscroll;
 	oy = redraw->box.y1 - redraw->yscroll;
 
-	error = xwimp_read_pix_trans(osspriteop_USER_AREA, instance->canvas->sprite_area,
-		GAME_WINDOW_SPRITE_ID, &factors, NULL);
-
-	error = xcolourtrans_select_table_for_sprite(instance->canvas->sprite_area, GAME_WINDOW_SPRITE_ID, os_CURRENT_MODE, (os_palette *) -1, translation_table, 0);
+	if (instance != NULL)
+		canvas_ready = canvas_prepare_redraw(instance->canvas, &factors, translation_table);
 
 	while (more) {
-		if (instance != NULL && error == NULL) {
-			xosspriteop_put_sprite_scaled(osspriteop_USER_AREA, instance->canvas->sprite_area,
-				GAME_WINDOW_SPRITE_ID, ox, oy - instance->window_size.y,
-				(osspriteop_action) 0, &factors, translation_table);
-		}
+		if (instance != NULL && canvas_ready == TRUE)
+			canvas_redraw_sprite(instance->canvas, ox, oy - instance->window_size.y, &factors, translation_table);
 
 		more = wimp_get_rectangle(redraw);
 	}
@@ -1076,72 +1053,40 @@ static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu)
 
 osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours)
 {
-	size_t area_size;
-	int entry, save_area_size;
-	os_error *error;
+	os_coord canvas_size;
 	os_box extent;
-	osspriteop_header *sprite;
-	os_sprite_palette *palette;
-
 
 	if (instance == NULL)
 		return FALSE;
 
 	/* Check to see if there's anything to do. */
 
-	if (instance->canvas_size.x == x && instance->canvas_size.y == y)
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
+
+	if (canvas_size.x == x && canvas_size.y == y)
 		return TRUE;
 
-	instance->canvas_size.x = 0;
-	instance->canvas_size.y = 0;
 	instance->number_of_colours = 0;
 
 	debug_printf("Requesting canvas of x=%d, y=%d", x, y);
 
-	/* If there's already a save area, zero its first word to reset it. */
-
-	if (instance->canvas->save_area != NULL)
-		*((int32_t *) instance->canvas->save_area) = 0;
-
 	/* Allocate, or adjust, the required area. */
 
-	if (sprite_support_configure_area(&(instance->canvas->sprite_area), x, y, TRUE) == FALSE)
+	if (canvas_configure_area(instance->canvas, x, y, TRUE) == FALSE)
 		return FALSE;
 
-	instance->canvas_size.x = x;
-	instance->canvas_size.y = y;
+	/* Configure the game colours. */
 
-	/* Add a palette and configure the game colours. */
+	if (canvas_set_game_colours(instance->canvas, colours, number_of_colours) == FALSE)
+		return FALSE;
 
-	sprite_support_insert_265_palette(instance->canvas->sprite_area);
-	sprite_support_set_game_colours(instance->canvas->sprite_area, colours, number_of_colours);
 	instance->number_of_colours = number_of_colours;
 
 	/* Initialise the save area. */
 
-	error = xosspriteop_read_save_area_size(osspriteop_USER_AREA, instance->canvas->sprite_area,
-			GAME_WINDOW_SPRITE_ID, &save_area_size);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		instance->canvas->sprite_area = NULL;
+	if (canvas_configure_save_area(instance->canvas) == FALSE)
 		return FALSE;
-	}
-
-	/* Allocate, or adjust, the required save area. */
-
-	if (instance->canvas->save_area == NULL)
-		instance->canvas->save_area = malloc(save_area_size);
-	else
-		instance->canvas->save_area = realloc(instance->canvas->save_area, save_area_size);
-
- 	if (instance->canvas->save_area == NULL) {
-		instance->canvas->sprite_area = NULL;
-		return FALSE;
-	}
-
-	*((int32_t *) instance->canvas->save_area) = 0;
-
-	debug_printf("Set canvas: sprite area size=%d, area=0x%x, save size=%d, save=0x%x", area_size, instance->canvas->sprite_area, save_area_size, instance->canvas->save_area);
 
 	/* Set the window and status bar extent. */
 
@@ -1257,25 +1202,10 @@ static osbool game_window_timer_callback(os_t time, void *data)
 
 osbool game_window_start_draw(struct game_window_block *instance)
 {
-	os_error *error;
-
-	if (instance == NULL || instance->canvas->sprite_area == NULL || instance->canvas->save_area == NULL ||
-			instance->vdu_redirection_active == TRUE)
+	if (instance == NULL || instance->canvas == NULL)
 		return FALSE;
 
-	error = xosspriteop_switch_output_to_sprite(osspriteop_USER_AREA, instance->canvas->sprite_area,
-			GAME_WINDOW_SPRITE_ID, instance->canvas->save_area,
-			&(instance->saved_context0), &(instance->saved_context1), &(instance->saved_context2), &(instance->saved_context3));
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		return FALSE;
-	}
-
-	instance->vdu_redirection_active = TRUE;
-
-	debug_printf("VDU Redirection Active");
-
-	return TRUE;
+	return canvas_start_redirection(instance->canvas);
 }
 
 /**
@@ -1288,30 +1218,14 @@ osbool game_window_start_draw(struct game_window_block *instance)
 
 osbool game_window_end_draw(struct game_window_block *instance)
 {
-	os_error *error;
-
-	if (instance == NULL || instance->canvas->sprite_area == NULL || instance->canvas->save_area == NULL ||
-			instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || instance->canvas == NULL)
 		return FALSE;
 
 	/* Reset any graphics clip window that may have been left in force. */
 
 	game_window_clear_clip(instance);
 
-	/* Restore the graphics context. */
-
-	error = xosspriteop_switch_output_to_sprite(instance->saved_context0, (osspriteop_area *) instance->saved_context1,
-			(osspriteop_id) instance->saved_context2, (osspriteop_save_area *)instance->saved_context3, NULL, NULL, NULL, NULL);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		return FALSE;
-	}
-
-	instance->vdu_redirection_active = FALSE;
-
-	debug_printf("VDU Redirection Inactive");
-
-	return TRUE;
+	return canvas_stop_redirection(instance->canvas);
 }
 
 /**
@@ -1334,7 +1248,7 @@ osbool game_window_force_redraw(struct game_window_block *instance, int x0, int 
 {
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
 	/* There's no point queueing updates if the window isn't open. */
@@ -1368,7 +1282,7 @@ osbool game_window_set_colour(struct game_window_block *instance, int colour)
 {
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
 	if (colour < 0 || colour >= instance->number_of_colours)
@@ -1403,16 +1317,20 @@ osbool game_window_set_colour(struct game_window_block *instance, int colour)
 
 osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, int x1, int y1)
 {
+	os_coord canvas_size;
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
-	x0 = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x0);
-	y0 = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y0);
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
 
-	x1 = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x1);
-	y1 = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y1);
+	x0 = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x0);
+	y0 = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y0);
+
+	x1 = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x1);
+	y1 = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y1);
 
 	error = xos_writec(os_VDU_SET_GRAPHICS_WINDOW);
 
@@ -1461,7 +1379,7 @@ osbool game_window_clear_clip(struct game_window_block *instance)
 {
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
 	error = xos_writec(os_VDU_RESET_WINDOWS);
@@ -1489,13 +1407,17 @@ osbool game_window_clear_clip(struct game_window_block *instance)
 
 osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_code, int x, int y)
 {
+	os_coord canvas_size;
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
-	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
-	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
+
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	debug_printf("\\lPlotted 0x%x to %d, %d", plot_code, x, y);
 
@@ -1519,13 +1441,18 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 
 osbool game_window_start_path(struct game_window_block *instance, int x, int y)
 {
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	os_coord canvas_size;
+
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
+		return FALSE;
+
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
 		return FALSE;
 
 	game_draw_start_path();
 
-	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
-	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	debug_printf("\\lStart path from %d, %d", x, y);
 
@@ -1543,11 +1470,16 @@ osbool game_window_start_path(struct game_window_block *instance, int x, int y)
 
 osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 {
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	os_coord canvas_size;
+
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
-	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
-	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
+
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	debug_printf("\\lContinue path to %d, %d", x, y);
 
@@ -1570,7 +1502,7 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 {
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
 		return FALSE;
 
 	if (closed && !game_draw_close_subpath())
@@ -1621,23 +1553,25 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 osbool game_window_write_text(struct game_window_block *instance, int x, int y, int size, int align, int colour, osbool monospaced, const char *text)
 {
 	font_f face;
-	os_sprite_palette *palette;
+	os_colour foreground, background;
 	int xpt, ypt, width, height, xoffset = 0, yoffset = 0;
+	os_coord canvas_size;
 	os_error *error;
 
-	if (instance == NULL || instance->vdu_redirection_active == FALSE)
+	if (instance == NULL || canvas_is_redirection_active(instance->canvas) == FALSE)
+		return FALSE;
+
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
 		return FALSE;
 
 	/* Transform the location coordinates. */
 
-	x = game_window_convert_x_coordinate_to_canvas(instance->canvas_size.x, x);
-	y = game_window_convert_y_coordinate_to_canvas(instance->canvas_size.y, y);
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	size *= GAME_WINDOW_PIXEL_SIZE;
 
 	debug_printf("\\lPrint text at %d, %d (OS Units)", x, y);
-
-	palette = (os_sprite_palette *) ((byte *) instance->canvas->sprite_area + instance->canvas->sprite_area->first + 44);
 
 	/* Convert the size in pixels into points. */
 
@@ -1696,7 +1630,10 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 
 	/* Set the colours and plot the text. */
 
-	error = xcolourtrans_set_font_colours(face, palette->entries[0].on, palette->entries[colour].on, 14, NULL, NULL, NULL);
+	foreground = canvas_get_palette_entry(instance->canvas, colour);
+	background = canvas_get_palette_entry(instance->canvas, 0);
+
+	error = xcolourtrans_set_font_colours(face, background, foreground, 14, NULL, NULL, NULL);
 
 	if (error == NULL)
 		error = xfont_paint(face, text, font_OS_UNITS | font_KERN | font_GIVEN_FONT, x + xoffset, y + yoffset, NULL, NULL, 0);
