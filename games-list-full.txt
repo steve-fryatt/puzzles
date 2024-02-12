@@ -5,14 +5,14 @@ When adding games to games-list.txt, their names should be enclosed
 in GAME(...) -- for example GAME(blackbox). Each entry should be on
 its own line.
 
-	blackbox
+*	blackbox
 *	bridges
 	cube
 	dominosa
 	fifteen
 *	filling
 	flip
-	flood
+*	flood
 *	galaxies (B)
 	guess (B)
 	inertia (B)
@@ -31,7 +31,7 @@ its own line.
 	pegs (B)
 	range
 	rect
-	samegame
+*	samegame
 	signpost (B)
 	singles
 	sixteen

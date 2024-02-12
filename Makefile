@@ -39,6 +39,7 @@ GAMESRC := games-list.txt
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
 
 OBJS =  blitter.o			\
+	canvas.o			\
 	frontend.o			\
 	game_draw.o			\
 	game_window.o			\
@@ -47,12 +48,13 @@ OBJS =  blitter.o			\
 	index_window.o			\
 	main.o				\
 	riscos_test.o			\
-	sprite_support.o		\
+	core/blackbox.o			\
 	core/bridges.o			\
 	core/drawing.o			\
 	core/dsf.o			\
 	core/filling.o			\
 	core/findloop.o			\
+	core/flood.o			\
 	core/galaxies.o			\
 	core/grid.o			\
 	core/hat.o			\
@@ -72,6 +74,7 @@ OBJS =  blitter.o			\
 	core/penrose-legacy.o		\
 	core/printing.o			\
 	core/random.o			\
+	core/samegame.o			\
 	core/spectre.o			\
 	core/tents.o			\
 	core/towers.o			\
