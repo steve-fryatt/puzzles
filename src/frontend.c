@@ -63,6 +63,7 @@ struct frontend {
 	int y_size;				/**< The Y size of the window, in game pixels.	*/
 
 	midend *me;				/**< The associated midend.			*/
+	const game *game;			/**< Pointer to the underlying game definition.	*/
 
 	struct game_window_block *window;	/**< The associated game window instance.	*/
 
@@ -186,6 +187,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->me = NULL;
 	new->window = NULL;
+	new->game = gamelist[game_index];
 
 	debug_printf("Creating a new game collection instance: block=0x%x", new);
 
@@ -198,7 +200,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	/* Create the game window. */
 
-	new->window = game_window_create_instance(new, gamelist[game_index]->name);
+	new->window = game_window_create_instance(new, new->game->name);
 	if (new->window == NULL) {
 		hourglass_off();
 		frontend_delete_instance(new);
@@ -207,7 +209,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	/* Create the midend, and agree the window size. */
 
-	new->me = midend_new(new, gamelist[game_index], &riscos_drawing, new->window);
+	new->me = midend_new(new, new->game, &riscos_drawing, new->window);
 	if (new->me == NULL) {
 		hourglass_off();
 		frontend_delete_instance(new);
@@ -279,6 +281,7 @@ void frontend_delete_instance(struct frontend *fe)
 
 enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum frontend_action action)
 {
+	const char *error;
 	enum frontend_event_outcome outcome = FRONTEND_EVENT_UNKNOWN;
 
 	if (fe == NULL || fe->me == NULL)
@@ -295,7 +298,9 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
 	case FRONTEND_ACTION_SOLVE:
-		midend_solve(fe->me);
+		error = midend_solve(fe->me);
+		if (error != NULL)
+			error_report_error((char *) error);
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
 	default:
@@ -380,9 +385,12 @@ void frontend_timer_callback(frontend *fe, float tplus)
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
  *				the redo state of the midend.
+ * \param *can_solve		Pointer to variable in which to return
+ *				the solve state of the midend.
  */
 
-void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit, int *current_preset, osbool *can_undo, osbool *can_redo)
+void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
+		int *current_preset, osbool *can_undo, osbool *can_redo, osbool *can_solve)
 {
 	if (fe == NULL || fe->me == NULL)
 		return;
@@ -398,6 +406,9 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 
 	if (current_preset != NULL)
 		*current_preset = midend_which_preset(fe->me);
+
+	if (can_solve != NULL)
+		*can_solve = (fe->game->can_solve == TRUE) ? TRUE : FALSE;
 }
 
 /**

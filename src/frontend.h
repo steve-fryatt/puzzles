@@ -145,8 +145,11 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
  *				the redo state of the midend.
+ * \param *can_solve		Pointer to variable in which to return
+ *				the solve state of the midend.
  */
 
-void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit, int * current_preset, osbool *can_undo, osbool *can_redo);
+void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
+		int *current_preset, osbool *can_undo, osbool *can_redo, osbool *can_solve);
 
 #endif

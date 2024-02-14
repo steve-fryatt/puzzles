@@ -984,7 +984,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	struct preset_menu *presets = NULL;
 	wimp_menu *presets_submenu = NULL;
 	int presets_limit = 0, current_preset = 0;
-	osbool can_undo = FALSE, can_redo = FALSE;
+	osbool can_undo = FALSE, can_redo = FALSE, can_solve = FALSE;
 
 	if (menu != game_window_menu)
 		return;
@@ -993,7 +993,8 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	if (instance == NULL)
 		return;
 
-	frontend_get_menu_info(instance->fe, &presets, &presets_limit, &current_preset, &can_undo, &can_redo);
+	frontend_get_menu_info(instance->fe, &presets, &presets_limit,
+			&current_preset, &can_undo, &can_redo, &can_solve);
 
 	/* The menu is being newly opened, so set up the one-off data. */
 
@@ -1017,6 +1018,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 
 	menus_shade_entry(menu, GAME_WINDOW_MENU_UNDO, !can_undo);
 	menus_shade_entry(menu, GAME_WINDOW_MENU_REDO, !can_redo);
+	menus_shade_entry(menu, GAME_WINDOW_MENU_SOLVE, !can_solve);
 }
 
 /**
