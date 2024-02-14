@@ -131,6 +131,9 @@ struct game_drawstate {
 	int tilesize;
 	int w;
 	int h;
+
+    blitter *bl1;
+    blitter *bl2;
 };
 
 static char *interpret_move(const game_state *state, game_ui *ui,
@@ -160,6 +163,9 @@ static void game_set_size(drawing *dr, game_drawstate *ds,
 {
 	ds->tilesize = tilesize;
 	ds->w = ds->h = params->size * tilesize;
+
+    ds->bl1 = blitter_new(dr, tilesize, tilesize);
+    ds->bl2 = blitter_new(dr, tilesize, tilesize);
 }
 
 static float *game_colours(frontend *fe, int *ncolours)
@@ -212,11 +218,18 @@ static game_drawstate *game_new_drawstate(drawing *dr, const game_state *state)
     ds->w = 0;
     ds->h = 0;
 
+    ds->bl1 = NULL;
+    ds->bl2 = NULL;
+
     return ds;
 }
 
 static void game_free_drawstate(drawing *dr, game_drawstate *ds)
 {
+    if (ds->bl1 != NULL)
+        blitter_free(dr, ds->bl1);
+    if (ds->bl2 != NULL)
+        blitter_free(dr, ds->bl2);
     sfree(ds);
 }
 
@@ -246,6 +259,16 @@ static void game_redraw(drawing *dr, game_drawstate *ds,
 	draw_rect(dr, 0, 0, ds->w, ds->h, COL_CYAN);
 
 	unclip(dr);
+
+    draw_rect(dr, 31, 31, ds->tilesize-2, ds->tilesize-2, COL_YELLOW);
+    draw_rect_outline(dr, 31, 31, ds->tilesize-2, ds->tilesize-2, COL_BLACK);
+
+    blitter_save(dr, ds->bl1, 0, 0);
+    blitter_save(dr, ds->bl2, 3, 3);
+
+    blitter_load(dr, ds->bl1, 60, 60);
+
+    blitter_load(dr, ds->bl2, 60, 90);
 }
 
 static float game_anim_length(const game_state *oldstate,

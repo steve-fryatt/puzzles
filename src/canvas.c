@@ -152,6 +152,8 @@ struct canvas_block *canvas_create_instance(void)
 
 	new->redirection_active = FALSE;
 
+	debug_printf("Canvas instance 0x%x created", new);
+
 	return new;
 }
 
@@ -165,6 +167,8 @@ void canvas_delete_instance(struct canvas_block *instance)
 {
 	if (instance == NULL)
 		return;
+
+	debug_printf("Deleting canvas instance 0x%x", instance);
 
 	if (instance->sprite_area != NULL)
 		free(instance->sprite_area);
@@ -204,14 +208,19 @@ osbool canvas_configure_area(struct canvas_block *instance, int width, int heigh
 	/* Calculate the size of the area, in bytes.
 	 *
 	 * We require the sprite area header and the sprite header, plus the required
-	 * number of rows with each rounded up to a full number of words.
-	 * If there's to be a palette, we add in space for that, too.
+	 * number of rows with each rounded up to a full number of words (+3) and an
+	 * extra three bytes added on for copying to blitters at non-aligned addresses
+	 * at the start of the row (+3). If there's to be a palette, we add in space
+	 * for that, too.
 	 * 
 	 * We're assuming that we will only work in 256 colour sprites, so one pixel
 	 * is one byte.
 	 */
 
-	area_size = CANVAS_AREA_HEADER_SIZE + CANVAS_SPRITE_HEADER_SIZE + (((width + 3) & 0xfffffffc) * height);
+	if (width > 0 && height > 0)
+		area_size = CANVAS_AREA_HEADER_SIZE + CANVAS_SPRITE_HEADER_SIZE + (((width + 6) & 0xfffffffc) * height);
+	else
+		area_size = CANVAS_SPRITE_HEADER_SIZE;
 
 	if (include_palette)
 		area_size += CANVAS_PALETTE_SIZE;
@@ -236,6 +245,11 @@ osbool canvas_configure_area(struct canvas_block *instance, int width, int heigh
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		free(instance->sprite_area);
 		instance->sprite_area = NULL;
+		return FALSE;
+	}
+
+	if (area_size == CANVAS_AREA_HEADER_SIZE) {
+		error_msgs_report_error("SpriteBadDims");
 		return FALSE;
 	}
 
@@ -605,11 +619,16 @@ osbool canvas_prepare_redraw(struct canvas_block *instance, os_factors *factors,
 }
 
 /**
- * Plot the canvas sprite to the screen.
+ * Plot the canvas sprite to the screen for a redraw operation,
+ * using the palette and all of the necessary translation tables.
+ * 
+ * Any errors which occur will be quietly dropped.
  *
  * \param *instance		The canvas instance to be plotted.
- * \param x			The X coordinate at which to plot the sprite.
- * \param y			The Y coordinate at which to plot the sprite.
+ * \param x			The X coordinate of the bottom left corner of
+ *				the location at which to plot the sprite.
+ * \param y			The Y coordinate of the bottom left corner of
+ *				the location at which to plot the sprite.
  * \param *factors		The pixel translation table to use.
  * \param *translation_table	The colour translation table to use.
  */
@@ -620,6 +639,56 @@ void canvas_redraw_sprite(struct canvas_block *instance, int x, int y, os_factor
 		xosspriteop_put_sprite_scaled(osspriteop_USER_AREA, instance->sprite_area, CANVAS_SPRITE_ID,
 				x, y, (osspriteop_action) 0, factors, translation_table);
 	}
+}
+
+/**
+ * Capture the canvas from screen.
+ *
+ * To avoid passing canvas sizes back and forth between the client
+ * and the canvas, we specify the coordinates from the TOP left of
+ * the sprite area, which suits the Blitter's information.
+ *
+ * \param *instance		The canvas instance to be plotted.
+ * \param x			The X coordinate of the top left corner of
+ *				the location from which to capture the sprite.
+ * \param y			The Y coordinate of the top left corner of
+ *				the location from which to capture the sprite.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool canvas_get_sprite(struct canvas_block *instance, int x, int y)
+{
+	if (instance == NULL || instance->sprite_area == NULL || canvas_does_sprite_exist(instance->sprite_area) == FALSE)
+		return FALSE;
+
+	return (xosspriteop_get_sprite_user_coords(osspriteop_USER_AREA, instance->sprite_area, CANVAS_SPRITE_NAME, FALSE,
+			x, y - CANVAS_PIXEL_SIZE * (instance->size.y - 1),
+			x + CANVAS_PIXEL_SIZE * (instance->size.x - 1), y) == NULL) ? TRUE : FALSE;
+}
+
+/**
+ * Plot the canvas sprite to the screen without palette or translation
+ * tables.
+ *
+ * To avoid passing canvas sizes back and forth between the client
+ * and the canvas, we specify the coordinates from the TOP left of
+ * the sprite area, which suits the Blitter's information.
+ *
+ * \param *instance		The canvas instance to be plotted.
+ * \param x			The X coordinate of the top left corner of
+ *				the location at which to plot the sprite.
+ * \param y			The Y coordinate of the top left corner of
+ *				the location at which to plot the sprite.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool canvas_put_sprite(struct canvas_block *instance, int x, int y)
+{
+	if (instance == NULL || instance->sprite_area == NULL || canvas_does_sprite_exist(instance->sprite_area) == FALSE)
+		return FALSE;
+
+	return (xosspriteop_put_sprite_user_coords(osspriteop_USER_AREA, instance->sprite_area, CANVAS_SPRITE_ID,
+				x, y - CANVAS_PIXEL_SIZE * (instance->size.y - 1), os_ACTION_OVERWRITE) == NULL) ? TRUE : FALSE;
 }
 
 /**

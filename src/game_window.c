@@ -93,14 +93,13 @@
 
 /* Conversion from midend to RISC OS units. */
 
-#define GAME_WINDOW_PIXEL_SIZE 2
-#define game_window_convert_x_coordinate_to_canvas(canvas_x, x) (GAME_WINDOW_PIXEL_SIZE * (x))
-#define game_window_convert_y_coordinate_to_canvas(canvas_y, y) (GAME_WINDOW_PIXEL_SIZE * ((canvas_y) - ((y) + 1)))
+#define game_window_convert_x_coordinate_to_canvas(canvas_x, x) (CANVAS_PIXEL_SIZE * (x))
+#define game_window_convert_y_coordinate_to_canvas(canvas_y, y) (CANVAS_PIXEL_SIZE * ((canvas_y) - ((y) + 1)))
 
 /* Conversion from desktop to window coordinates. */
 
-#define game_window_convert_to_window_x_coordinate(window, x) (((x) - (window)->visible.x0 + (window)->xscroll) / GAME_WINDOW_PIXEL_SIZE)
-#define game_window_convert_to_window_y_coordinate(window, y) (-(((y) - (window)->visible.y1 + (window)->yscroll) / GAME_WINDOW_PIXEL_SIZE))
+#define game_window_convert_to_window_x_coordinate(window, x) (((x) - (window)->visible.x0 + (window)->xscroll) / CANVAS_PIXEL_SIZE)
+#define game_window_convert_to_window_y_coordinate(window, y) (-(((y) - (window)->visible.y1 + (window)->yscroll) / CANVAS_PIXEL_SIZE))
 
 /* Workspace for calculating string sizes. */
 
@@ -1569,7 +1568,7 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
 	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
-	size *= GAME_WINDOW_PIXEL_SIZE;
+	size *= CANVAS_PIXEL_SIZE;
 
 	debug_printf("\\lPrint text at %d, %d (OS Units)", x, y);
 
@@ -1656,6 +1655,7 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
  * \param *instance	The instance to take the blitter.
  * \param width		The width of the blitter, in pixels.
  * \param height	The height of the blitter, in pixels.
+ * \return		Pointer to the new blitter.
  */
 
 blitter *game_window_create_blitter(struct game_window_block *instance, int width, int height)
@@ -1663,9 +1663,9 @@ blitter *game_window_create_blitter(struct game_window_block *instance, int widt
 	if (instance == NULL)
 		return NULL;
 
-	debug_printf("\\OBlitter New");
+	debug_printf("\\ORequesting new blitter: width=%d, height=%d", width, height);
 
-	return (blitter *) blitter_create(instance->blitters, width * GAME_WINDOW_PIXEL_SIZE, height * GAME_WINDOW_PIXEL_SIZE);
+	return (blitter *) blitter_create(instance->blitters, width, height);
 }
 
 /**
@@ -1673,6 +1673,7 @@ blitter *game_window_create_blitter(struct game_window_block *instance, int widt
  * 
  * \param *instance	The instance containing the blitter.
  * \param *blitter	The blitter to be deleted.
+ * \return		TRUE if successful; else FALSE.
  */
 
 osbool game_window_delete_blitter(struct game_window_block *instance, blitter *blitter)
@@ -1685,16 +1686,65 @@ osbool game_window_delete_blitter(struct game_window_block *instance, blitter *b
 	return blitter_delete(instance->blitters, (struct blitter_block *) blitter);
 }
 
+/**
+ * Save a section of the game window to a blitter.
+ *
+ * \param *instance	The instance containing the blitter.
+ * \param *blitter	The blitter to save to.
+ * \param x		The X coordinate of the top-left of the save area.
+ * \param y		The Y coordinate of the top-left of the save area.
+ * \return		TRUE if successful; else FALSE.
+ */
+
 osbool game_window_save_blitter(struct game_window_block *instance, blitter *blitter, int x, int y)
 {
-	debug_printf("\\OBlitter Save");
+	os_coord canvas_size;
 
-	return FALSE;
+	if (instance == NULL || blitter == NULL)
+		return FALSE;
+
+	debug_printf("\\OBlitter Save from x=%d, y=%d", x, y);
+
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
+
+	/* Transform the location coordinates. */
+
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
+
+	return blitter_store_from_canvas((struct blitter_block *) blitter, x, y);
 }
+
+/**
+ * Update a section of the game window with the contents of a blitter.
+ * 
+ * If the coordinates are supplied as BLITTER_FROMSAVED, the content
+ * will be written back to the location from which it was saved.
+ *
+ * \param *instance	The instance containing the blitter.
+ * \param *blitter	The blitter to save to.
+ * \param x		The X coordinate of the top-left of the plot area.
+ * \param y		The Y coordinate of the top-left of the plot area.
+ * \return		TRUE if successful; else FALSE.
+ */
 
 osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *blitter, int x, int y)
 {
-	debug_printf("\\OBlitter Load");
+	os_coord canvas_size;
 
-	return FALSE;
+	if (instance == NULL || blitter == NULL)
+		return FALSE;
+
+	debug_printf("\\OBlitter Load to x=%d, y=%d", x, y);
+
+	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
+		return FALSE;
+
+	/* Transform the location coordinates. */
+
+	x = (x == BLITTER_FROMSAVED) ? -1 : game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = (y == BLITTER_FROMSAVED) ? -1 : game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
+
+	return blitter_paint_to_canvas((struct blitter_block *) blitter, x, y);
 }

@@ -66,8 +66,8 @@ void blitter_delete_set(struct blitter_set_block *set);
  * Create a new blitter within a set.
  * 
  * \param *set		Pointer to the set to hold the blitter.
- * \param width		The width of the blitter, in OS units.
- * \param height	The height of the blitter, in OS units.
+ * \param width		The width of the blitter, in pixels.
+ * \param height	The height of the blitter, in pixels.
  * \return		Pointer to the new blitter, or NULL.
  */
 
@@ -82,6 +82,29 @@ struct blitter_block *blitter_create(struct blitter_set_block *set, int width, i
  */
 
 osbool blitter_delete(struct blitter_set_block *set, struct blitter_block *blitter);
+
+/**
+ * Use a blitter to save an area from the current screen or canvas.
+ * 
+ * \param *blitter	Pointer to the blitter to be used.
+ * \param x		The X coordinate of the area to save, in OS units.
+ * \param y		The Y coordinate of the area to save, in OS units.
+ * \return		TRUE if successful; else FALSE.
+*/
+
+osbool blitter_store_from_canvas(struct blitter_block *blitter, int x, int y);
+
+/**
+ * Paint the contents of a blitter to the current screen or canvas.
+ * If a coordinate is -1, the stored coordinate will be used instead.
+ * 
+ * \param *blitter	Pointer to the blitter to be used.
+ * \param x		The X coordinate of the area to write to, in OS units.
+ * \param y		The Y coordinate of the area to write to, in OS units.
+ * \return		TRUE if successful; else FALSE.
+ */
+
+osbool blitter_paint_to_canvas(struct blitter_block *blitter, int x, int y);
 
 #endif
 

@@ -33,6 +33,12 @@
 #include "oslib/osspriteop.h"
 
 /**
+ * The size of a canvas pixel, in OS units.
+ */
+
+#define CANVAS_PIXEL_SIZE 2
+
+/**
  * A sprite support instance, containing a sprite and
  * associated redirection details.
  */
@@ -153,7 +159,10 @@ osbool canvas_is_redirection_active(struct canvas_block *instance);
 osbool canvas_prepare_redraw(struct canvas_block *instance, os_factors *factors, osspriteop_trans_tab *translation_table);
 
 /**
- * Plot the canvas sprite to the screen.
+ * Plot the canvas sprite to the screen for a redraw operation,
+ * using the palette and all of the necessary translation tables.
+ * 
+ * Any errors which occur will be quietly dropped.
  *
  * \param *instance		The canvas instance to be plotted.
  * \param x			The X coordinate at which to plot the sprite.
@@ -163,6 +172,41 @@ osbool canvas_prepare_redraw(struct canvas_block *instance, os_factors *factors,
  */
 
 void canvas_redraw_sprite(struct canvas_block *instance, int x, int y, os_factors *factors, osspriteop_trans_tab *translation_table);
+
+/**
+ * Capture the canvas from screen.
+ *
+ * To avoid passing canvas sizes back and forth between the client
+ * and the canvas, we specify the coordinates from the TOP left of
+ * the sprite area, which suits the Blitter's information.
+ *
+ * \param *instance		The canvas instance to be plotted.
+ * \param x			The X coordinate of the top left corner of
+ *				the location from which to capture the sprite.
+ * \param y			The Y coordinate of the top left corner of
+ *				the location from which to capture the sprite.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool canvas_get_sprite(struct canvas_block *instance, int x, int y);
+
+/**
+ * Plot the canvas sprite to the screen without palette or translation
+ * tables.
+ *
+ * To avoid passing canvas sizes back and forth between the client
+ * and the canvas, we specify the coordinates from the TOP left of
+ * the sprite area, which suits the Blitter's information.
+ *
+ * \param *instance		The canvas instance to be plotted.
+ * \param x			The X coordinate of the top left corner of
+ *				the location at which to plot the sprite.
+ * \param y			The Y coordinate of the top left corner of
+ *				the location at which to plot the sprite.
+ * \return			TRUE if successful; otherwise FALSE.
+ */
+
+osbool canvas_put_sprite(struct canvas_block *instance, int x, int y);
 
 /**
  * Save the canvas sprite area to disc.

@@ -40,6 +40,7 @@ MissingIcon:Icon definition not found in template '%0'.
 
 SpriteBadArea:We can only work with sprite areas containing single sprites.
 SpriteNoSpaceForPalette:There isn't enough space for the palette.
+SpriteBadDims:Invalid canvas dimensions supplied.
 
 BadBlitterSet:The blitter to be deleted was not found in the set.
 
