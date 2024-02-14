@@ -420,7 +420,7 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 		*can_solve = (game->can_solve == TRUE) ? TRUE : FALSE;
 
 	if (game != NULL && can_configure != NULL)
-		*can_solve = (game->can_configure == TRUE) ? TRUE : FALSE;
+		*can_configure = (game->can_configure == TRUE) ? TRUE : FALSE;
 }
 
 /**
