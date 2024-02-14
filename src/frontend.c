@@ -605,7 +605,7 @@ static void riscos_clip(void *handle, int x, int y, int w, int h)
 {
 	debug_printf("\\vClip from %d,%d, width %d, height %d", x, y, w, h);
 
-	game_window_set_clip(handle, x, y + h - 1, x + w - 1, y);
+	game_window_set_clip(handle, x, y, x + w - 1, y + h - 1);
 }
 
 /**

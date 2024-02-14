@@ -1255,12 +1255,17 @@ osbool game_window_force_redraw(struct game_window_block *instance, int x0, int 
 	if (instance->handle == NULL || windows_get_open(instance->handle) == FALSE)
 		return TRUE;
 
-	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d",
-			2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
+	x0 = x0 * CANVAS_PIXEL_SIZE;
+	y0 = -y0 * CANVAS_PIXEL_SIZE;
+
+	x1 = (x1 + 1) * CANVAS_PIXEL_SIZE;
+	y1 = -(y1 + 1) * CANVAS_PIXEL_SIZE;
+
+	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d", x0, y1, x1, y0);
 
 	/* Queue the update. */
 
-	error = xwimp_force_redraw(instance->handle, 2 * x0, -2 * y1, 2 * (x1 + 1), -2 * (y0 - 1));
+	error = xwimp_force_redraw(instance->handle, x0, y1, x1, y0);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;
@@ -1340,10 +1345,10 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 		error = xos_writec((x0 >> 8) & 0xff);
 
 	if (error == NULL)
-		error = xos_writec(y0 & 0xff);
+		error = xos_writec(y1 & 0xff);
 
 	if (error == NULL)
-		error = xos_writec((y0 >> 8) & 0xff);
+		error = xos_writec((y1 >> 8) & 0xff);
 
 	if (error == NULL)
 		error = xos_writec(x1 & 0xff);
@@ -1352,17 +1357,17 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 		error = xos_writec((x1 >> 8) & 0xff);
 
 	if (error == NULL)
-		error = xos_writec(y1 & 0xff);
+		error = xos_writec(y0 & 0xff);
 
 	if (error == NULL)
-		error = xos_writec((y1 >> 8) & 0xff);
+		error = xos_writec((y0 >> 8) & 0xff);
 
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 		return FALSE;
 	}
 
-	debug_printf("\\lSet clip to %d,%d -- %d,%d", x0, y0, x1, y1);
+	debug_printf("\\lSet clip to %d,%d -- %d,%d", x0, y1, x1, y0);
 
 	return TRUE;
 }
