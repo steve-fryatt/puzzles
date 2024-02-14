@@ -1616,11 +1616,11 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 	height = game_window_fonts_scan_block.bbox.y1 - game_window_fonts_scan_block.bbox.y0;
 
 	if (align & ALIGN_HLEFT)
-		xoffset = - (game_window_fonts_scan_block.bbox.x0 + width);
+		xoffset = - game_window_fonts_scan_block.bbox.x0;
 	else if (align & ALIGN_HCENTRE)
 		xoffset = - (game_window_fonts_scan_block.bbox.x0 + (width / 2));
 	else if (align & ALIGN_HRIGHT)
-		xoffset = - game_window_fonts_scan_block.bbox.x0;
+		xoffset = - (game_window_fonts_scan_block.bbox.x0 + width);
 
 	if (align & ALIGN_VCENTRE)
 		yoffset = - (game_window_fonts_scan_block.bbox.y0 + (height / 2));
