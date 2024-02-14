@@ -1054,7 +1054,9 @@ static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu)
 
 osbool game_window_create_canvas(struct game_window_block *instance, int x, int y, float *colours, int number_of_colours)
 {
-	os_coord canvas_size;
+	int window_height;
+	os_coord canvas_size, centre;
+	wimp_window_state state;
 	os_box extent;
 
 	if (instance == NULL)
@@ -1096,18 +1098,38 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	if (instance->handle != NULL) {
 		extent.x0 = 0;
-		extent.x1 = 2 * x;
-		extent.y0 = -((2 * y) + ((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT));
+		extent.x1 = instance->window_size.x;
+		extent.y0 = -(instance->window_size.y + ((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT));
 		extent.y1 = 0;
 		wimp_set_extent(instance->handle, &extent);
 	}
 
 	if (instance->status_bar != NULL) {
 		extent.x0 = 0;
-		extent.x1 = 2 * x;
+		extent.x1 = instance->window_size.x;
 		extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
 		extent.y1 = 0;
 		wimp_set_extent(instance->status_bar, &extent);
+	}
+
+	/* Update the visible area. */
+
+	if (instance->handle != NULL) {
+		state.w = instance->handle;
+		wimp_get_window_state(&state);
+
+		centre.x = state.visible.x0 + ((state.visible.x1 - state.visible.x0) / 2);
+		centre.y = state.visible.y0 + ((state.visible.y1 - state.visible.y0) / 2);
+
+		window_height = instance->window_size.y + ((instance->status_bar == NULL) ? 0 : GAME_WINDOW_STATUS_BAR_HEIGHT);
+
+		state.visible.x0 = centre.x - (instance->window_size.x / 2);
+		state.visible.y0 = centre.y - (window_height / 2);
+
+		state.visible.x1 = state.visible.x0 + instance->window_size.x;
+		state.visible.y1 = state.visible.y0 + window_height;
+
+		wimp_open_window((wimp_open *) &state);
 	}
 
 	return TRUE;
