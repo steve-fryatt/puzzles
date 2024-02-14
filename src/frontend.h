@@ -141,6 +141,8 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
  *				the number of entries in the presets menu.
  * \param *current_preset	Pointer to a variable in which to return
  *				the currently-active preset.
+ * \param *can_configure	Pointer to variable in which to return
+ *				the configure state of the midend.
  * \param *can_undo		Pointer to variable in which to return
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
@@ -150,6 +152,6 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
  */
 
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
-		int *current_preset, osbool *can_undo, osbool *can_redo, osbool *can_solve);
+		int *current_preset, osbool *can_configure, osbool *can_undo, osbool *can_redo, osbool *can_solve);
 
 #endif

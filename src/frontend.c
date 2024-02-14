@@ -63,7 +63,6 @@ struct frontend {
 	int y_size;				/**< The Y size of the window, in game pixels.	*/
 
 	midend *me;				/**< The associated midend.			*/
-	const game *game;			/**< Pointer to the underlying game definition.	*/
 
 	struct game_window_block *window;	/**< The associated game window instance.	*/
 
@@ -166,6 +165,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 {
 	struct frontend *new;
 	osbool status_bar = FALSE;
+	const game *game = NULL;
 
 	/* Sanity check the game index that we're to use. */
 
@@ -173,6 +173,8 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 		return;
 
 	hourglass_on();
+
+	game = gamelist[game_index];
 
 	/* Allocate the memory for the instance from the heap. */
 
@@ -187,7 +189,6 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	new->me = NULL;
 	new->window = NULL;
-	new->game = gamelist[game_index];
 
 	debug_printf("Creating a new game collection instance: block=0x%x", new);
 
@@ -200,7 +201,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	/* Create the game window. */
 
-	new->window = game_window_create_instance(new, new->game->name);
+	new->window = game_window_create_instance(new, game->name);
 	if (new->window == NULL) {
 		hourglass_off();
 		frontend_delete_instance(new);
@@ -209,7 +210,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 
 	/* Create the midend, and agree the window size. */
 
-	new->me = midend_new(new, new->game, &riscos_drawing, new->window);
+	new->me = midend_new(new, game, &riscos_drawing, new->window);
 	if (new->me == NULL) {
 		hourglass_off();
 		frontend_delete_instance(new);
@@ -381,6 +382,8 @@ void frontend_timer_callback(frontend *fe, float tplus)
  *				the number of entries in the presets menu.
  * \param *current_preset	Pointer to a variable in which to return
  *				the currently-active preset.
+ * \param *can_configure	Pointer to variable in which to return
+ *				the configure state of the midend.
  * \param *can_undo		Pointer to variable in which to return
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
@@ -390,10 +393,14 @@ void frontend_timer_callback(frontend *fe, float tplus)
  */
 
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
-		int *current_preset, osbool *can_undo, osbool *can_redo, osbool *can_solve)
+		int *current_preset, osbool *can_configure, osbool *can_undo, osbool *can_redo, osbool *can_solve)
 {
+	const game *game;
+
 	if (fe == NULL || fe->me == NULL)
 		return;
+
+	game = midend_which_game(fe->me);
 
 	if (can_undo != NULL)
 		*can_undo = midend_can_undo(fe->me) ? TRUE : FALSE;
@@ -407,8 +414,11 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 	if (current_preset != NULL)
 		*current_preset = midend_which_preset(fe->me);
 
-	if (can_solve != NULL)
-		*can_solve = (fe->game->can_solve == TRUE) ? TRUE : FALSE;
+	if (game != NULL && can_solve != NULL)
+		*can_solve = (game->can_solve == TRUE) ? TRUE : FALSE;
+
+	if (game != NULL && can_configure != NULL)
+		*can_solve = (game->can_configure == TRUE) ? TRUE : FALSE;
 }
 
 /**
