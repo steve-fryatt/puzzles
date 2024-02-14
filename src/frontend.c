@@ -290,8 +290,10 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 
 	switch (action) {
 	case FRONTEND_ACTION_SIMPLE_NEW:
+		hourglass_on();
 		midend_new_game(fe->me);
 		frontend_negotiate_game_size(fe);
+		hourglass_off();
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
 	case FRONTEND_ACTION_RESTART:
