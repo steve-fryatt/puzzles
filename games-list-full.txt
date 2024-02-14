@@ -7,41 +7,41 @@ its own line.
 
 *	blackbox
 *	bridges
-	cube
-	dominosa
-	fifteen
+*	cube
+*	dominosa
+*	fifteen
 *	filling
-	flip
+*	flip
 *	flood
 *	galaxies (B)
-	guess (B)
-	inertia (B)
-	keen
-	lightup
+*	guess (B)
+*	inertia (B)
+*	keen
+*	lightup
 	loopy
-	magnets
+*	magnets
 *	map (B)
 *	mines
-	mosaic
+*	mosaic
 *	net
-	netslide
-	palisade
+*	netslide
+*	palisade
 	pattern
-	pearl
-	pegs (B)
-	range
-	rect
+*	pearl
+*	pegs (B)
+*	range
+*	rect
 *	samegame
-	signpost (B)
-	singles
-	sixteen
-	slant
-	solo
+*	signpost (B)
+*	singles
+*	sixteen
+*	slant
+*	solo
 *	tents
 *	towers
-	tracks
-	twiddle
+*	tracks
+*	twiddle
 *	undead
 *	unequal
-	unruly
+*	unruly
 *	untangle

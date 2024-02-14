@@ -50,37 +50,66 @@ OBJS =  blitter.o			\
 	riscos_test.o			\
 	core/blackbox.o			\
 	core/bridges.o			\
+	core/combi.o			\
+	core/cube.o			\
+	core/divvy.o			\
+	core/dominosa.o			\
 	core/drawing.o			\
 	core/dsf.o			\
+	core/fifteen.o			\
 	core/filling.o			\
 	core/findloop.o			\
+	core/flip.o			\
 	core/flood.o			\
 	core/galaxies.o			\
 	core/grid.o			\
+	core/guess.o			\
 	core/hat.o			\
+	core/inertia.o			\
+	core/keen.o			\
 	core/latin.o			\
+	core/laydomino.o		\
+	core/lightup.o			\
 	core/list.o			\
 	core/loopgen.o			\
 	core/loopy.o			\
+	core/magnets.o			\
 	core/malloc.o			\
 	core/map.o			\
 	core/matching.o			\
 	core/misc.o			\
 	core/midend.o			\
 	core/mines.o			\
+	core/mosaic.o			\
 	core/net.o			\
 	core/netslide.o			\
+	core/palisade.o			\
+	core/pattern.o			\
+	core/pearl.o			\
+	core/pegs.o			\
 	core/penrose.o			\
 	core/penrose-legacy.o		\
 	core/printing.o			\
 	core/random.o			\
+	core/range.o			\
+	core/rect.o			\
 	core/samegame.o			\
+	core/signpost.o			\
+	core/singles.o			\
+	core/sixteen.o			\
+	core/slant.o			\
+	core/solo.o			\
+	core/sort.o			\
 	core/spectre.o			\
 	core/tents.o			\
 	core/towers.o			\
+	core/tracks.o			\
+	core/tdq.o			\
 	core/tree234.o			\
+	core/twiddle.o			\
 	core/undead.o			\
 	core/unequal.o			\
+	core/unruly.o			\
 	core/untangle.o
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
