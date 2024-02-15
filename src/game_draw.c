@@ -73,6 +73,12 @@ static osbool game_draw_valid_path = TRUE;
 
 static draw_path_element *game_draw_get_new_element(size_t element_size);
 
+/* An error to be returned when an invalid path is plotted. */
+
+static const os_error invalid_path_error = {
+	255, "Attempt to draw an invalid path."
+};
+
 
 /**
  * Draw a rectangle on screen.
@@ -255,10 +261,8 @@ os_error *game_draw_plot_path(int width)
 			draw_CAP_SQUARE, draw_CAP_SQUARE, 0, 0x7fffffff,
 			0, 0, 0, 0 };
 
-	if (!game_draw_valid_path) {
-		debug_printf("\\rInvalid path!!!!");
-		return NULL;
-	}
+	if (!game_draw_valid_path)
+		return (os_error *) &invalid_path_error;
 
 	return xdraw_stroke((draw_path*) game_draw_path, draw_FILL_NONZERO, NULL,
 			0, width << 8, &line_style, NULL);
@@ -277,10 +281,8 @@ os_error *game_draw_fill_path(int width)
 			draw_CAP_SQUARE, draw_CAP_SQUARE, 0, 0x7fffffff,
 			0, 0, 0, 0 };
 
-	if (!game_draw_valid_path) {
-		debug_printf("\\rInvalid path!!!!");
-		return NULL;
-	}
+	if (!game_draw_valid_path)
+		return (os_error *) &invalid_path_error;
 
 	return xdraw_fill((draw_path*) game_draw_path, draw_FILL_NONZERO, NULL, 0);
 }
