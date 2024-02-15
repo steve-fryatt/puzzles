@@ -42,10 +42,6 @@
 
 /* SF-Lib header files. */
 
-#include "sflib/debug.h"
-//#include "sflib/errors.h"
-//#include "sflib/string.h"
-//#include "sflib/ihelp.h"
 #include "sflib/menus.h"
 
 /* Application header files */
@@ -188,7 +184,6 @@ static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struc
 		return;
 
 	for (i = 0; i < definition->n_entries; i++) {
-		debug_printf("Compare %d and %d for entry %d", definition->entries[i].id, id, i);
 		menus_tick_entry(menu, i, (definition->entries[i].id == id) ? TRUE : FALSE);
 
 		if (menu->entries[i].sub_menu != NULL && definition->entries[i].submenu != NULL)
@@ -292,8 +287,6 @@ static void game_window_backend_menu_destroy_submenu(wimp_menu *menu)
 		if (!(entry->menu_flags & wimp_MENU_LAST))
 			entry++;
 	} while (!(entry->menu_flags & wimp_MENU_LAST));
-
-	debug_printf("Freeing 0x%x from menu", menu);
 
 	free(menu);
 }
