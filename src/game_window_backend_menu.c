@@ -50,7 +50,6 @@
 
 #include "core/puzzles.h"
 #include "frontend.h"
-#include "game_draw.h"
 
 /**
  * The root of the game window backend menu.
@@ -64,7 +63,7 @@ static wimp_menu *game_window_backend_menu_root = NULL;
 
 static struct preset_menu *game_window_backend_menu_definition = NULL;
 
-/* Static function presets. */
+/* Static function prototypes. */
 
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool root);
 static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struct preset_menu *definition, int id, osbool root);
