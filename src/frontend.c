@@ -424,6 +424,48 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 }
 
 /**
+ * Return details of a configuration set from the midend.
+ *
+ * \param *fe			The frontend handle.
+ * \param type			The configuration type to be returned.
+ * \param **config_data		Pointer to a variable in which to return
+ *				a pointer to the configuration data.
+ * \param **window_title	Pointer to a variable in which to return
+ *				a pointer to the proposed window title.
+ */
+
+void frontend_get_config_info(struct frontend *fe, int type, config_item **config_data, char **window_title)
+{
+	if (fe == NULL || fe->me == NULL)
+		return;
+
+	*config_data = midend_get_config(fe->me, type, window_title);
+}
+
+/**
+ * Update details of a configuration set to the midend.
+ *
+ * \param *fe			The frontend handle.
+ * \param type			The configuration type being supplied.
+ * \param *config_data		Pointer to the updated configuration data.
+ * \return			TRUE if successful; FALSE on failure.
+ */
+
+osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data)
+{
+	const char *error;
+
+	if (fe == NULL || fe->me == NULL || config_data == NULL)
+		return FALSE;
+
+	error = midend_set_config(fe->me, type, config_data);
+	if (error != NULL)
+		error_report_error((char *) error);
+
+	return (error == NULL) ? TRUE : FALSE;
+}
+
+/**
  * Handle incoming Message_ModeChange.
  *
  * \param *message		The message data block from the Wimp.

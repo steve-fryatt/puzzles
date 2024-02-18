@@ -45,11 +45,18 @@ menu(GameWindowMenu, "")
 	item("Type") {
 		dotted;
 	}
-	item("New Game");
 	item("Restart");
+	item("New game");
+	item("Specific game...");
+	item("Random seed...") {
+		dotted;
+	}
 	item("Solve") {
 		dotted;
 	}
 	item("Undo    F8");
-	item("Redo    F9");
+	item("Redo    F9") {
+		dotted;
+	}
+	item("Preferences...");
 }

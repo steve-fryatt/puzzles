@@ -42,6 +42,7 @@ OBJS =  blitter.o			\
 	canvas.o			\
 	frontend.o			\
 	game_draw.o			\
+	game_config.o			\
 	game_window.o			\
 	game_window_backend_menu.o	\
 	iconbar.o			\

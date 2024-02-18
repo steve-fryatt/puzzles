@@ -30,7 +30,15 @@ Version:%0 (%1)
 TaskSpr:!puzzles
 SupportURL:http://www.stevefryatt.org.uk/risc-os/games
 
+# Menu entries
+
+TypeTitle:Type
+TypeCustom:Custom...
+
 # Messages and errors
+
+LookupFailedGMenu:Failed to look up the menu entry tokens for the game menu.
+NoMemInitGMenu:There was not enough memory to initialise the game menu.
 
 NoMemNewGame:There was not enough memory to create a new game.
 
@@ -64,11 +72,14 @@ Help.ProgInfo.Porter:This \w displays information about Puzzles.|MSteve created 
 # Where duplicate menu entries exist, items may be grouped and numbering will not be contiguous.
 
 Help.GameMenu.00:\Rselect a new game configuration.
-Help.GameMenu.01:\Sstart a new game.
-Help.GameMenu.02:\Sre-start the current game.
-Help.GameMenu.03:\Sshow the solution to the current game.
-Help.GameMenu.04:\Sundo the most recent move in the current game.
-Help.GameMenu.05:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.01:\Sre-start the current game.
+Help.GameMenu.02:\Sstart a new game.
+Help.GameMenu.03:\Sread or supply the games specific unique ID.
+Help.GameMenu.04:\Sread or supply the game's random seed.
+Help.GameMenu.05:\Sshow the solution to the current game.
+Help.GameMenu.06:\Sundo the most recent move in the current game.
+Help.GameMenu.07:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.08:\Sconfigure the game options.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.

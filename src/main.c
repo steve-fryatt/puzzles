@@ -62,6 +62,8 @@
 #include "frontend.h"
 #include "index_window.h"
 #include "game_window.h"
+#include "game_window_backend_menu.h"
+#include "game_config.h"
 #include "iconbar.h"
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -214,6 +216,8 @@ static void main_initialise(void)
 	iconbar_initialise();
 	index_window_initialise();
 	game_window_initialise();
+	game_window_backend_menu_initialise();
+	game_config_initialise();
 	frontend_initialise();
 	url_initialise();
 

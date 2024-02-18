@@ -68,16 +68,20 @@
 #include "blitter.h"
 #include "canvas.h"
 #include "game_draw.h"
+#include "game_config.h"
 #include "game_window_backend_menu.h"
 
 /* Game Window menu */
 
 #define GAME_WINDOW_MENU_PRESETS 0
-#define GAME_WINDOW_MENU_NEW 1
-#define GAME_WINDOW_MENU_RESTART 2
-#define GAME_WINDOW_MENU_SOLVE 3
-#define GAME_WINDOW_MENU_UNDO 4
-#define GAME_WINDOW_MENU_REDO 5
+#define GAME_WINDOW_MENU_RESTART 1
+#define GAME_WINDOW_MENU_NEW 2
+#define GAME_WINDOW_MENU_SPECIFIC 3
+#define GAME_WINDOW_MENU_RANDOM_SEED 4
+#define GAME_WINDOW_MENU_SOLVE 5
+#define GAME_WINDOW_MENU_UNDO 6
+#define GAME_WINDOW_MENU_REDO 7
+#define GAME_WINDOW_MENU_PREFERENCES 8
 
 /* The height of the status bar. */
 
@@ -127,6 +131,11 @@ struct game_window_block {
 
 	struct canvas_block *canvas;		/**< The details for the window canvas.		*/
 
+	struct game_config_block *specific;	/**< The config window for the specific code.	*/
+	struct game_config_block *random_seed;	/**< The config window for the random seed.	*/
+	struct game_config_block *preferences;	/**< The config window for the preferences.	*/
+	struct game_config_block *custom;	/**< The config window for the custom game.	*/
+
 	char *status_text;			/**< The status bar text.			*/
 
 	os_coord window_size;			/**< The size of the window, in pixels.		*/
@@ -153,6 +162,7 @@ static osbool game_window_drag_in_progress(void *data);
 static void game_window_drag_end(wimp_dragged *drag, void *data);
 static osbool game_window_keypress_handler(wimp_key *key);
 static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
+static osbool game_window_config_complete(int type, config_item *config_data, enum game_config_outcome outcome, void *data);
 static void game_window_redraw_handler(wimp_draw *redraw);
 static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
 static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu);
@@ -220,6 +230,11 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	new->canvas = canvas_create_instance();
 	new->blitters = blitter_create_set();
 
+	new->specific = NULL;
+	new->random_seed = NULL;
+	new->preferences = NULL;
+	new->custom = NULL;
+
 	if (new->canvas == NULL || new->blitters == NULL) {
 		game_window_delete_instance(new);
 		return NULL;
@@ -265,6 +280,18 @@ void game_window_delete_instance(struct game_window_block *instance)
 
 	if (instance->blitters != NULL)
 		blitter_delete_set(instance->blitters);
+
+	if (instance->specific != NULL)
+		game_config_delete_instance(instance->specific);
+
+	if (instance->random_seed != NULL)
+		game_config_delete_instance(instance->random_seed);
+
+	if (instance->preferences != NULL)
+		game_config_delete_instance(instance->preferences);
+
+	if (instance->custom != NULL)
+		game_config_delete_instance(instance->custom);
 
 	free(instance);
 }
@@ -903,6 +930,10 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 {
 	struct game_window_block *instance;
 	struct game_params *params;
+	wimp_pointer pointer;
+	config_item *config_data = NULL;
+	char *window_title = NULL;
+	osbool custom = FALSE;
 
 	if (menu != game_window_menu)
 		return;
@@ -910,6 +941,8 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 	instance = event_get_window_user_data(w);
 	if (instance == NULL)
 		return;
+
+	wimp_get_pointer_info(&pointer);
 
 	switch (selection->items[0]) {
 	case GAME_WINDOW_MENU_NEW:
@@ -928,11 +961,84 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 		frontend_handle_key_event(instance->fe, 0, 0, UI_REDO);
 		break;
 	case GAME_WINDOW_MENU_PRESETS:
-		params = game_window_backend_menu_decode(selection, 1);
-		if (params != NULL)
+		params = game_window_backend_menu_decode(selection, 1, &custom);
+		if (params != NULL) {
 			frontend_start_new_game_from_parameters(instance->fe, params);
+		} else if (custom == TRUE && instance->custom == NULL) {
+			frontend_get_config_info(instance->fe, CFG_SETTINGS, &config_data, &window_title);
+			instance->custom = game_config_create_instance(CFG_SETTINGS, config_data, window_title, &pointer, game_window_config_complete, instance);
+		}
+		break;
+	case GAME_WINDOW_MENU_SPECIFIC:
+		if (instance->specific == NULL) {
+			frontend_get_config_info(instance->fe, CFG_DESC, &config_data, &window_title);
+			instance->specific = game_config_create_instance(CFG_DESC, config_data, window_title, &pointer, game_window_config_complete, instance);
+		}
+		break;
+	case GAME_WINDOW_MENU_RANDOM_SEED:
+		if (instance->random_seed == NULL) {
+			frontend_get_config_info(instance->fe, CFG_SEED, &config_data, &window_title);
+			instance->random_seed = game_config_create_instance(CFG_SEED, config_data, window_title, &pointer, game_window_config_complete, instance);
+		}
+		break;
+	case GAME_WINDOW_MENU_PREFERENCES:
+		if (instance->preferences == NULL) {
+			frontend_get_config_info(instance->fe, CFG_PREFS, &config_data, &window_title);
+			instance->preferences = game_config_create_instance(CFG_PREFS, config_data, window_title, &pointer, game_window_config_complete, instance);
+		}
 		break;
 	}
+}
+
+/**
+ * Handle user updates from the Game Config boxes.
+ * 
+ * \param type			The type of data being returned.
+ * \param *config_data		Pointer to the config data structure.
+ * \param outcome		The outcome from the dialogue box.
+ * \param *data			Pointer to the associated Game Window instance.
+ * \return			TRUE if the midend accepted the data;
+ *				otherwise FALSE.
+ */
+
+static osbool game_window_config_complete(int type, config_item *config_data, enum game_config_outcome outcome, void *data)
+{
+	struct game_window_block *instance = data;
+	osbool midend_response = TRUE;
+
+	if (instance == NULL)
+		return FALSE;
+
+	/* If the choices were set, update the configuration. */
+
+	if (outcome & GAME_CONFIG_SET)
+		midend_response = frontend_set_config_info(instance->fe, type, config_data);
+
+	/* Delete our reference to the dialogue unless Hold Open is requested. */
+
+	if (!(outcome & GAME_CONFIG_HOLD_OPEN) && midend_response) {
+		switch (type) {
+		case CFG_DESC:
+			instance->specific = NULL;
+			break;
+		case CFG_SEED:
+			instance->random_seed = NULL;
+			break;
+		case CFG_PREFS:
+			instance->preferences = NULL;
+			break;
+		case CFG_SETTINGS:
+			instance->custom = NULL;
+			break;
+		}
+	}
+
+	/* If the choices were set, reflect them in a new game. */
+
+	if (outcome & GAME_CONFIG_SET)
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_SIMPLE_NEW);
+
+	return midend_response;
 }
 
 /**
@@ -1006,7 +1112,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 
 		/* Build the presets submenus. */
 
-		presets_submenu = game_window_backend_menu_create(presets, presets_limit);
+		presets_submenu = game_window_backend_menu_create(presets, presets_limit, can_configure);
 
 		menu->entries[GAME_WINDOW_MENU_PRESETS].sub_menu = presets_submenu;
 		menus_shade_entry(menu, GAME_WINDOW_MENU_PRESETS, (presets_submenu == NULL) ? TRUE : FALSE);
@@ -1014,11 +1120,15 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 
 	/* Update the menu state. */
 
-	game_window_backend_menu_update_state(current_preset);
+	game_window_backend_menu_update_state(current_preset, (instance->custom == NULL) ? TRUE : FALSE);
 
 	menus_shade_entry(menu, GAME_WINDOW_MENU_UNDO, !can_undo);
 	menus_shade_entry(menu, GAME_WINDOW_MENU_REDO, !can_redo);
 	menus_shade_entry(menu, GAME_WINDOW_MENU_SOLVE, !can_solve);
+
+	menus_shade_entry(menu, GAME_WINDOW_MENU_SPECIFIC, (instance->specific == NULL) ? FALSE : TRUE);
+	menus_shade_entry(menu, GAME_WINDOW_MENU_RANDOM_SEED, (instance->random_seed == NULL) ? FALSE : TRUE);
+	menus_shade_entry(menu, GAME_WINDOW_MENU_PREFERENCES, (instance->preferences == NULL) ? FALSE : TRUE);
 }
 
 /**

@@ -154,4 +154,28 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
 		int *current_preset, osbool *can_configure, osbool *can_undo, osbool *can_redo, osbool *can_solve);
 
+/**
+ * Return details of a configuration set from the midend.
+ *
+ * \param *fe			The frontend handle.
+ * \param type			The configuration type to be returned.
+ * \param **config_data		Pointer to a variable in which to return
+ *				a pointer to the configuration data.
+ * \param **window_title	Pointer to a variable in which to return
+ *				a pointer to the proposed window title.
+ */
+
+void frontend_get_config_info(struct frontend *fe, int type, config_item **config_data, char **window_title);
+
+/**
+ * Update details of a configuration set to the midend.
+ *
+ * \param *fe			The frontend handle.
+ * \param type			The configuration type being supplied.
+ * \param *config_data		Pointer to the updated configuration data.
+ * \return			TRUE if successful; FALSE on failure.
+ */
+
+osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data);
+
 #endif

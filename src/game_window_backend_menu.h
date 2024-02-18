@@ -36,6 +36,12 @@
 #include "oslib/wimp.h"
 
 /**
+ * Initialise the backend menu.
+ */
+
+void game_window_backend_menu_initialise(void);
+
+/**
  * Build a new backend submenu, using a definition supplied by the
  * backend, and return a pointer to it.
  * 
@@ -44,19 +50,22 @@
  * 
  * \param *source	The menu definition provided by the backend.
  * \param size		The number of items in the menu definition.
+ * \param can_configure	Should the menu have a Custom... entry?
  * \return		A pointer to the menu, or NULL on failure.
  */
 
-wimp_menu *game_window_backend_menu_create(struct preset_menu *source, int size);
+wimp_menu *game_window_backend_menu_create(struct preset_menu *source, int size, osbool can_configure);
 
 /**
  * Update the state of the current backend menu, to reflect
  * the currently-active ID supplied.
  *
  * \param id		The currently-active game ID.
+ * \param custom_active	Should any Custom... entry in the menu be
+ *			active?
  */
 
-void game_window_backend_menu_update_state(int id);
+void game_window_backend_menu_update_state(int id, osbool custom_active);
 
 /**
  * Decode a selection from the backend submenu, returning
@@ -65,10 +74,12 @@ void game_window_backend_menu_update_state(int id);
  * \param *selection	The menu selection details.
  * \param index		The index into the selection at which the
  *			submenu starts.
+ * \param *custom	Pointer to a variable to return whether the
+ *			custom menue entry was selected.
  * \return		Pointer to a set of midend game parameters.
  */
 
-struct game_params *game_window_backend_menu_decode(wimp_selection *selection, int index);
+struct game_params *game_window_backend_menu_decode(wimp_selection *selection, int index, osbool *custom);
 
 /**
  * Destroy any backend menu which is currently defined, and free
