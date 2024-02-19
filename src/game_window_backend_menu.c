@@ -92,7 +92,6 @@ static char *game_window_backend_menu_custom = NULL;
 /* Static function prototypes. */
 
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool can_configure, osbool root);
-static void game_window_backend_menu_build_entry(wimp_menu_entry *entry, char *title, int *menu_width);
 static void game_window_backend_menu_update_submenu_state(wimp_menu *menu, struct preset_menu *definition, int id, osbool custom_active, osbool root);
 static struct game_params *game_window_backend_menu_decode_submenu(wimp_selection *selection, struct preset_menu *definition, int index, osbool root);
 static void game_window_backend_menu_destroy_submenu(wimp_menu *menu);
@@ -163,8 +162,9 @@ wimp_menu *game_window_backend_menu_create(struct preset_menu *source, int size,
 
 static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* definition, osbool can_configure, osbool root)
 {
-	wimp_menu *menu = NULL;
-	int i, entries, len, width;
+	wimp_menu *menu = NULL, *submenu = NULL;
+	int i, entries;
+	osbool has_custom = FALSE;
 
 	/* The Wimp doesn't like zero-length menus... */
 
@@ -173,40 +173,27 @@ static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* def
 
 	/* Add space for the Custom... entry and allocate a block. */
 
+	has_custom = (root == TRUE && can_configure == TRUE) ? TRUE : FALSE;
+
 	entries = definition->n_entries;
-	if (root == TRUE && can_configure == TRUE)
+	if (has_custom == TRUE)
 		entries++;
 
-	menu = malloc(wimp_SIZEOF_MENU(entries));
+	menu = menus_build_menu(game_window_backend_menu_title, TRUE, entries);
 	if (menu == NULL)
 		return NULL;
-
-	/* The menu header. */
-
-	menu->title_fg = wimp_COLOUR_BLACK;
-	menu->title_bg = wimp_COLOUR_LIGHT_GREY;
-	menu->work_fg = wimp_COLOUR_BLACK;
-	menu->work_bg = wimp_COLOUR_WHITE;
-	menu->width = 16;
-	menu->height = wimp_MENU_ITEM_HEIGHT;
-	menu->gap = wimp_MENU_ITEM_GAP;
-
-	/* The menu title. */
-
-	len = strlen(game_window_backend_menu_title);
-	menu->title_data.indirected_text.text = game_window_backend_menu_title;
-
-	width = (16 * len) + 16;
-	if (width > menu->width)
-		menu->width = width;
 
 	/* The menu entries from the preset menu definitions. */
 
 	for (i = 0; i < definition->n_entries; i++) {
-		game_window_backend_menu_build_entry(&(menu->entries[i]), definition->entries[i].title, &(menu->width));
 
 		if (definition->entries[i].submenu != NULL)
-			menu->entries[i].sub_menu = game_window_backend_menu_build_submenu(definition->entries[i].submenu, can_configure, FALSE);
+			submenu = game_window_backend_menu_build_submenu(definition->entries[i].submenu, can_configure, FALSE);
+		else
+			submenu = NULL;
+
+		menus_build_entry(menu, i, definition->entries[i].title, strlen(definition->entries[i].title),
+				MENUS_SEPARATOR_NONE, submenu);
 	}
 
 	/* The Custom... entry if this is the root. */
@@ -214,52 +201,11 @@ static wimp_menu *game_window_backend_menu_build_submenu(struct preset_menu* def
 	if (root == TRUE && can_configure == TRUE) {
 		menu->entries[i - 1].menu_flags |= wimp_MENU_SEPARATE;
 
-		game_window_backend_menu_build_entry(&(menu->entries[i++]), game_window_backend_menu_custom, &(menu->width));
+		menus_build_entry(menu, i, game_window_backend_menu_custom, strlen(game_window_backend_menu_custom),
+				MENUS_SEPARATOR_PREVIOUS, NULL);
 	}
 
-	/* Update the first and last entries' flags. */
-
-	menu->entries[0].menu_flags |= wimp_MENU_TITLE_INDIRECTED;
-	menu->entries[i - 1].menu_flags |= wimp_MENU_LAST;
-
 	return menu;
-}
-
-/**
- * Construct a menu entry.
- * 
- * \param *entry	Pointer to the entry to be constructed.
- * \param *title	Pointer to a title string which can be used
- *			in place.
- * \param *menu_width	Pointer to a variable holding the current width
- *			of the menu in OS units.
- */
-
-static void game_window_backend_menu_build_entry(wimp_menu_entry *entry, char *title, int *menu_width)
-{
-	int len, width;
-
-	/* The menu entry. */
-
-	entry->menu_flags = 0;
-	entry->icon_flags = wimp_ICON_TEXT | wimp_ICON_INDIRECTED |
-			wimp_ICON_FILLED |
-			(wimp_COLOUR_BLACK << wimp_ICON_FG_COLOUR_SHIFT) |
-			(wimp_COLOUR_WHITE << wimp_ICON_BG_COLOUR_SHIFT);
-
-	entry->sub_menu = NULL;
-
-	/* The menu text. */
-
-	len = strlen(title);
-
-	entry->data.indirected_text.text = title;
-	entry->data.indirected_text.size = len + 1;
-	entry->data.indirected_text.validation = NULL;
-
-	width = (16 * len) + 16;
-	if (width > *menu_width)
-		*menu_width = width;
 }
 
 /**

@@ -49,6 +49,8 @@
 #include "sflib/event.h"
 #include "sflib/icons.h"
 #include "sflib/ihelp.h"
+#include "sflib/menus.h"
+#include "sflib/msgs.h"
 #include "sflib/templates.h"
 #include "sflib/windows.h"
 
@@ -89,6 +91,13 @@
  */
 
 #define GAME_WINDOW_STANDARD_FIELD_SIZE 64
+
+/**
+ * The maximum size allowed for looking up menu entry texts
+ * from the Messages file.
+ */
+
+#define GAME_CONFIG_MENU_TITLE_LEN 64
 
 /**
  * Details of an collection of icons forming a widget.
@@ -141,7 +150,9 @@ static int game_config_icon_count = 0;
 
 struct game_config_entry {
 	wimp_i icon_handle;
+	wimp_menu *popup_menu;
 	char *icon_text;
+	char *popup_text;
 };
 
 /**
@@ -168,6 +179,12 @@ struct game_config_block {
 	void *client_data;		
 	osbool (*callback)(int type, config_item *config, enum game_config_outcome, void *data);
 };
+
+/**
+ * The pop-up menu title text.
+ */
+
+static char *game_config_popup_menu_title = NULL;
 
 /* Static function prototypes. */
 
@@ -203,6 +220,20 @@ static void game_config_set_coordinates(struct game_config_widget *widget, int x
 void game_config_initialise(void)
 {
 	int x, y;
+	char buffer[GAME_CONFIG_MENU_TITLE_LEN], *entry;
+
+	/* Load the menu title from the messages file. */
+
+	entry = msgs_lookup("OptionTitle:Options", buffer, GAME_CONFIG_MENU_TITLE_LEN);
+	if (entry == NULL)
+		error_msgs_report_fatal("LookupFailedCMenu");
+	
+	game_config_popup_menu_title = strdup(entry);
+
+	if (game_config_popup_menu_title == NULL)
+		error_msgs_report_fatal("NoMemInitCMenu");
+
+	/* Load the window template. */
 
 	game_config_window_def = templates_load_window("GameConfig");
 
@@ -381,6 +412,12 @@ void game_config_delete_instance(struct game_config_block *instance)
 		for (i = 0; i < instance->entry_count; i++) {
 			if (instance->entries[i].icon_text != NULL)
 				free(instance->entries[i].icon_text);
+
+			if (instance->entries[i].popup_menu != NULL)
+				free(instance->entries[i].popup_menu);
+
+			if (instance->entries[i].popup_text != NULL)
+				free(instance->entries[i].popup_text);
 		}
 
 		free (instance->entries);
@@ -578,6 +615,8 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 
 	/* Calculate the field dimensions. */
 
+	*height += GAME_WINDOW_INTER_ROW_GAP;
+
 	do {
 		switch (instance->config_data[i].type) {
 		case C_STRING:
@@ -608,10 +647,6 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 
 	*right += *left;
 
-	/* Add the bottom margin to the height. */
-
-	*height += GAME_WINDOW_INTER_ROW_GAP;
-
 	/* Allocate space for the entry data. */
 
 	instance->entry_count = i - 1;
@@ -620,8 +655,10 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 		return FALSE;
 
 	for (i = 0; i < instance->entry_count; i++) {
-		instance->entries[i].icon_text = NULL;
 		instance->entries[i].icon_handle = wimp_ICON_WINDOW;
+		instance->entries[i].icon_text = NULL;
+		instance->entries[i].popup_menu = NULL;
+		instance->entries[i].popup_text = NULL;
 	}
 
 	return TRUE;
@@ -712,6 +749,8 @@ static osbool game_config_create_icons(struct game_config_block *instance, int l
 	int i = 0, baseline = 0;
 
 	do {
+		baseline -= GAME_WINDOW_INTER_ROW_GAP;
+
 		switch (instance->config_data[i].type) {
 		case C_STRING:
 			game_config_create_text_widget(instance, i, left, right, &baseline);
@@ -738,8 +777,12 @@ static void game_config_create_text_widget(struct game_config_block *instance, i
 	if (instance == NULL || baseline == NULL || index >= instance->entry_count)
 		return;
 
+	/* Locate the widget definition. */
+
 	item = instance->config_data + index;
 	entry = instance->entries + index;
+
+	/* Allocate memory to hold the field data. */
 
 	entry->icon_text = malloc(instance->field_size);
 	if (entry->icon_text == NULL)
@@ -747,7 +790,11 @@ static void game_config_create_text_widget(struct game_config_block *instance, i
 
 	*entry->icon_text = '\0';
 
-	*baseline -= GAME_WINDOW_INTER_ROW_GAP + (game_config_text_widget.bounding_box.y1 - game_config_text_widget.bounding_box.y0);
+	/* Shift the baseline down by the height of the new row. */
+
+	*baseline -= game_config_text_widget.bounding_box.y1 - game_config_text_widget.bounding_box.y0;
+
+	/* Create the icons in the window. */
 
 	game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_WRITABLE_LABEL, GAME_WINDOW_INTER_ROW_GAP, -1, left, *baseline, (char *) item->name, 0);
 	entry->icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_WRITABLE_FIELD, -1, right, left, *baseline, entry->icon_text, instance->field_size);
@@ -757,18 +804,91 @@ static void game_config_create_combo_widget(struct game_config_block *instance, 
 {
 	struct game_config_entry *entry = NULL;
 	struct config_item *item = NULL;
+	int entries = 0, i;
+	size_t entry_length, field_length = 0;
+	char *c, *entry_text, separator;
+	wimp_i field_icon_handle;
 
 	if (instance == NULL || baseline == NULL || index >= instance->entry_count)
 		return;
 
+	/* Locate the widget definition. */
+
 	item = instance->config_data + index;
 	entry = instance->entries + index;
 
-	*baseline -= GAME_WINDOW_INTER_ROW_GAP + (game_config_text_widget.bounding_box.y1 - game_config_text_widget.bounding_box.y0);
+	/* Copy the item definitions so that we can insert terminators. */
+
+	entry->popup_text = strdup(item->u.choices.choicenames);
+	if (entry->popup_text == NULL)
+		return;
+
+	/* The separator is the first character in the string. */
+
+	separator = *(entry->popup_text);
+
+	/* Count the entries in the string. */
+
+	c = entry->popup_text;
+
+	while (*c != '\0') {
+		if (*c++ == separator)
+			entries++;
+	}
+
+	debug_printf("From '%s' found %d entries", entry->popup_text, entries);
+
+	/* Build the menu structure. */
+
+	entry->popup_menu = menus_build_menu(game_config_popup_menu_title, FALSE, entries);
+	if (entry->popup_menu == NULL)
+		return;
+
+	/* Terminate and extract the entries from the text. */
+
+	c = entry->popup_text;
+
+	for (i = 0; i < entries; i++) {
+		/* Step past the current separator and store the text start. */
+
+		entry_text = ++c;
+
+		/* Find the next separator and terminate the entry. */
+
+		while (*c != separator && *c != '\0')
+			c++;
+
+		*c = '\0';
+
+		/* Set up the menu entry and track the longest text needed for the field. */
+
+		entry_length = strlen(entry_text);
+
+		menus_build_entry(entry->popup_menu, i, entry_text, entry_length, MENUS_SEPARATOR_NONE, NULL);
+		debug_printf("Add menu entry of '%s'", entry_text);
+
+		if (entry_length + 1 > field_length)
+			field_length = entry_length + 1;
+	}
+
+	/* Allocate the memory required for the field icon text. */
+
+	entry->icon_text = malloc(field_length);
+	if (entry->icon_text == NULL)
+		return;
+
+	/* Shift the baseline down by the height of the new row. */
+
+	*baseline -= game_config_text_widget.bounding_box.y1 - game_config_text_widget.bounding_box.y0;
+
+	/* Create the icons in the window. */
 
 	game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_COMBO_LABEL, GAME_WINDOW_INTER_ROW_GAP, -1, left, *baseline, (char *) item->name, 0);
-	game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD, left, -1, right, *baseline, NULL, 0);
-	game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_COMBO_POPUP, -1, -1, right, *baseline, NULL, 0);
+	field_icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD, left, -1, right, *baseline, entry->icon_text, field_length);
+	entry->icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_COMBO_POPUP, -1, -1, right, *baseline, NULL, 0);
+
+
+	event_add_window_icon_popup(instance->handle, entry->icon_handle, entry->popup_menu, field_icon_handle, NULL);
 }
 
 static void game_config_create_option_widget(struct game_config_block *instance, int index, int left, int right, int *baseline)
@@ -779,10 +899,16 @@ static void game_config_create_option_widget(struct game_config_block *instance,
 	if (instance == NULL || baseline == NULL || index >= instance->entry_count)
 		return;
 
+	/* Locate the widget definition. */
+
 	item = instance->config_data + index;
 	entry = instance->entries + index;
 
-	*baseline -= GAME_WINDOW_INTER_ROW_GAP + (game_config_option_widget.bounding_box.y1 - game_config_option_widget.bounding_box.y0);
+	/* Shift the baseline down by the height of the new row. */
+
+	*baseline -= game_config_option_widget.bounding_box.y1 - game_config_option_widget.bounding_box.y0;
+
+	/* Create the icons in the window. */
 
 	entry->icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_OPTION, -1, right, left, *baseline, (char *) item->name, 0);
 }
@@ -792,7 +918,11 @@ static void game_config_create_action_widget(struct game_config_block *instance,
 	if (instance == NULL || baseline == NULL)
 		return;
 
-	*baseline -= GAME_WINDOW_INTER_ROW_GAP + (game_config_action_widget.bounding_box.y1 - game_config_action_widget.bounding_box.y0);
+	/* Shift the baseline down by the height of the new row. */
+
+	*baseline -= game_config_action_widget.bounding_box.y1 - game_config_action_widget.bounding_box.y0;
+
+	/* Create the icons in the window. */
 
 	instance->action_ok = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_OK, -1, -1, right, *baseline, NULL, 0);
 	instance->action_cancel = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_CANCEL, -1, -1, right, *baseline, NULL, 0);
@@ -859,7 +989,7 @@ static osbool game_config_copy_to_dialogue(struct game_config_block *instance)
 				wimp_set_icon_state(instance->handle, entry->icon_handle, 0, 0);
 			break;
 		case C_CHOICES:
-			// TODO -- Fix Me!
+			event_set_window_icon_popup_selection(instance->handle, entry->icon_handle, item->u.choices.selected);
 			break;
 		}
 	}
@@ -900,7 +1030,7 @@ static osbool game_config_copy_from_dialogue(struct game_config_block *instance)
 			item->u.string.sval = strdup(entry->icon_text);
 			break;
 		case C_CHOICES:
-			// TODO -- Fix Me!
+			item->u.choices.selected = event_get_window_icon_popup_selection(instance->handle, entry->icon_handle);
 			break;
 		}
 	}

@@ -34,11 +34,15 @@ SupportURL:http://www.stevefryatt.org.uk/risc-os/games
 
 TypeTitle:Type
 TypeCustom:Custom...
+OptionTitle:Options
 
 # Messages and errors
 
 LookupFailedGMenu:Failed to look up the menu entry tokens for the game menu.
 NoMemInitGMenu:There was not enough memory to initialise the game menu.
+
+LookupFailedCMenu:Failed to look up the menu entry tokens for the config menu.
+NoMemInitCMenu:There was not enough memory to initialise the config menu.
 
 NoMemNewGame:There was not enough memory to create a new game.
 
