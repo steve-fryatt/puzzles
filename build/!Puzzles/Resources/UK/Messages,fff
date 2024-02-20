@@ -66,6 +66,15 @@ Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|M\Sov
 
 Help.Game:\Tone of Simon Tatham's Portable Puzzles.
 
+Help.GameConfigDsc:\Tgame description dialogue for one of Simon Tatham's Portable Puzzles.|M.Enter a game description to recreate it, or copy the description from the field.
+Help.GameConfigSed:\Tspecific game dialogue for one of Simon Tatham's Portable Puzzles.|M.Enter a game seed to recreate it, or copy the seed from the field.
+Help.GameConfigSet:\Tcustom game configuration dialogue for one of Simon Tatham's Portable Puzzles.|MSelect the required game options.
+Help.GameConfigPrf:\Tcustom game preferences dialogue for one of Simon Tatham's Portable Puzzles.|MSelect the required options.
+
+Help.GameConfig???.Set:\Sapply the details in the dialogue box.|M\Akeep the dialogue open.
+Help.GameConfig???.Cancel:\Sclose the dialogue and discard the contents.|M\Areturn the contents to how they were when the dialogue opened.
+Help.GameConfig???.Save:\Sapply the details in the dialogue box and save them as defaults for the future.|M\Akeep the dialogue open.
+
 Help.ProgInfo:This \w displays information about Puzzles.
 Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
 Help.ProgInfo.Author:This \w displays information about Puzzles.|MSimon created and maintains the cross-platform puzzles and the infrastructure to make them work.

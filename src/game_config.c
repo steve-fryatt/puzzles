@@ -44,7 +44,6 @@
 
 /* SF-Lib header files. */
 
-#include "sflib/debug.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
 #include "sflib/icons.h"
@@ -73,9 +72,24 @@
 #define GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD 6
 #define GAME_WINDOW_TEMPLATE_ICON_COMBO_LABEL 7
 
+/**
+ * The number of OS units between rows in the dialogue.
+ */
+
 #define GAME_WINDOW_INTER_ROW_GAP 8
 
-#define GAME_WINDOW_TEXT_LENGTH_MARGIN 16
+/**
+ * An OS Unit count to add to text widths when sizing icons.
+ */
+
+#define GAME_CONFIG_TEXT_LENGTH_MARGIN 16
+
+/**
+ * The multiple to apply to the mininum text field width for
+ * use in CFG_DESC and CFG_SEED dialogues.
+ */
+
+#define GAME_CONFIG_SEED_WIDTH_MULTIPLE 3
 
 /**
  * The size of a text field in a Description or Random Seed
@@ -106,6 +120,8 @@
 struct game_config_widget {
 	os_box bounding_box;
 	os_coord origin;
+	int field_width;
+	int pad_width;
 };
 
 /**
@@ -168,13 +184,17 @@ struct game_config_block {
 
 	char *window_title;			/**< The title of the window, supplied by the midend.	*/
 
-	size_t field_size;
+	size_t field_size;			/**< The buffer size to allocate for text fields.	*/
 
-	int config_type;
-	config_item *config_data;
+	int config_type;			/**< The type of dialogue, supplied from the midend.	*/
+	config_item *config_data;		/**< The dialogue data, supplied by the midend.		*/
 
 	size_t entry_count;			/**< The number of entries in the dialogue.		*/
 	struct game_config_entry *entries;	/**< A list of config entries in the dialogue.		*/
+
+	/**
+	 * Callback to the front-end instance which called us, when we have user actions to report.
+	 */
 
 	void *client_data;		
 	osbool (*callback)(int type, config_item *config, enum game_config_outcome, void *data);
@@ -255,6 +275,10 @@ void game_config_initialise(void)
 			GAME_WINDOW_TEMPLATE_ICON_WRITABLE_FIELD
 	);
 
+	game_config_text_widget.field_width =
+			(game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_WRITABLE_FIELD].extent.x1 -
+			game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_WRITABLE_FIELD].extent.x0);
+
 	/* Initialise the combo widget. */
 
 	game_config_get_bounding_box(&game_config_combo_widget, 1,
@@ -278,6 +302,14 @@ void game_config_initialise(void)
 			GAME_WINDOW_TEMPLATE_ICON_COMBO_POPUP
 	);
 
+	game_config_combo_widget.pad_width =
+			(game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_COMBO_POPUP].extent.x1 -
+			game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD].extent.x1);
+
+	game_config_combo_widget.field_width =
+			(game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD].extent.x1 -
+			game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_COMBO_FIELD].extent.x0);
+
 	/* Initialise the option widget. */
 
 	game_config_get_bounding_box(&game_config_option_widget, 1,
@@ -290,6 +322,10 @@ void game_config_initialise(void)
 	game_config_set_coordinates(&game_config_option_widget, x, y, 1,
 			GAME_WINDOW_TEMPLATE_ICON_OPTION
 	);
+
+	game_config_option_widget.pad_width = GAME_CONFIG_TEXT_LENGTH_MARGIN +
+			(game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_OPTION].extent.y1 -
+			game_config_window_def->icons[GAME_WINDOW_TEMPLATE_ICON_OPTION].extent.y0);
 
 	/* Initialise the action button widget. */
 
@@ -329,6 +365,7 @@ struct game_config_block *game_config_create_instance(int type, config_item *con
 		wimp_pointer *pointer, osbool (*callback)(int, config_item *, enum game_config_outcome, void *), void *data)
 {
 	struct game_config_block *new = NULL;
+	char *help_token = NULL;
 
 	if (config == NULL || pointer == NULL || callback == NULL)
 		return NULL;
@@ -362,13 +399,29 @@ struct game_config_block *game_config_create_instance(int type, config_item *con
 
 	/* Register the window events. */
 
-	ihelp_add_window(new->handle, "GameConfig", NULL);
+	switch (type) {
+	case CFG_DESC:
+		help_token = "GameConfigDsc";
+		break;
+	case CFG_SEED:
+		help_token = "GameConfigSed";
+		break;
+	case CFG_SETTINGS:
+		help_token = "GameConfigSet";
+		break;
+	case CFG_PREFS:
+		help_token = "GameConfigPrf";
+		break;
+	default:
+		help_token = "GameConfig";
+		break;
+	}
+
+	ihelp_add_window(new->handle, help_token, NULL);
 
 	event_add_window_user_data(new->handle, new);
 	event_add_window_mouse_event(new->handle, game_config_click_handler);
 	event_add_window_key_event(new->handle, game_config_keypress_handler);
-
-	debug_printf("Open at x=%d, y=%d", pointer->pos.x, pointer->pos.y);
 
 	windows_open_centred_at_pointer(new->handle, pointer);
 
@@ -633,10 +686,15 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 			break;
 		}
 
-		debug_printf("Sizing: left=%d, right=%d, width=%d, height=%d", *left, *right, width, *height);
-
 		*height += GAME_WINDOW_INTER_ROW_GAP;
 	} while (instance->config_data[i++].type != C_END);
+
+	/* Special case the game code dialogues, to make the single text field wider. */
+
+	if (instance->config_type == CFG_DESC || instance->config_type == CFG_SEED) {
+		if (*right < GAME_CONFIG_SEED_WIDTH_MULTIPLE * game_config_text_widget.field_width)
+			*right = GAME_CONFIG_SEED_WIDTH_MULTIPLE * game_config_text_widget.field_width;
+	}
 
 	/* Expand the content side so that the cross-column items will fit. */
 
@@ -664,19 +722,36 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 	return TRUE;
 }
 
+/**
+ * Calculate the space required for a text widget in a Game Config
+ * dialogue.
+ * 
+ * \param *item		Pointer to the item definition for the widget.
+ * \param *left		Pointer to a variable holding the horizontal
+ *			position of the left alignment line, to be updated
+ *			on return to include enough space for any label.
+ * \param *right	Pointer to to a variable holding the horizontal
+ *			position of the reight alignment line RELATIVE TO
+ *			THE LEFT, to be updated on return to include enough
+ *			space for any field contents.
+ * \param *height	Pointer to a variable containing the height of the
+ *			dialogue, to be updated on exit to include the height
+ *			required by the widget.
+ */
+
 static void game_config_size_text_field(config_item *item, int *left, int *right, int *height)
 {
 	int w;
 
 	/* Calculate the required label width. */
 
-	if (left != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + GAME_WINDOW_TEXT_LENGTH_MARGIN > *left)
-		*left = w + GAME_WINDOW_TEXT_LENGTH_MARGIN;
+	if (left != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + GAME_CONFIG_TEXT_LENGTH_MARGIN > *left)
+		*left = w + GAME_CONFIG_TEXT_LENGTH_MARGIN;
 
 	/* Calculate the required content width. */
 
-	if (right != NULL && (game_config_text_widget.bounding_box.x1 - game_config_text_widget.bounding_box.x0 > *right))
-		*right = game_config_text_widget.bounding_box.x1 - game_config_text_widget.bounding_box.x0;
+	if (right != NULL && game_config_text_widget.field_width > *right)
+		*right = game_config_text_widget.field_width;
 
 	/* Calculate the required content height. */
 
@@ -684,19 +759,76 @@ static void game_config_size_text_field(config_item *item, int *left, int *right
 		*height += game_config_text_widget.bounding_box.y1 - game_config_text_widget.bounding_box.y0;
 }
 
+/**
+ * Calculate the space required for a combo widget in a Game Config
+ * dialogue.
+ * 
+ * \param *item		Pointer to the item definition for the widget.
+ * \param *left		Pointer to a variable holding the horizontal
+ *			position of the left alignment line, to be updated
+ *			on return to include enough space for any label.
+ * \param *right	Pointer to to a variable holding the horizontal
+ *			position of the reight alignment line RELATIVE TO
+ *			THE LEFT, to be updated on return to include enough
+ *			space for any field contents.
+ * \param *height	Pointer to a variable containing the height of the
+ *			dialogue, to be updated on exit to include the height
+ *			required by the widget.
+ */
+
 static void game_config_size_combo_field(config_item *item, int *left, int *right, int *height)
 {
-	int w;
+	int field_width, len, w;
+	char *c, *entry_text = NULL, separator;
 
 	/* Calculate the required label width. */
 
-	if (left != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + GAME_WINDOW_TEXT_LENGTH_MARGIN > *left)
-		*left = w + GAME_WINDOW_TEXT_LENGTH_MARGIN;
+	if (left != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + GAME_CONFIG_TEXT_LENGTH_MARGIN > *left)
+		*left = w + GAME_CONFIG_TEXT_LENGTH_MARGIN;
 
-	/* Calculate the required content width. */
+	/* Calculate the required content width, by stepping through the
+	 * entries and recording the longest text in OS units.
+	 */
 
-	if (right != NULL && (game_config_combo_widget.bounding_box.x1 - game_config_combo_widget.bounding_box.x0 > *right))
-		*right = game_config_combo_widget.bounding_box.x1 - game_config_combo_widget.bounding_box.x0;
+	separator = *(item->u.choices.choicenames);
+
+	if (right != NULL) {
+		c = (char *) item->u.choices.choicenames;
+		field_width = 0;
+
+		while (*c != '\0') {
+			entry_text = ++c;	/* The start of the entry. 	*/
+			len = 0;		/* The length of the entry.	*/
+
+			/* Find the next separator and count the string length. */
+
+			while (*c != separator && *c != '\0') {
+				len++;
+				c++;
+			}
+
+			/* Find the length of the entry in OS units, and update the count. */
+
+			if (xwimptextop_string_width(entry_text, len, &w) == NULL && w > field_width)
+				field_width = w;
+		}
+
+		/* Add in the field margin in OS units, to account for space
+		 * between borders and text on left and right.
+		 */
+
+		field_width += GAME_CONFIG_TEXT_LENGTH_MARGIN;
+
+		/* If the field is less than the one in the templates, round it up. */
+
+		if (field_width < game_config_combo_widget.field_width)
+			field_width = game_config_combo_widget.field_width;
+
+		/* Update the space required in the dialogue. */
+
+		if (field_width + game_config_combo_widget.pad_width > *right)
+			*right = field_width + game_config_combo_widget.pad_width;
+	}
 
 	/* Calculate the required content height. */
 
@@ -704,20 +836,52 @@ static void game_config_size_combo_field(config_item *item, int *left, int *righ
 		*height += game_config_combo_widget.bounding_box.y1 - game_config_combo_widget.bounding_box.y0;
 }
 
+/**
+ * Calculate the space required for an option widget in a Game Config
+ * dialogue.
+ * 
+ * \param *item		Pointer to the item definition for the widget.
+ * \param *left		Pointer to a variable holding the horizontal
+ *			position of the left alignment line, to be updated
+ *			on return to include enough space for any label.
+ * \param *right	Pointer to to a variable holding the horizontal
+ *			position of the reight alignment line RELATIVE TO
+ *			THE LEFT, to be updated on return to include enough
+ *			space for any field contents.
+ * \param *height	Pointer to a variable containing the height of the
+ *			dialogue, to be updated on exit to include the height
+ *			required by the widget.
+ */
+
 static void game_config_size_option_field(config_item *item, int *left, int *right, int *height)
 {
-	int w, sprite_width;
+	int w;
 
 	/* Calculate the required content width. */
 
-	sprite_width = (game_config_option_widget.bounding_box.y1 - game_config_option_widget.bounding_box.y0) + GAME_WINDOW_TEXT_LENGTH_MARGIN;
-
-	if (right != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + sprite_width > *right)
-		*right = w + sprite_width;
+	if (right != NULL && xwimptextop_string_width(item->name, 0, &w) == NULL && w + game_config_option_widget.pad_width > *right)
+		*right = w + game_config_option_widget.pad_width;
 
 	if (height != NULL)
 		*height += game_config_option_widget.bounding_box.y1 - game_config_option_widget.bounding_box.y0;
 }
+
+/**
+ * Calculate the space required for the action buttons in a Game Config
+ * dialogue.
+ * 
+ * \param *item		Pointer to the item definition for the widget.
+ * \param *left		Pointer to a variable holding the horizontal
+ *			position of the left alignment line, to be updated
+ *			on return to include enough space for any label.
+ * \param *right	Pointer to to a variable holding the horizontal
+ *			position of the reight alignment line RELATIVE TO
+ *			THE LEFT, to be updated on return to include enough
+ *			space for any field contents.
+ * \param *height	Pointer to a variable containing the height of the
+ *			dialogue, to be updated on exit to include the height
+ *			required by the widget.
+ */
 
 static void game_config_size_action_buttons(int *width, int *height, osbool include_save)
 {
@@ -769,6 +933,17 @@ static osbool game_config_create_icons(struct game_config_block *instance, int l
 	return TRUE;
 }
 
+/**
+ * Create an text widget in a Game Config dialogue box.
+ * 
+ * \param *instance	The Game Config instance to use.
+ * \param left		The horizontal coordinate of the left alignment line.
+ * \param right		The horizontal coordinate of the right alignment line.
+ * \param *baseline	Pointer to a variable holding the vertical
+ *			baseline at the top of the field, to be shifted
+ *			down by the height of the row before returning.
+ */
+
 static void game_config_create_text_widget(struct game_config_block *instance, int index, int left, int right, int *baseline)
 {
 	struct game_config_entry *entry = NULL;
@@ -799,6 +974,17 @@ static void game_config_create_text_widget(struct game_config_block *instance, i
 	game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_WRITABLE_LABEL, GAME_WINDOW_INTER_ROW_GAP, -1, left, *baseline, (char *) item->name, 0);
 	entry->icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_WRITABLE_FIELD, -1, right, left, *baseline, entry->icon_text, instance->field_size);
 }
+
+/**
+ * Create a combo widget in a Game Config dialogue box.
+ * 
+ * \param *instance	The Game Config instance to use.
+ * \param left		The horizontal coordinate of the left alignment line.
+ * \param right		The horizontal coordinate of the right alignment line.
+ * \param *baseline	Pointer to a variable holding the vertical
+ *			baseline at the top of the field, to be shifted
+ *			down by the height of the row before returning.
+ */
 
 static void game_config_create_combo_widget(struct game_config_block *instance, int index, int left, int right, int *baseline)
 {
@@ -836,8 +1022,6 @@ static void game_config_create_combo_widget(struct game_config_block *instance, 
 			entries++;
 	}
 
-	debug_printf("From '%s' found %d entries", entry->popup_text, entries);
-
 	/* Build the menu structure. */
 
 	entry->popup_menu = menus_build_menu(game_config_popup_menu_title, FALSE, entries);
@@ -865,7 +1049,6 @@ static void game_config_create_combo_widget(struct game_config_block *instance, 
 		entry_length = strlen(entry_text);
 
 		menus_build_entry(entry->popup_menu, i, entry_text, entry_length, MENUS_SEPARATOR_NONE, NULL);
-		debug_printf("Add menu entry of '%s'", entry_text);
 
 		if (entry_length + 1 > field_length)
 			field_length = entry_length + 1;
@@ -891,6 +1074,17 @@ static void game_config_create_combo_widget(struct game_config_block *instance, 
 	event_add_window_icon_popup(instance->handle, entry->icon_handle, entry->popup_menu, field_icon_handle, NULL);
 }
 
+/**
+ * Create an option widget in a Game Config dialogue box.
+ * 
+ * \param *instance	The Game Config instance to use.
+ * \param left		The horizontal coordinate of the left alignment line.
+ * \param right		The horizontal coordinate of the right alignment line.
+ * \param *baseline	Pointer to a variable holding the vertical
+ *			baseline at the top of the field, to be shifted
+ *			down by the height of the row before returning.
+ */
+
 static void game_config_create_option_widget(struct game_config_block *instance, int index, int left, int right, int *baseline)
 {
 	struct game_config_entry *entry = NULL;
@@ -912,6 +1106,17 @@ static void game_config_create_option_widget(struct game_config_block *instance,
 
 	entry->icon_handle = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_OPTION, -1, right, left, *baseline, (char *) item->name, 0);
 }
+
+/**
+ * Create the action widgets in a Game Config dialogue box.
+ * 
+ * \param *instance	The Game Config instance to use.
+ * \param left		The horizontal coordinate of the left alignment line.
+ * \param right		The horizontal coordinate of the right alignment line.
+ * \param *baseline	Pointer to a variable holding the vertical
+ *			baseline at the top of the field, to be shifted
+ *			down by the height of the row before returning.
+ */
 
 static void game_config_create_action_widget(struct game_config_block *instance, int left, int right, int *baseline)
 {
@@ -1142,6 +1347,9 @@ static void game_config_get_bounding_box(struct game_config_widget *widget, int 
 	widget->bounding_box.x1 = 0;
 	widget->bounding_box.y1 = 0;
 
+	widget->field_width = 0;
+	widget->pad_width = 0;
+
 	va_start(ap, icons);
 
 	for (i = 0; i < icons; i++) {
@@ -1173,8 +1381,6 @@ static void game_config_get_bounding_box(struct game_config_widget *widget, int 
 	}
 
 	va_end(ap);
-
-	debug_printf("Calculated bounding box: x0=%d, y0=%d, x1=%d, y1=%d", widget->bounding_box.x0, widget->bounding_box.y0, widget->bounding_box.x1, widget->bounding_box.y1);
 }
 
 /**
