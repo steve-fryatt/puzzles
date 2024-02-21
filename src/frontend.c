@@ -190,7 +190,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 	new->me = NULL;
 	new->window = NULL;
 
-	debug_printf("Creating a new game collection instance: block=0x%x", new);
+	// debug_printf"Creating a new game collection instance: block=0x%x", new);
 
 	/* Link the game into the list, and initialise critical data. */
 
@@ -241,7 +241,7 @@ void frontend_delete_instance(struct frontend *fe)
 	if (fe == NULL)
 		return;
 
-	debug_printf("Deleting a game instance: block=0x%x", fe);
+	// debug_printf"Deleting a game instance: block=0x%x", fe);
 
 	/* Delink the instance from the list. */
 
@@ -345,7 +345,7 @@ enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x
 {
 	int outcome = PKR_UNUSED;
 
-	debug_printf("Received event: x=%d, y=%d, button=%d, outcome=%d", x, y, button, outcome);
+	// debug_printf"Received event: x=%d, y=%d, button=%d, outcome=%d", x, y, button, outcome);
 
 	if (fe != NULL && fe->me != NULL)
 		outcome = midend_process_key(fe->me, x, y, button);
@@ -367,7 +367,7 @@ enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x
 
 void frontend_timer_callback(frontend *fe, float tplus)
 {
-	debug_printf("Timer call after %f seconds", tplus);
+	// debug_printf"Timer call after %f seconds", tplus);
 
 	if (fe != NULL && fe->me != NULL)
 		midend_timer(fe->me, tplus);
@@ -475,7 +475,7 @@ static osbool frontend_message_mode_change(wimp_message *message)
 {
 	struct frontend *fe = frontend_list;
 
-	debug_printf("\\LMessage Mode Change!!");
+	// debug_printf"\\LMessage Mode Change!!");
 
 	while (fe != NULL) {
 		frontend_negotiate_game_size(fe);
@@ -509,7 +509,7 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 
 	midend_size(fe->me, &(fe->x_size), &(fe->y_size), false, 1.0);
 
-	debug_printf("Agreed on canvas x=%d, y=%d", fe->x_size, fe->y_size);
+	// debug_printf"Agreed on canvas x=%d, y=%d", fe->x_size, fe->y_size);
 
 	colours = midend_colours(fe->me, &number_of_colours);
 
@@ -534,7 +534,7 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 
 static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
 {
-	debug_printf("\\ODraw Text");
+	// debug_printf"\\ODraw Text");
 
 	game_window_write_text(handle, x, y, fontsize, align, colour, (fonttype == FONT_FIXED) ? TRUE : FALSE, text);
 }
@@ -552,7 +552,7 @@ static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fonts
 
 static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
 {
-	debug_printf("\\vDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, w, h, colour);
+	// debug_printf"\\vDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, w, h, colour);
 
 	game_window_set_colour(handle, colour);
 	game_window_plot(handle, os_MOVE_TO, x, y + h - 1);
@@ -572,7 +572,7 @@ static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colou
 
 static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
 {
-	debug_printf("\\vDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
+	// debug_printf"\\vDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
 
 	game_window_set_colour(handle, colour);
 	game_window_plot(handle, os_MOVE_TO, x1, y1);
@@ -594,7 +594,7 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
 {
 	int i;
 
-	debug_printf("\\vDraw Polygon...");
+	// debug_printf"\\vDraw Polygon...");
 
 	if (npoints == 0)
 		return;
@@ -621,7 +621,7 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
 
 static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
 {
-	debug_printf("\\vDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
+	// debug_printf"\\vDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
 
 	if (fillcolour != -1) {
 		game_window_set_colour(handle, fillcolour);
@@ -636,7 +636,7 @@ static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fil
 
 static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour)
 {
-	debug_printf("\\ODraw Thick Line");
+	// debug_printf"\\ODraw Thick Line");
 }
 
 /**
@@ -651,7 +651,7 @@ static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float
 
 static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 {
-	debug_printf("\\oDraw Update");
+	// debug_printf"\\oDraw Update");
 
 	game_window_force_redraw(handle, x, y, x + w - 1, y + h - 1);
 }
@@ -668,7 +668,7 @@ static void riscos_draw_update(void *handle, int x, int y, int w, int h)
 
 static void riscos_clip(void *handle, int x, int y, int w, int h)
 {
-	debug_printf("\\vClip from %d,%d, width %d, height %d", x, y, w, h);
+	// debug_printf"\\vClip from %d,%d, width %d, height %d", x, y, w, h);
 
 	game_window_set_clip(handle, x, y, x + w - 1, y + h - 1);
 }
@@ -681,7 +681,7 @@ static void riscos_clip(void *handle, int x, int y, int w, int h)
 
 static void riscos_unclip(void *handle)
 {
-	debug_printf("\\vUnclip");
+	// debug_printf"\\vUnclip");
 
 	game_window_clear_clip(handle);
 }
@@ -694,7 +694,7 @@ static void riscos_unclip(void *handle)
 
 static void riscos_start_draw(void *handle)
 {
-	debug_printf("\\GStart Draw");
+	// debug_printf"\\GStart Draw");
 
 	game_window_start_draw(handle);
 }
@@ -707,7 +707,7 @@ static void riscos_start_draw(void *handle)
 
 static void riscos_end_draw(void *handle)
 {
-	debug_printf("\\GEnd Draw");
+	// debug_printf"\\GEnd Draw");
 
 	game_window_end_draw(handle);
 }
@@ -800,7 +800,7 @@ void get_random_seed(void **randseed, int *randseedsize)
 {
 	oswordreadclock_utc_block *rtc;
 
-	debug_printf("Get Random Seed");
+	// debug_printf"Get Random Seed");
 
 	if (randseed == NULL || randseedsize == NULL)
 		return;
@@ -818,7 +818,7 @@ void get_random_seed(void **randseed, int *randseedsize)
 	*randseed = &(rtc->utc);
 	*randseedsize = sizeof(os_date_and_time);
 
-	debug_printf("Returned seed.");
+	// debug_printf"Returned seed.");
 }
 
 /**
@@ -829,7 +829,7 @@ void get_random_seed(void **randseed, int *randseedsize)
 
 void activate_timer(frontend *fe)
 {
-	debug_printf("\\oActivate Timer");
+	// debug_printf"\\oActivate Timer");
 
 	if (fe != NULL)
 		game_window_start_timer(fe->window);
@@ -843,7 +843,7 @@ void activate_timer(frontend *fe)
 
 void deactivate_timer(frontend *fe)
 {
-	debug_printf("\\oDeactivate Timer");
+	// debug_printf"\\oDeactivate Timer");
 
 	if (fe != NULL)
 		game_window_stop_timer(fe->window);
@@ -887,7 +887,7 @@ void frontend_default_colour(frontend *fe, float *output)
 	os_palette *palette = (os_palette *) &pal_data;
 	os_error *error;
 
-	debug_printf("\\OFrontend Default Colour");
+	// debug_printf"\\OFrontend Default Colour");
 
 	output[0] = output[1] = output[2] = 1.0f;
 

@@ -152,7 +152,7 @@ struct canvas_block *canvas_create_instance(void)
 
 	new->redirection_active = FALSE;
 
-	debug_printf("Canvas instance 0x%x created", new);
+	// debug_printf"Canvas instance 0x%x created", new);
 
 	return new;
 }
@@ -168,7 +168,7 @@ void canvas_delete_instance(struct canvas_block *instance)
 	if (instance == NULL)
 		return;
 
-	debug_printf("Deleting canvas instance 0x%x", instance);
+	// debug_printf"Deleting canvas instance 0x%x", instance);
 
 	if (instance->sprite_area != NULL)
 		free(instance->sprite_area);
@@ -369,7 +369,7 @@ static osbool canvas_insert_265_palette(osspriteop_area *area)
 	sprite->image += CANVAS_PALETTE_SIZE;
 	sprite->mask += CANVAS_PALETTE_SIZE;
 
-	debug_printf("\\VAdded Sprite Palette");
+	// debug_printf"\\VAdded Sprite Palette");
 
 	return TRUE;
 }
@@ -437,7 +437,7 @@ static osbool canvas_set_palette_game_colours(os_sprite_palette *palette, float 
 
 		palette->entries[entry].off = palette->entries[entry].on;
 
-		debug_printf("Created palette entry %d at 0x%x as 0x%8x", entry, &(palette->entries[entry]), palette->entries[entry].off);
+		// debug_printf"Created palette entry %d at 0x%x as 0x%8x", entry, &(palette->entries[entry]), palette->entries[entry].off);
 	}
 
 	return TRUE;
@@ -531,7 +531,7 @@ osbool canvas_start_redirection(struct canvas_block *instance)
 
 	instance->redirection_active = TRUE;
 
-	debug_printf("VDU Redirection Active");
+	// debug_printf"VDU Redirection Active");
 
 	return TRUE;
 }
@@ -569,7 +569,7 @@ osbool canvas_stop_redirection(struct canvas_block *instance)
 
 	instance->redirection_active = FALSE;
 
-	debug_printf("VDU Redirection Inactive");
+	// debug_printf"VDU Redirection Inactive");
 
 	return TRUE;
 

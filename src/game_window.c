@@ -208,7 +208,7 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 	if (new == NULL)
 		return NULL;
 
-	debug_printf("Creating a new game window instance: block=0x%x, fe=0x%x", new, fe);
+	// debug_printf"Creating a new game window instance: block=0x%x, fe=0x%x", new, fe);
 
 	/* Initialise critical fields in the struct. */
 
@@ -254,7 +254,7 @@ void game_window_delete_instance(struct game_window_block *instance)
 	if (instance == NULL)
 		return;
 
-	debug_printf("Deleting a game window instance: block=0x%x", instance);
+	// debug_printf"Deleting a game window instance: block=0x%x", instance);
 
 	/* Delete the window. */
 
@@ -470,7 +470,7 @@ static void game_window_close_handler(wimp_close *close)
 {
 	struct game_window_block	*instance;
 
-	debug_printf("\\RClosing game window");
+	// debug_printf"\\RClosing game window");
 
 	instance = event_get_window_user_data(close->w);
 	if (instance == NULL)
@@ -481,7 +481,7 @@ static void game_window_close_handler(wimp_close *close)
 	 * TODO -- Remove!
 	 */
 
-	canvas_save_sprite(instance->canvas, "RAM::RamDisc0.$.Sprites");
+//	canvas_save_sprite(instance->canvas, "RAM::RamDisc0.$.Sprites");
 
 	/* Delete the parent game instance. */
 
@@ -696,7 +696,7 @@ static osbool game_window_drag_in_progress(void *data)
 	x = game_window_convert_to_window_x_coordinate(&window, pointer.pos.x);
 	y = game_window_convert_to_window_y_coordinate(&window, pointer.pos.y);
 
-	debug_printf("Drag in progress: x=%d, y=%d", pointer.pos.x, pointer.pos.y);
+	// debug_printf"Drag in progress: x=%d, y=%d", pointer.pos.x, pointer.pos.y);
 
 	frontend_handle_key_event(instance->fe, x, y, drag);
 
@@ -1182,7 +1182,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 	instance->number_of_colours = 0;
 
-	debug_printf("Requesting canvas of x=%d, y=%d", x, y);
+	// debug_printf"Requesting canvas of x=%d, y=%d", x, y);
 
 	/* Allocate, or adjust, the required area. */
 
@@ -1395,7 +1395,7 @@ osbool game_window_force_redraw(struct game_window_block *instance, int x0, int 
 	x1 = (x1 + 1) * CANVAS_PIXEL_SIZE;
 	y1 = -(y1 + 1) * CANVAS_PIXEL_SIZE;
 
-	debug_printf("Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d", x0, y1, x1, y0);
+	// debug_printf"Request a redraw: x0=%d, y0=%d, x1=%d, y1=%d", x0, y1, x1, y0);
 
 	/* Queue the update. */
 
@@ -1432,7 +1432,7 @@ osbool game_window_set_colour(struct game_window_block *instance, int colour)
 		return FALSE;
 	}
 
-	debug_printf("\\lSelect colour %d", colour);
+	// debug_printf"\\lSelect colour %d", colour);
 
 	return TRUE;
 }
@@ -1501,7 +1501,7 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 		return FALSE;
 	}
 
-	debug_printf("\\lSet clip to %d,%d -- %d,%d", x0, y1, x1, y0);
+	// debug_printf"\\lSet clip to %d,%d -- %d,%d", x0, y1, x1, y0);
 
 	return TRUE;
 }
@@ -1526,7 +1526,7 @@ osbool game_window_clear_clip(struct game_window_block *instance)
 		return FALSE;
 	}
 
-	debug_printf("Reset clip");
+	// debug_printf"Reset clip");
 
 	return TRUE;
 }
@@ -1557,7 +1557,7 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
 	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
-	debug_printf("\\lPlotted 0x%x to %d, %d", plot_code, x, y);
+	// debug_printf"\\lPlotted 0x%x to %d, %d", plot_code, x, y);
 
 	error = xos_plot(plot_code, x, y);
 	if (error != NULL) {
@@ -1592,7 +1592,7 @@ osbool game_window_start_path(struct game_window_block *instance, int x, int y)
 	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
 	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
-	debug_printf("\\lStart path from %d, %d", x, y);
+	// debug_printf"\\lStart path from %d, %d", x, y);
 
 	return game_draw_add_move(x, y);
 }
@@ -1619,7 +1619,7 @@ osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
 	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
-	debug_printf("\\lContinue path to %d, %d", x, y);
+	// debug_printf"\\lContinue path to %d, %d", x, y);
 
 	return game_draw_add_line(x, y);
 }
@@ -1669,7 +1669,7 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 		}
 	}
 
-	debug_printf("\\lPath plotted");
+	// debug_printf"\\lPath plotted");
 
 	return TRUE;
 }
@@ -1709,7 +1709,7 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 
 	size *= CANVAS_PIXEL_SIZE;
 
-	debug_printf("\\lPrint text at %d, %d (OS Units)", x, y);
+	// debug_printf"\\lPrint text at %d, %d (OS Units)", x, y);
 
 	/* Convert the size in pixels into points. */
 
@@ -1802,7 +1802,7 @@ blitter *game_window_create_blitter(struct game_window_block *instance, int widt
 	if (instance == NULL)
 		return NULL;
 
-	debug_printf("\\ORequesting new blitter: width=%d, height=%d", width, height);
+	// debug_printf"\\ORequesting new blitter: width=%d, height=%d", width, height);
 
 	return (blitter *) blitter_create(instance->blitters, width, height);
 }
@@ -1820,7 +1820,7 @@ osbool game_window_delete_blitter(struct game_window_block *instance, blitter *b
 	if (instance == NULL)
 		return FALSE;
 
-	debug_printf("\\OBlitter Free");
+	// debug_printf"\\OBlitter Free");
 
 	return blitter_delete(instance->blitters, (struct blitter_block *) blitter);
 }
@@ -1842,7 +1842,7 @@ osbool game_window_save_blitter(struct game_window_block *instance, blitter *bli
 	if (instance == NULL || blitter == NULL)
 		return FALSE;
 
-	debug_printf("\\OBlitter Save from x=%d, y=%d", x, y);
+	// debug_printf"\\OBlitter Save from x=%d, y=%d", x, y);
 
 	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
 		return FALSE;
@@ -1875,7 +1875,7 @@ osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *bl
 	if (instance == NULL || blitter == NULL)
 		return FALSE;
 
-	debug_printf("\\OBlitter Load to x=%d, y=%d", x, y);
+	// debug_printf"\\OBlitter Load to x=%d, y=%d", x, y);
 
 	if (canvas_get_size(instance->canvas, &canvas_size) == FALSE)
 		return FALSE;

@@ -103,7 +103,7 @@ struct blitter_set_block *blitter_create_set(void)
 
 	new->blitters = NULL;
 
-	debug_printf("\\VCreated new blitter set 0x%x", new);
+	// debug_printf"\\VCreated new blitter set 0x%x", new);
 
 	return new;
 }
@@ -120,7 +120,7 @@ void blitter_delete_set(struct blitter_set_block *set)
 	if (set == NULL)
 		return;
 
-	debug_printf("\\BDeleting blitter set 0x%x", set);
+	// debug_printf"\\BDeleting blitter set 0x%x", set);
 
 	/* Delete any blitters in the set. */
 
@@ -172,7 +172,7 @@ struct blitter_block *blitter_create(struct blitter_set_block *set, int width, i
 	new->position.x = 0;
 	new->position.y = 0;
 
-	debug_printf("\\LCreated new blitter 0x%x in set 0x%x; width=%d, height=%d", new, set, width, height);
+	// debug_printf"\\LCreated new blitter 0x%x in set 0x%x; width=%d, height=%d", new, set, width, height);
 
 	return new;
 }
@@ -192,7 +192,7 @@ osbool blitter_delete(struct blitter_set_block *set, struct blitter_block *blitt
 	if (set == NULL || blitter == NULL)
 		return FALSE;
 
-	debug_printf("\\LDeleting blitter 0x%x from set 0x%x", blitter, set);
+	// debug_printf"\\LDeleting blitter 0x%x from set 0x%x", blitter, set);
 
 	/* Delink the blitter from its set. */
 
