@@ -401,16 +401,16 @@ struct game_config_block *game_config_create_instance(int type, config_item *con
 
 	switch (type) {
 	case CFG_DESC:
-		help_token = "GameConfigDsc";
+		help_token = "GameConfigD";
 		break;
 	case CFG_SEED:
-		help_token = "GameConfigSed";
+		help_token = "GameConfigR";
 		break;
 	case CFG_SETTINGS:
-		help_token = "GameConfigSet";
+		help_token = "GameConfigS";
 		break;
 	case CFG_PREFS:
-		help_token = "GameConfigPrf";
+		help_token = "GameConfigP";
 		break;
 	default:
 		help_token = "GameConfig";
