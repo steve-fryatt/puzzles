@@ -70,6 +70,7 @@
 #include "game_draw.h"
 #include "game_config.h"
 #include "game_window_backend_menu.h"
+#include "index_window.h"
 
 /* Game Window menu */
 
@@ -469,12 +470,20 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 static void game_window_close_handler(wimp_close *close)
 {
 	struct game_window_block	*instance;
+	wimp_pointer			pointer;
 
 	// debug_printf"\\RClosing game window");
 
 	instance = event_get_window_user_data(close->w);
 	if (instance == NULL)
 		return;
+
+	/* If Adjust was clicked, open the index window. */
+
+	wimp_get_pointer_info(&pointer);
+
+	if (pointer.buttons == wimp_CLICK_ADJUST)
+		index_window_open();
 
 	/* Save the sprite for analysis.
 	 *
