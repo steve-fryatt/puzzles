@@ -1174,7 +1174,7 @@ static osbool game_config_copy_to_dialogue(struct game_config_block *instance)
 	config_item *item;
 	struct game_config_entry *entry;
 
-	if (instance == NULL)
+	if (instance == NULL || instance->handle == NULL)
 		return FALSE;
 
 	refresh = windows_get_open(instance->handle);
@@ -1199,6 +1199,9 @@ static osbool game_config_copy_to_dialogue(struct game_config_block *instance)
 		}
 	}
 
+	if (refresh)
+		icons_replace_caret_in_window(instance->handle);
+
 	return TRUE;
 }
 
@@ -1216,7 +1219,7 @@ static osbool game_config_copy_from_dialogue(struct game_config_block *instance)
 	config_item *item;
 	struct game_config_entry *entry;
 
-	if (instance == NULL)
+	if (instance == NULL || instance->handle == NULL)
 		return FALSE;
 
 	for (i = 0; i < instance->entry_count; i++) {
