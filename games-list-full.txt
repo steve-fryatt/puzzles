@@ -45,3 +45,7 @@ its own line.
 *	unequal
 *	unruly
 *	untangle
+
+A test game for developing the RISC OS front end.
+
+	riscostest
