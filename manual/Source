@@ -1,6 +1,6 @@
 <document title="Puzzles">
 <define name="version" value="">
-<define name="date" value="" length=30 align="right">
+<define name="date" value="" length=20 align="right">
 
 
 
@@ -9,7 +9,7 @@
 =============================================================================
 Puzzles - Simon Tatham's Portable Puzzle Collection on RISC OS   Version $$version$$
 
-(C) Stephen Fryatt, 2024                       $$date$$
+(C) Simon Tatham, 2004-2024; Stephen Fryatt, 2024        $$date$$
 =============================================================================
 </literal>
 
@@ -46,6 +46,8 @@ See the Licence for the specific language governing permissions and limitations 
 
 The source for the RISC OS port of <cite>Puzzles</cite> can be found on GitHub, at <link ref="#url https://github.com/steve-fryatt/puzzles">https://github.com/steve-fryatt/puzzles</link>
 
+The core Puzzles code is copyright Simon Tatham and others, and is licenced separately: see <link ref="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/">https://www.chiark.greenend.org.uk/~sgtatham/puzzles/</link> for details and access to the source code repository.
+
 </chapter>
 
 
@@ -53,17 +55,68 @@ The source for the RISC OS port of <cite>Puzzles</cite> can be found on GitHub, 
 
 <chapter title="Introduction &amp; Installation" file="Introduction">
 
-<cite>Puzzles</cite> is a RISC&nbsp;OS port of <link ref="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/">Simon Tatham&rsquo;s Portable Puzzle Collection</link>.
+<cite>Puzzles</cite> is a RISC&nbsp;OS port of Simon Tatham&rsquo;s Portable Puzzle Collection, a collection of 40 one-player puzzle games which are mainly focussed on logic and maths. More details about the collection can be found on Simon&rsquo;s website, at <link ref="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/">https://www.chiark.greenend.org.uk/~sgtatham/puzzles/</link>.
+
+I discovered the collection through the Android port, and have also played the GTK version available from Simon&rsquo;s site. Since it is described as &ldquo;portable&rdquo;, I decided that RISC&nbsp;OS needed its own version &ndash; and so here it is.
+
+
+<subhead title="Important">
+
+This version of <cite>Puzzles</cite> is an early alpha release, intended to demonstrate the current state of the RISC&nbsp;OS project and invite feedback. Whilst playable, it is known to be incomplete in many areas, may contain bugs and may be unstable. See the <link ref="Issues">Known Issues</link> section below for more details.
+
 
 <subhead title="Installation">
 
 <cite>Puzzles</cite> is designed to work with RISC&nbsp;OS&nbsp;4 or later; it can be used on RISC&nbsp;OS&nbsp;3, but a copy of the Nested Wimp must be installed. It is 26/32-bit neutral, and should therefore run on all hardware systems as long as the 32-bit Shared C Library is installed. If required, this can be found in the System Resources on RISC&nbsp;OS Open Ltd&rsquo;s website at <link ref="https://www.riscosopen.org/content/downloads/common">https://www.riscosopen.org/content/downloads/common</link>.
+
+Nowever, note that it may be slow on older hardware, such as a StrongARM RiscPC.
 
 To install, copy the <file>!Puzzles</file> application from the archive into a suitable place on your hard disc.  It can be run from a floppy disc, but this is not recommended.  Once installed, double-click on the <file>!Puzzles</file> application in the Filer window to load it on to the iconbar.
 
 </chapter>
 
 
+<chapter title="Playing Puzzles" file="Playing">
+
+To play the puzzles, double-click on the <file>!Puzzles</file> application to load it on to the iconbar.  Once loaded, a <mouse>Select</mouse> click on its iconbar icon will open the <window>Puzzles list</window> window, showing all of the available games. To play a game, click <mouse>Select</mouse> on its icon (or <mouse>Adjust</mouse> to open the game and close the <window>Puzzles list</window> window).
+
+
+<subhead title="Game Window">
+
+The <window>Game</window> window contains one of the individual puzzles. There are currently no instructions available with the RISC&nbsp;OS port: consult the games at <link ref="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/">https://www.chiark.greenend.org.uk/~sgtatham/puzzles/</link> for more details of how to play them.
+
+The Game menu offers a number of options for interacting with the game. The current game can be restarted using <menu>Restart</menu>, whilst a new game can be created with the same parameters using <menu>New game</menu>. To change the game parameters, select one of the presets in the <menu>Type</menu> submenu, or use <menu>Type &msep; Custom...</menu> to open the <window>Custom game</window> dialogue box.
+
+A game can be solved (or a hint offered, depending on the specific implementation) by selecting <menu>Solve</menu> &ndash; although not all games offer this facility. The <menu>Undo</menu> and <menu>Redo</menu> options allow moves to be reversed and restored (although cheating death in a game like Inertia will be noted in the final score).
+
+Some games also offer customisation, which can be accessed via <menu>Preferences...</menu>.  Be aware that changing any preferences will cause a new game to be started.
+
+</chapter>
+
+
+<chapter title="Known Issues" file="Issues">
+
+This version of <cite>Puzzles</cite> is best described as an early Alpha release, and is still very much a work in progress. As such, there are many things which have either not yet been implemented, are incomplete, or contain bugs and mis-features.
+
+The following is a non-exhaustive list of things which are known to need attention.
+
+<list>
+<li>The status bar does not correctly redraw when the game canvas changes size. Dragging a window or menu over it will fix the problem.
+<li>The canvas redraw can fail when a game canvas changes size: such as when starting a new game with different parameters. Selecting <menu>New game</menu> from the menu to start another new game with the same parameters will resolve this.
+<li>The game windows, toolbars and drawing canvases may not be perfectly aligned in EX0&nbsp;EY0 modes.
+<li>Font antialiasing is poor.
+<li>Graphics can sometimes render poorly, with artefacts on corners.
+<li>The Loopy puzzle is not included in the collection.
+<li>The games do not have their own icons in the <window>Game List</window> window.
+<li>There is no documentation for the games! For now, details of how to play the games, and their controls, can be found on Simon&rsquo;s website (see links above).
+<li>The game windows can not be resized from their defaults.
+<li>Games can not be saved or loaded.
+<li>The printing of games is not supported.
+</list>
+
+The intention is to address many of these items before a full release takes place. The implementation of features such as printing will depend on the level of interest shown in the RISC&nbsp;OS port.
+
+</chapter>
 
 
 <chapter title="Version History" file="History">
@@ -84,11 +137,15 @@ First alpha release, for testing and feedback.
 Updates and Contacting Me
 -------------------------
 
-  If you have any comments about Puzzles, or would like to report any bugs
-  that you find, you can email me at the address below.
+  If you have any comments about the RISC OS port of Puzzles, or would like
+  to report any bugs that you find, you can email me at the address below.
+  Please contact me in the first instance for issues encountered on
+  RISC OS, so that it can be confirmed that they are not due to the
+  front end.
 
-  Updates to Puzzles and more programs for RISC OS computers can be found
-  on my website at http://www.stevefryatt.org.uk/risc-os/games
+  Updates to the RISC OS port of Puzzles and more programs for RISC OS
+  computers can be found on my website at
+  http://www.stevefryatt.org.uk/risc-os/games
 
   Stephen Fryatt
   email: info@stevefryatt.org.uk
@@ -102,9 +159,9 @@ Updates and Contacting Me
 <hr noshade>
 <h2>Updates and Contacting Me</h2>
 
-<p>If you have any comments about Puzzles, or would like to report any bugs that you find, you can email me at the address below.</p>
+<p>If you have any comments about the RISC&nbsp;OS port of Puzzles, or would like to report any bugs that you find, you can email me at the address below. Please contact me in the first instance for issues encountered on RISC&nbsp;OS, so that it can be confirmed that they are not due to the front end.</p>
 
-<p>Updates to Puzzles and more programs for RISC&nbsp;OS computers can be found on my website at <a href="http://www.stevefryatt.org.uk/risc-os/games">http://www.stevefryatt.org.uk/risc-os/games</a></p>
+<p>Updates to the RISC&nbsp;OS port of Puzzles and more programs for RISC&nbsp;OS computers can be found on my website at <a href="http://www.stevefryatt.org.uk/risc-os/games">http://www.stevefryatt.org.uk/risc-os/games</a></p>
 
 <p>Stephen Fryatt (email: <a href="mailto:info@stevefryatt.org.uk">info@stevefryatt.org.uk</a>)</p>
 </body>
