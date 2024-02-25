@@ -1193,6 +1193,7 @@ static osbool game_config_copy_to_dialogue(struct game_config_block *instance)
 			if (refresh == TRUE)
 				wimp_set_icon_state(instance->handle, entry->icon_handle, 0, 0);
 			break;
+
 		case C_CHOICES:
 			event_set_window_icon_popup_selection(instance->handle, entry->icon_handle, item->u.choices.selected);
 			break;
@@ -1237,6 +1238,7 @@ static osbool game_config_copy_from_dialogue(struct game_config_block *instance)
 
 			item->u.string.sval = strdup(entry->icon_text);
 			break;
+
 		case C_CHOICES:
 			item->u.choices.selected = event_get_window_icon_popup_selection(instance->handle, entry->icon_handle);
 			break;
