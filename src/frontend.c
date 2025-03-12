@@ -90,60 +90,66 @@ static struct frontend *frontend_list = NULL;
 
 static osbool frontend_message_mode_change(wimp_message *message);
 static void frontend_negotiate_game_size(struct frontend *fe);
-static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
-static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour);
-static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour);
-static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour);
-static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour);
+static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
+static void riscos_draw_rect(drawing *dr, int x, int y, int w, int h, int colour);
+static void riscos_draw_line(drawing *dr, int x1, int y1, int x2, int y2, int colour);
+static void riscos_draw_polygon(drawing *dr, const int *coords, int npoints, int fillcolour, int outlinecolour);
+static void riscos_draw_circle(drawing *dr, int cx, int cy, int radius, int fillcolour, int outlinecolour);
 static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour);
-static void riscos_draw_update(void *handle, int x, int y, int w, int h);
-static void riscos_clip(void *handle, int x, int y, int w, int h);
-static void riscos_unclip(void *handle);
-static void riscos_start_draw(void *handle);
-static void riscos_end_draw(void *handle);
-static void riscos_status_bar(void *handle, const char *text);
-static blitter *riscos_blitter_new(void *handle, int w, int h);
-static void riscos_blitter_free(void *handle, blitter *bl);
-static void riscos_blitter_save(void *handle, blitter *bl, int x, int y);
-static void riscos_blitter_load(void *handle, blitter *bl, int x, int y);
+static void riscos_draw_update(drawing *dr, int x, int y, int w, int h);
+static void riscos_clip(drawing *dr, int x, int y, int w, int h);
+static void riscos_unclip(drawing *dr);
+static void riscos_start_draw(drawing *dr);
+static void riscos_end_draw(drawing *dr);
+static void riscos_status_bar(drawing *dr, const char *text);
+static blitter *riscos_blitter_new(drawing *dr, int w, int h);
+static void riscos_blitter_free(drawing *dr, blitter *bl);
+static void riscos_blitter_save(drawing *dr, blitter *bl, int x, int y);
+static void riscos_blitter_load(drawing *dr, blitter *bl, int x, int y);
 
 /* The drawing API. */
 
 static const struct drawing_api riscos_drawing = {
-	riscos_draw_text,
-	riscos_draw_rect,
-	riscos_draw_line,
-	riscos_draw_polygon,
-	riscos_draw_circle,
-	riscos_draw_update,
-	riscos_clip,
-	riscos_unclip,
-	riscos_start_draw,
-	riscos_end_draw,
-	riscos_status_bar,
-	riscos_blitter_new,
-	riscos_blitter_free,
-	riscos_blitter_save,
-	riscos_blitter_load,
+	/* The API version. */
+
+	.version = 1,
+
+	/* The core drawing functions. */
+
+	.draw_text = riscos_draw_text,
+	.draw_rect = riscos_draw_rect,
+	.draw_line = riscos_draw_line,
+	.draw_polygon = riscos_draw_polygon,
+	.draw_circle = riscos_draw_circle,
+	.draw_update = riscos_draw_update,
+	.clip = riscos_clip,
+	.unclip = riscos_unclip,
+	.start_draw = riscos_start_draw,
+	.end_draw = riscos_end_draw,
+	.status_bar = riscos_status_bar,
+	.blitter_new = riscos_blitter_new,
+	.blitter_free = riscos_blitter_free,
+	.blitter_save = riscos_blitter_save,
+	.blitter_load = riscos_blitter_load,
 
 	/* The printing API. */
 
-	NULL, // riscos_begin_doc,
-	NULL, // riscos_begin_page,
-	NULL, // riscos_begin_puzzle,
-	NULL, // riscos_end_puzzle,
-	NULL, // riscos_end_page,
-	NULL, // riscos_end_doc,
-	NULL, // riscos_line_width,
-	NULL, // riscos_line_dotted,
+	.begin_doc = NULL,
+	.begin_page = NULL,
+	.begin_puzzle = NULL,
+	.end_puzzle = NULL,
+	.end_page = NULL,
+	.end_doc = NULL,
+	.line_width = NULL,
+	.line_dotted = NULL,
 
 	/* Text fallback. */
 
-	NULL, // riscos_text_fallback,
+	.text_fallback = NULL,
 
 	/* Thick lines. */
 
-	NULL, // riscos_draw_thick_line,
+	.draw_thick_line = NULL, // riscos_draw_thick_line,
 };
 
 /**
@@ -536,7 +542,7 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 /**
  * Write a line of text in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate at which to write the text.
  * \param y		The Y coordinate at which to write the text.
  * \param fonttype	The type of font face to be used.
@@ -545,17 +551,19 @@ static void frontend_negotiate_game_size(struct frontend *fe)
  * \param *text		The text to write.
  */
 
-static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
+static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\ODraw Text");
 
-	game_window_write_text(handle, x, y, fontsize, align, colour, (fonttype == FONT_FIXED) ? TRUE : FALSE, text);
+	game_window_write_text(window, x, y, fontsize, align, colour, (fonttype == FONT_FIXED) ? TRUE : FALSE, text);
 }
 
 /**
  * Draw a filled rectangle in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate of the top-left of the rectangle (inclusive).
  * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
  * \param w		The width of the rectangle.
@@ -563,19 +571,21 @@ static void riscos_draw_text(void *handle, int x, int y, int fonttype, int fonts
  * \param colour	The colour in which to draw the line.
  */
 
-static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colour)
+static void riscos_draw_rect(drawing *dr, int x, int y, int w, int h, int colour)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\vDraw rectangle from %d,%d, width %d, height %d in colour %d", x, y, w, h, colour);
 
-	game_window_set_colour(handle, colour);
-	game_window_plot(handle, os_MOVE_TO, x, y + h - 1);
-	game_window_plot(handle, os_PLOT_RECTANGLE | os_PLOT_TO, x + w - 1, y);
+	game_window_set_colour(window, colour);
+	game_window_plot(window, os_MOVE_TO, x, y + h - 1);
+	game_window_plot(window, os_PLOT_RECTANGLE | os_PLOT_TO, x + w - 1, y);
 }
 
 /**
  * Draw a straight line in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param x1		The X coordinate of the start of the line (inclusive).
  * \param y1		The Y coordinate of the start of the line (inclusive).
  * \param x2		The X coordinate of the end of the line (inclusive).
@@ -583,19 +593,21 @@ static void riscos_draw_rect(void *handle, int x, int y, int w, int h, int colou
  * \param colour	The colour in which to draw the line.
  */
 
-static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int colour)
+static void riscos_draw_line(drawing *dr, int x1, int y1, int x2, int y2, int colour)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\vDraw Line from %d,%d to %d,%d in colour %d", x1, y1, x2, y2, colour);
 
-	game_window_set_colour(handle, colour);
-	game_window_plot(handle, os_MOVE_TO, x1, y1);
-	game_window_plot(handle, os_PLOT_SOLID | os_PLOT_TO, x2, y2);
+	game_window_set_colour(window, colour);
+	game_window_plot(window, os_MOVE_TO, x1, y1);
+	game_window_plot(window, os_PLOT_SOLID | os_PLOT_TO, x2, y2);
 }
 
 /**
  * Draw a closed polygon in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param *coords	An array of pairs of X, Y coordinates of the points on
  *			the outline (inclusive).
  * \param npoints	The number of points on the outline.
@@ -603,8 +615,9 @@ static void riscos_draw_line(void *handle, int x1, int y1, int x2, int y2, int c
  * \param outlinecolour	The colour to use for the outline, or -1 for none.
  */
 
-static void riscos_draw_polygon(void *handle, const int *coords, int npoints, int fillcolour, int outlinecolour)
+static void riscos_draw_polygon(drawing *dr, const int *coords, int npoints, int fillcolour, int outlinecolour)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
 	int i;
 
 	// debug_printf"\\vDraw Polygon...");
@@ -612,19 +625,19 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
 	if (npoints == 0)
 		return;
 
-	game_window_set_colour(handle, outlinecolour);
+	game_window_set_colour(window, outlinecolour);
 
-	game_window_start_path(handle, coords[0], coords[1]);
+	game_window_start_path(window, coords[0], coords[1]);
 	for (i = 1; i < npoints; i++)
-		game_window_add_segment(handle, coords[2 * i], coords[2 * i + 1]);
+		game_window_add_segment(window, coords[2 * i], coords[2 * i + 1]);
 
-	game_window_end_path(handle, TRUE, 2, outlinecolour, fillcolour);
+	game_window_end_path(window, TRUE, 2, outlinecolour, fillcolour);
 }
 
 /**
  * Draw a circle in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param cx		The X coordinate of the centre of the circle.
  * \param cy		The Y coordinate of the centre of the circle.
  * \param radius	The radius of the circle.
@@ -632,19 +645,21 @@ static void riscos_draw_polygon(void *handle, const int *coords, int npoints, in
  * \param outlinecolour	The colour to use for the outline, or -1 for none.
  */
 
-static void riscos_draw_circle(void *handle, int cx, int cy, int radius, int fillcolour, int outlinecolour)
+static void riscos_draw_circle(drawing *dr, int cx, int cy, int radius, int fillcolour, int outlinecolour)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\vDraw Circle at %d, %d, radius %d, in fill colour %d and outline colour %d", cx, cy, radius, fillcolour, outlinecolour);
 
 	if (fillcolour != -1) {
-		game_window_set_colour(handle, fillcolour);
-		game_window_plot(handle, os_MOVE_TO, cx, cy);
-		game_window_plot(handle, os_PLOT_CIRCLE | os_PLOT_TO, cx + radius, cy);
+		game_window_set_colour(window, fillcolour);
+		game_window_plot(window, os_MOVE_TO, cx, cy);
+		game_window_plot(window, os_PLOT_CIRCLE | os_PLOT_TO, cx + radius, cy);
 	}
 
-	game_window_set_colour(handle, outlinecolour);
-	game_window_plot(handle, os_MOVE_TO, cx, cy);
-	game_window_plot(handle, os_PLOT_CIRCLE_OUTLINE | os_PLOT_TO, cx + radius, cy);
+	game_window_set_colour(window, outlinecolour);
+	game_window_plot(window, os_MOVE_TO, cx, cy);
+	game_window_plot(window, os_PLOT_CIRCLE_OUTLINE | os_PLOT_TO, cx + radius, cy);
 }
 
 static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float y1, float x2, float y2, int colour)
@@ -655,140 +670,160 @@ static void riscos_draw_thick_line(drawing *dr, float thickness, float x1, float
 /**
  * Request an update of part of the window canvas.
  *
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate of the top-left corner of the area.
  * \param y		The Y coordinate of the top-left corner of the area.
  * \param w		The width of the area.
  * \param h		The height of the area.
  */
 
-static void riscos_draw_update(void *handle, int x, int y, int w, int h)
+static void riscos_draw_update(drawing *dr, int x, int y, int w, int h)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\oDraw Update");
 
-	game_window_force_redraw(handle, x, y, x + w - 1, y + h - 1);
+	game_window_force_redraw(window, x, y, x + w - 1, y + h - 1);
 }
 
 /**
  * Set a graphics clipping rectangle in a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate of the top-left of the rectangle (inclusive).
  * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
  * \param w		The width of the rectangle.
  * \param h		The height of the rectangle.
  */
 
-static void riscos_clip(void *handle, int x, int y, int w, int h)
+static void riscos_clip(drawing *dr, int x, int y, int w, int h)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\vClip from %d,%d, width %d, height %d", x, y, w, h);
 
-	game_window_set_clip(handle, x, y, x + w - 1, y + h - 1);
+	game_window_set_clip(window, x, y, x + w - 1, y + h - 1);
 }
 
 /**
  * Clear a graphics clipping rectangle from a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  */
 
-static void riscos_unclip(void *handle)
+static void riscos_unclip(drawing *dr)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\vUnclip");
 
-	game_window_clear_clip(handle);
+	game_window_clear_clip(window);
 }
 
 /**
  * Start the drawing process within a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  */
 
-static void riscos_start_draw(void *handle)
+static void riscos_start_draw(drawing *dr)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\GStart Draw");
 
-	game_window_start_draw(handle);
+	game_window_start_draw(window);
 }
 
 /**
  * End the drawing process within a puzzle window.
  * 
- * \param *handle	The handle of the target Game Window.
+ * \param *dr		The drawing structure referencing the target Game Window.
  */
 
-static void riscos_end_draw(void *handle)
+static void riscos_end_draw(drawing *dr)
 {
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
 	// debug_printf"\\GEnd Draw");
 
-	game_window_end_draw(handle);
+	game_window_end_draw(window);
 }
 
 /**
  * Update the text in the status bar.
  * 
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param *text		The new text to display in the bar.
  */
 
-static void riscos_status_bar(void *handle, const char *text)
+static void riscos_status_bar(drawing *dr, const char *text)
 {
-	game_window_set_status_text(handle, text);
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
+	game_window_set_status_text(window, text);
 }
 
 /**
  * Create a new blitter
  * 
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param w		The required width of the blitter.
  * \param h		The required height of the blitter.
  * \return		Pointer to the new blitter, or NULL.
  */
 
-static blitter *riscos_blitter_new(void *handle, int w, int h)
+static blitter *riscos_blitter_new(drawing *dr, int w, int h)
 {
-	return game_window_create_blitter(handle, w, h);
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
+	return game_window_create_blitter(window, w, h);
 }
 
 /**
  * Free the resources related to a blitter.
  * 
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param *bl		The blitter to be freed.
  */
 
-static void riscos_blitter_free(void *handle, blitter *bl)
+static void riscos_blitter_free(drawing *dr, blitter *bl)
 {
-	game_window_delete_blitter(handle, bl);
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
+	game_window_delete_blitter(window, bl);
 }
 
 /**
  * Save a copy of the game canvas on to a blitter.
  *
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param *bl		The blitter to be used.
  * \param x		The X coordinate of the area to copy.
  * \param y		The Y coordinate of the area to copy.
  */
 
-static void riscos_blitter_save(void *handle, blitter *bl, int x, int y)
+static void riscos_blitter_save(drawing *dr, blitter *bl, int x, int y)
 {
-	game_window_save_blitter(handle, bl, x, y);
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
+	game_window_save_blitter(window, bl, x, y);
 }
 
 /**
  * Draw the contents of a blitter on to the game canvas.
  *
- * \param *handle	The game window instance pointer.
+ * \param *dr		The drawing structure referencing the target Game Window.
  * \param *bl		The blitter to be used.
  * \param x		The X coordinate of the area to write to.
  * \param y		The Y coordinate of the area to write to.
  */
 
-static void riscos_blitter_load(void *handle, blitter *bl, int x, int y)
+static void riscos_blitter_load(drawing *dr, blitter *bl, int x, int y)
 {
-	game_windoow_load_blitter(handle, bl, x, y);
+	struct game_window_block *window = GET_HANDLE_AS_TYPE(dr, struct game_window_block);
+
+	game_windoow_load_blitter(window, bl, x, y);
 }
 
 
