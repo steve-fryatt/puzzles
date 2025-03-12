@@ -31,6 +31,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <fenv.h>
 
 /* Acorn C header files */
 
@@ -166,6 +167,7 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 	struct frontend *new;
 	osbool status_bar = FALSE;
 	const game *game = NULL;
+	fenv_t fpexcepts;
 
 	/* Sanity check the game index that we're to use. */
 
@@ -217,9 +219,14 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 		return;
 	}
 
+	feholdexcept(&fpexcepts);
+
 	midend_new_game(new->me);
 
 	frontend_negotiate_game_size(new);
+
+	feclearexcept(FE_ALL_EXCEPT);
+	feupdateenv(&fpexcepts);
 
 	status_bar = midend_wants_statusbar(new->me) ? TRUE : FALSE;
 
@@ -284,9 +291,12 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 {
 	const char *error;
 	enum frontend_event_outcome outcome = FRONTEND_EVENT_UNKNOWN;
+	fenv_t fpexcepts;
 
 	if (fe == NULL || fe->me == NULL)
 		return FRONTEND_EVENT_REJECTED;
+
+	feholdexcept(&fpexcepts);
 
 	switch (action) {
 	case FRONTEND_ACTION_SIMPLE_NEW:
@@ -310,6 +320,9 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 		outcome = FRONTEND_EVENT_REJECTED;
 		break;
 	}
+
+	feclearexcept(FE_ALL_EXCEPT);
+	feupdateenv(&fpexcepts);
 
 	return outcome;
 }
