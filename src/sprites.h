@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt
+/* Copyright 2025, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
