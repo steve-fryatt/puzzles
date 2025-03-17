@@ -65,6 +65,7 @@
 #include "game_window_backend_menu.h"
 #include "game_config.h"
 #include "iconbar.h"
+#include "sprites.h"
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
@@ -91,7 +92,6 @@ static osbool	main_message_quit(wimp_message *message);
 
 wimp_t			main_task_handle;
 int			main_quit_flag = FALSE;
-//osspriteop_area		*main_wimp_sprites;
 
 
 /**
@@ -161,6 +161,7 @@ static void main_initialise(void)
 {
 	static char		task_name[MAIN_TASKNAME_BUFFER_LEN];
 	char			resources[MAIN_FILENAME_BUFFER_LEN], res_temp[MAIN_FILENAME_BUFFER_LEN];
+	osspriteop_area		*sprites;
 
 
 	hourglass_on();
@@ -208,6 +209,14 @@ static void main_initialise(void)
 		error_msgs_param_report_fatal("BadResource", "Templates", NULL, NULL, NULL);
 
 	templates_open(res_temp);
+
+	/* Load the application sprites. */
+
+	sprites = resources_load_user_sprite_area("<Puzzles$Dir>.Sprites");
+	if (sprites == NULL)
+		error_msgs_report_fatal("NoSprites");
+
+	sprites_initialise(sprites);
 
 	/* Initialise the individual modules. */
 

@@ -45,6 +45,7 @@
 #include "sflib/icons.h"
 #include "sflib/ihelp.h"
 #include "sflib/msgs.h"
+#include "sflib/string.h"
 #include "sflib/templates.h"
 #include "sflib/windows.h"
 
@@ -54,6 +55,7 @@
 
 #include "core/puzzles.h"
 #include "frontend.h"
+#include "sprites.h"
 
 /**
  * The icon guttering.
@@ -102,6 +104,7 @@ void index_window_initialise(void)
 	wimp_icon_create	*icon_def;
 	wimp_i			icon_handle;
 	os_error		*error;
+	char			*validation;
 
 	window_def = templates_load_window("Index");
 	if (window_def == NULL)
@@ -129,6 +132,8 @@ void index_window_initialise(void)
 			((((gamecount > INDEX_WINDOW_INITIAL_MAX_ROWS) ? INDEX_WINDOW_INITIAL_MAX_ROWS : gamecount) *
 					(index_window_icon_height + INDEX_WINDOW_ICON_GUTTER)) + INDEX_WINDOW_ICON_GUTTER);
 
+	window_def->sprite_area = sprites_get_area();
+
 	error = xwimp_create_window(window_def, &index_window_handle);
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
@@ -148,6 +153,8 @@ void index_window_initialise(void)
 	icon_def->icon.extent.x0 = window_def->extent.x0 + INDEX_WINDOW_ICON_GUTTER;
 	icon_def->icon.extent.x1 = window_def->extent.x1 - INDEX_WINDOW_ICON_GUTTER;
 
+	validation = icon_def->icon.data.indirected_text_and_sprite.validation;
+
 	for (i = 0; i < gamecount; i++) {
 		icon_def->icon.extent.y0 = -(i + 1) * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
 		icon_def->icon.extent.y1 = icon_def->icon.extent.y0 + index_window_icon_height;
@@ -156,6 +163,16 @@ void index_window_initialise(void)
 
 		icon_def->icon.data.indirected_text_and_sprite.text = (char *) gamelist[i]->name;
 		icon_def->icon.data.indirected_text_and_sprite.size = strlen(gamelist[i]->name) + 1;
+
+		/* Check for the correct sprite. */
+
+		if (sprites_test_sprite((char *) gamelist[i]->name)) {
+			icon_def->icon.data.indirected_text_and_sprite.validation = malloc(14);
+			string_printf(icon_def->icon.data.indirected_text_and_sprite.validation, 14, "S%s",
+					(char *) gamelist[i]->name);
+		} else {
+			icon_def->icon.data.indirected_text_and_sprite.validation = validation;
+		}
 
 		error = xwimp_create_icon(icon_def, &icon_handle);
 		if (error != NULL) {

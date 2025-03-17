@@ -49,6 +49,7 @@ OBJS =  blitter.o			\
 	index_window.o			\
 	main.o				\
 	riscos_test.o			\
+	sprites.o			\
 	core/blackbox.o			\
 	core/bridges.o			\
 	core/combi.o			\
