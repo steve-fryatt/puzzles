@@ -36,6 +36,10 @@ CORE := src/core
 GAMES := generated-games.h
 GAMESRC := games-list.txt
 
+MANSRC := Source.xml
+
+HTMLHELP := Manual,faf
+
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
 
 OBJS =  blitter.o			\

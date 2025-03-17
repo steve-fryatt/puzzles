@@ -1,0 +1,1018 @@
+<!-- This manual is in sync with core commit 7da46412 from 19-02-2025. -->
+
+<manual>
+<title>Puzzles</title>
+<strapline>Simon Tatham&rsquo;s Portable Puzzle Collection on RISC&nbsp;OS</strapline>
+<credit>&copy; Simon&nbsp;Tatham,&nbsp;2004-2025; Stephen&nbsp;Fryatt,&nbsp;2024-2025</credit>
+<version>Version&nbsp;<define name="version" /></version>
+<date><define name="date" /></date>
+
+<index>
+<title>Contents</title>
+
+<chapterlist/>
+</index>
+
+<!-- Licence -->
+
+<chapter id="licence">
+<title>Licence</title>
+
+<section>
+<p>The RISC&nbsp;OS-specific code in this port of <cite>Puzzles</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.</p>
+
+<p>You may obtain a copy of the Licence at <link external="true" href="http://joinup.ec.europa.eu/software/page/eupl"/>.</p>
+
+<p>Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an &ldquo;<strong>as is</strong>&rdquo; basis, <strong>without warranties or conditions of any kind</strong>, either express or implied.</p>
+
+<p>See the Licence for the specific language governing permissions and limitations under the Licence.</p>
+
+<p>The source for the RISC OS port of <cite>Puzzles</cite> can be found on GitHub, at <link external="true" href="https://github.com/steve-fryatt/puzzles"/>.</p>
+
+<p>The core <cite>Puzzles</cite> code is copyright Simon Tatham and others, and is licenced separately: see <link external="true" href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/"/> for details and access to the source code repository.</p>
+
+<p>Portions of the code are copyright Richard Boulton, James Harvey, Mike Pinna, Jonas Koelker, Dariusz Olszewski, Michael Schierl, Lambros Lambrou, Bernd Schmidt, Steffen Bauer, Lennard Sprong, Rogier Goossens, Michael Quevillon, Asher Gordon, Didi Kohen, and Ben Harris.</p>
+
+<p>This manual is based on the original by Simon Tatham, with RISC&nbsp;OS-specific modifications where required.</p>
+</section>
+</chapter>
+
+<!-- Introduction -->
+
+<chapter id="intro">
+<title>Introduction &amp; Installation</title>
+
+<section>
+<p><cite>Puzzles</cite> is a RISC&nbsp;OS port of Simon Tatham&rsquo;s Portable Puzzle Collection, a collection of 40 one-player puzzle games which are mainly focussed on logic and maths. More details about the collection can be found on Simon&rsquo;s website, at <link href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/" />.</p>
+
+<p>I discovered the collection through the Android port, and have also played the GTK version available from Simon&rsquo;s site. Since it is described as &ldquo;portable&rdquo;, I decided that RISC&nbsp;OS needed its own version &ndash; and so here it is.</p>
+
+<callout type="warning">
+<p>This version of <cite>Puzzles</cite> is an early alpha release, intended to demonstrate the current state of the RISC&nbsp;OS project and invite feedback. Whilst playable, it is known to be incomplete in many areas, may contain bugs and may be unstable. See the <link ref="Issues">Known Issues</link> section below for more details.</p>
+</callout>
+
+<p>In the introduction to the original manual, Simon wrote:</p>
+
+<p>&ldquo;I wrote this collection because I thought there should be more small desktop toys available: little games you can pop up in a window and play for two or three minutes while you take a break from whatever else you were doing. And I was also annoyed that every time I found a good game on (say) Unix, it wasn&rsquo;t available the next time I was sitting at a Windows machine, or vice versa; so I arranged that everything in my personal puzzle collection will happily run on both, and have more recently done a port to Mac&nbsp;OS&nbsp;X as well. When I find (or perhaps invent) further puzzle games that I like, they&rsquo;ll be added to this collection and will immediately be available on
+both platforms. And if anyone feels like writing any other front ends &ndash; PocketPC, Mac&nbsp;OS pre-10, or whatever it might be &ndash; then all the games in this framework will immediately become available on another platform as well.</p>
+
+<p>&ldquo;The actual games in this collection were mostly not my invention; they are re-implementations of existing game concepts within my portable puzzle framework. I do not claim credit, in general, for inventing the rules of any of these puzzles. (I don&rsquo;t even claim authorship of all the code; some of the puzzles have been submitted by other authors.)</p>
+
+<p>&ldquo;This collection is distributed under the MIT licence. This means that you can do pretty much anything you like with the game binaries or the code, except pretending you wrote them yourself, or suing me if anything goes wrong.&rdquo;</p>
+
+<p>The rest of this manual is based very heavily on the original by Simon and his contributors, with small tweaks where necessary to make the content match the RISC&nbsp;OS experience. And while the licence of the RISC&nbsp;OS port is different (due to the libraries used to port it), the spirit of the puzzles is the same.</p>
+</section>
+
+<section>
+<title>Installation</title>
+
+<p><cite>Puzzles</cite> is designed to work with RISC&nbsp;OS&nbsp;4 or later; it can be used on RISC&nbsp;OS&nbsp;3, but a copy of the Nested Wimp must be installed. It is 26/32-bit neutral, and should therefore run on all hardware systems as long as the 32-bit Shared C Library is installed. If required, this can be found in the System Resources on RISC&nbsp;OS Open Ltd&rsquo;s website at <link href="https://www.riscosopen.org/content/downloads/common" />.</p>
+
+<p>However, note that it may be slow on older hardware, such as a StrongARM RiscPC.</p>
+
+<p>To install, copy the <file>!Puzzles</file> application from the archive into a suitable place on your hard disc.  It can be run from a floppy disc, but this is not recommended.  Once installed, double-click on the <file>!Puzzles</file> application in the Filer window to load it on to the iconbar.</p>
+</section>
+</chapter>
+
+<!-- Playing -->
+
+<chapter id="playing">
+<title>Playing Puzzles</title>
+
+<section>
+<p>To play the puzzles, double-click on the <file>!Puzzles</file> application to load it on to the iconbar. Once loaded, a <mouse>Select</mouse> click on its iconbar icon will open the <window>Puzzles list</window> window, showing all of the available games. To play a game, click <mouse>Select</mouse> on its icon (or <mouse>Adjust</mouse> to open the game and close the <window>Puzzles list</window> window).</p>
+
+<p>As part of a suite, there are many features which are common to all of the games in <cite>Puzzles</cite>, and these are described here. Details of the individual games are in the following chapters.</p>
+</section>
+
+<section id="common-actions">
+<title>Game Window</title>
+
+<p>The <window>Game</window> window contains one of the individual puzzles. The keyboard and mouse can be used to interact with the game, as defined in each of the games&rsquo; descriptions.</p>
+
+<p>The <window>Game</window> window menu offers a number of options for interacting with the game, which are common to most of the games. If the window has input focus, some standard keyboard shortcuts can also be used. The available actions are described in the list here, and in the following sections.</p>
+
+<dl>
+<li><title><menu>New game</menu> (<key>N</key> or <key>Ctrl-N</key>)</title>
+
+<p>Starts a new game, with a random initial state.</p></li>
+
+
+<li><title><menu>Restart</menu></title>
+
+<p>Resets the current game to its initial state. (This can be undone.)</p></li>
+
+
+<li><title><menu>Undo</menu> (<key>U</key>, <key>Ctrl-Z</key>, <key>Ctrl-_</key>, or <key>*</key>)</title>
+
+<p>Undoes a single move. (You can undo moves back to the start of the session.)</p></li>
+
+
+<li><title><menu>Redo</menu> (<key>R</key>, <key>Ctrl-R</key> or <key>#</key>)</title>
+
+<p>Redoes a previously undone move.</p></li>
+
+
+<li><title><menu>Solve</menu></title>
+
+<p>Transforms the puzzle instantly into its solved state. For some games (<ref id="cube">Cube</ref>) this feature is not supported at all because it is of no particular use. For other games (such as <ref id="pattern">Pattern</ref>), the solved state can be used to give you information, if you can&rsquo;t see how a solution can exist at all or you want to know where you made a mistake. For still other games (such as <ref id="sixteen">Sixteen</ref>), automatic solution tells you nothing about how to <em>get</em> to the solution, but it does provide a useful way to get there quickly so that you can experiment with set-piece moves and transformations.</p>
+
+<p>Some games (such as <ref id="solo">Solo</ref>) are capable of solving a game ID you have typed in from elsewhere. Other games (such as <ref id="rectangles">Rectangles</ref>) cannot solve a game ID they didn&rsquo;t invent themself, but when they did invent the game ID they know what the solution is already. Still other games (<ref id="pattern">Pattern</ref>) can solve <em>some</em> external game IDs, but only if they aren&rsquo;t too difficult.</p>
+
+<p>The <menu>Solve</menu> command adds the solved state to the end of the undo chain for the puzzle. In other words, if you want to go back to solving it yourself after seeing the answer, you can just press <menu>Undo</menu>.</p></li>
+
+
+<li><title><menu>Preferences...</menu></title>
+
+<p>Where supported, brings up a dialog allowing you to configure personal preferences about a particular game. Some of these preferences will be specific to a particular game; others will be common to all games.</p>
+
+<p>One option common to all games allows you to turn off the one-key shortcuts like <key>N</key> for new game or <key>Q</key> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <key>Ctrl</key> key.</p></li>
+</dl>
+</section>
+
+<section id="playing-game-id">
+<title>Specifying games with the game ID</title>
+
+<p>There are two ways to save a game specification out of a puzzle and recreate it later, or recreate it in somebody else&rsquo;s copy of the same puzzle.</p>
+
+<p>The <menu>Specific game...</menu> and <menu>Random Seed...</menu> entries in the <window>Game</window> window menu each show a piece of text (a &lsquo;game ID&rsquo;) which is sufficient to reconstruct precisely the same game at a later date.</p>
+
+<p>You can enter either of these pieces of text back into the program (via the same <menu>Specific game...</menu> and <menu>Random Seed...</menu> menu entries) at a later point, and it will recreate the same game.</p>
+
+<p>The difference between the two forms is that a descriptive game ID is a literal <em>description</em> of the initial state of the game, whereas a random seed is just a piece of arbitrary text which was provided as input to the random number generator used to create the puzzle. This means that:</p>
+
+<ul>
+<li><p>Descriptive game IDs tend to be longer in many puzzles (although some, such as <ref id="cube">Cube</ref>, only need very short descriptions). So a random seed is often a <em>quicker</em> way to note down the puzzle you&rsquo;re currently playing, or to tell it to somebody else so they can play the same one as you.</p></li>
+
+<li><p>Any text at all is a valid random seed. The automatically generated ones are fifteen-digit numbers, but anything will do; you can type in your full name, or a word you just made up, and a valid puzzle will be generated from it. This provides a way for two or more people to race to complete the same puzzle: you think of a random seed, then everybody types it in at the same time, and nobody has an advantage due to having seen the generated puzzle before anybody else.</p></li>
+
+<li><p>It is often possible to convert puzzles from other sources (such as &lsquo;nonograms&rsquo; or &lsquo;sudoku&rsquo; from newspapers) into descriptive
+game IDs suitable for use with these programs.</p></li>
+
+<li><p>Random seeds are not guaranteed to produce the same result if you use them with a different <em>version</em> of the puzzle program. This is because the generation algorithm might have been improved or modified in later versions of the code, and will therefore produce a different result when given the same
+sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure that it will be used on the same version of the program as yours.</p>
+
+<!-- p>(Use the <menu>About</menu> menu option to find out the version number of the program. Programs with the same version number running on different platforms should still be random-seed compatible.)</p --></li>
+</ul>
+
+<p>A descriptive game ID starts with a piece of text which encodes the <em>parameters</em> of the current game (such as grid size). Then there is a colon, and after that is the description of the game&rsquo;s initial state. A random seed starts with a similar string of parameters, but then it contains a hash sign followed by arbitrary data.</p>
+
+<p>If you enter a descriptive game ID, the program will not be able to show you the random seed which generated it, since it wasn&rsquo;t generated <em>from</em> a random seed. If you <em>enter</em> a random seed, however, the program will be able to show you the descriptive game ID derived from that random seed.</p>
+
+<p>Note that the game parameter strings are not always identical between the two forms. For some games, there will be parameter data provided with the random seed which is not included in the descriptive game ID. This is because that parameter information is only relevant when <em>generating</em> puzzle grids, and is not important when playing them. Thus, for example, the difficulty level in <ref id="solo">Solo</ref> is not mentioned in the descriptive game ID.</p>
+
+<p>These additional parameters are also not set permanently if you type in a game ID. For example, suppose you have <ref id="solo">Solo</ref> set to &lsquo;Advanced&rsquo; difficulty level, and then a friend wants your help with a &lsquo;Trivial&rsquo; puzzle; so the friend reads out a random seed specifying &lsquo;Trivial&rsquo; difficulty, and you type it in. The program will generate you the same &lsquo;Trivial&rsquo; grid which your friend was having trouble with, but once you have finished playing it, when you ask for a new game it will automatically go back to the &lsquo;Advanced&rsquo; difficulty which it was previously set on.</p>
+</section>
+
+<section>
+<title>The <menu>Type</menu> menu</title>
+
+<p>The <menu>Type</menu> submenu, if present, may contain a list of preset game settings. Selecting one of these will start a new random game with the parameters specified.</p>
+
+<p>The <menu>Type</menu> submenu may also contain a <menu>Custom...</menu> option which allows you to fine-tune game parameters. The parameters available are specific to each game and are described in the following sections.</p>
+
+
+</section>
+</chapter>
+
+<!-- Net -->
+
+<chapter id="net">
+<title>Net</title>
+
+<section>
+<p>I originally saw this in the form of a Flash game called FreeNet<ref id="note-net-1" />, written by Pavils Jurjans; there are several other implementations under the name NetWalk. The computer prepares a network by connecting up the centres of squares in a grid, and then shuffles the network by rotating every tile randomly. Your job is to rotate it all back into place. The successful solution will be an entirely connected network, with no closed loops. As a visual aid, all tiles which are connected to the one in the middle are highlighted.</p>
+
+<footnote id="note-net-1"><p><link href="http://www.jurjans.lv/stuff/net/FreeNet.htm" />.</p></footnote>
+</section>
+
+<section id="net-controls">
+<title>Net controls</title>
+
+<p>This game can be played with either the keyboard or the mouse. The controls are:</p>
+
+<dl>
+<li><title>Select tile</title>
+
+<p>Mouse pointer, arrow keys</p></li>
+
+<li><title>Rotate tile anticlockwise</title>
+
+<p><mouse>Select</mouse> click, <key>A</key> key</p></li>
+
+<li><title>Rotate tile clockwise</title>
+
+<p><mouse>Adjust</mouse> click, <key>D</key> key</p></li>
+
+<li><title>Rotate tile by 180 degrees</title>
+
+<p><key>F</key> key</p></li>
+
+<li><title>Lock (or unlock) tile</title>
+
+<p><key>Ctrl</key>-<mouse>Select</mouse> click, <key>Shift</key>-<mouse>Select</mouse> click, <key>S</key> key</p>
+
+<p>You can lock a tile once you&rsquo;re sure of its orientation. You can also unlock it again, but while it&rsquo;s locked you can&rsquo;t accidentally turn it.</p></li>
+</dl>
+
+<p>The following controls are not necessary to complete the game, but may be useful:</p>
+
+<dl>
+<li><title>Shift grid</title>
+
+<p><key>Shift</key> + arrow keys</p>
+
+<p>On grids that wrap, you can move the origin of the grid, so that tiles that were on opposite sides of the grid can be seen together.</p></li>
+
+<li><title>Move centre</title>
+
+<p><key>Ctrl</key> + arrow keys</p>
+
+<p>You can change which tile is used as the source of highlighting. (It doesn&rsquo;t ultimately matter which tile this is, as every tile will be connected to every other tile in a correct solution, but it may be helpful in the intermediate stages of solving the puzzle.)</p></li>
+
+<li><title>Jumble tiles</title>
+
+<p><key>J</key> key</p>
+
+<p>This key turns all tiles that are not locked to random orientations.</p></li>
+</dl>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section id="net-params">
+<title>Net parameters</title>
+
+<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon> and <icon>Height</icon></title>
+
+<p>Size of grid in tiles.</p></li>
+
+<li><title><icon>Walls wrap around</icon></title>
+
+<p>If checked, flow can pass from the left edge to the right edge, and from top to bottom, and vice versa.</p></li>
+
+<li><title><icon>Barrier probability</icon></title>
+
+<p>A number between 0.0 and 1.0 controlling whether an immovable barrier is placed between two tiles to prevent flow between them (a higher number gives more barriers). Since barriers are immovable, they act as constraints on the solution (ie. hints).</p>
+
+<p>The grid generation in Net has been carefully arranged so that the barriers are independent of the rest of the grid. This means that if you note down the random seed used to generate the current puzzle (see <ref id="playing-game-id"/>), change the <icon>Barrier probability</icon> parameter, and then re-enter the same random seed, you should see exactly the same starting grid, with the only change being the number of barriers. So if you&rsquo;re stuck on a particular grid and need a hint, you could start up another instance of Net, set up the same parameters but a higher barrier probability, and enter the game seed from the original Net window.</p></li>
+
+<li><title><icon>Ensure unique solution</icon></title>
+
+<p>Normally, Net will make sure that the puzzles it presents have only one solution. Puzzles with ambiguous sections can be more difficult and more subtle, so if you like you can turn off this feature and risk having ambiguous puzzles. (Also, finding <em>all</em> the possible solutions can be an additional challenge for an advanced player.)</p></li>
+</dl>
+</section>
+
+<section>
+<title>Net user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the Net <window>Game</window> window menu will let you configure when loops are highlighted as errors. By default, they&rsquo;re always highlighted; by
+changing this option, you can ask for a loop to be highlighted only if every tile forming part of the loop is locked. This avoids the loop highlighting acting as a spoiler for available deductions about squares you haven&rsquo;t even looked at yet.</p>
+</section>
+</chapter>
+
+<!-- Cube -->
+
+<chapter id="cube">
+<title>Cube</title>
+
+<section>
+<p>This is another one I originally saw as a web game. This one was a Java game<ref id="note-cube-1"/>, by Paul Scott. You have a grid of 16 squares, six of which are blue; on one square rests a cube. Your move is to use the arrow keys to roll the cube through 90 degrees so that it moves to an adjacent square. If you roll the cube on to a blue square, the blue square is picked up on one face of the cube; if you roll a blue face of the cube on to a non-blue square, the blueness is put down again. (In general, whenever you roll the cube, the two faces that come into contact swap colours.) Your job is to get all six blue squares on to the six faces of the cube at the same time. Count your moves and try to do it in as few as possible.</p>
+
+<p>Unlike the original Java game, my version has an additional feature: once you've mastered the game with a cube rolling on a square grid, you can change to a triangular grid and roll any of a tetrahedron, an octahedron or an icosahedron.</p>
+
+<footnote id="note-cube-1"><p><link href="http://www3.sympatico.ca/paulscott/cube/cube.htm"/></p></footnote>
+</section>
+
+<section>
+<title>Cube controls</title>
+
+<p>This game can be played with either the keyboard or the mouse.</p>
+
+<p><mouse>Select</mouse>-clicking anywhere on the window will move the cube (or other solid) towards the mouse pointer.</p>
+
+<p>The arrow keys can also used to roll the cube on its square grid in the four cardinal directions. On the triangular grids, the mapping of arrow keys to directions is more approximate. Vertical movement is disallowed where it doesn&rsquo;t make sense. The four keys surrounding the arrow keys on the numeric keypad (<key>7</key>, <key>9</key>, <key>1</key>, <key>3</key>) can be used for diagonal movement.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Cube parameters</title>
+
+<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Type of solid</icon></title>
+
+<p>Selects the solid to roll (and hence the shape of the grid): tetrahedron, cube, octahedron, or icosahedron.</p></li>
+
+<li><title><icon>Width / top</icon>, <icon>Height / bottom</icon></title>
+
+<p>On a square grid, horizontal and vertical dimensions. On a triangular grid, the number of triangles on the top and bottom rows respectively.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Fifteen -->
+
+<chapter id="fifteen">
+<title>Fifteen</title>
+
+<section>
+<p>The old ones are the best: this is the good old &lsquo;15-puzzle&rsquo; with sliding tiles, which dates from the 1870s. You have a 4&times;4 square grid; 15 squares contain numbered tiles, and the sixteenth is empty. Your move is to choose a tile next to the empty space, and slide it into the space. The aim is to end up with the tiles in numerical order, with the space in the bottom right (so that the top row reads 1,2,3,4 and the bottom row reads 13,14,15,space).</p>
+</section>
+
+<section>
+<title>Fifteen controls</title>
+
+<p>This game can be controlled with the mouse or the keyboard.</p>
+
+<p>A <mouse>Select</mouse>-click with the mouse in the row or column containing the empty space will move as many tiles as necessary to move the space to the mouse pointer.</p>
+
+<p>By default, the arrow keys will move a tile adjacent to the space in the direction indicated (moving the space in the <em>opposite</em> direction).</p>
+
+<p>Pressing <key>H</key> will make a suggested move. Pressing <key>H</key> enough times will solve the game, but it may scramble your progress while doing so.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Fifteen parameters</title>
+
+<p>The only options available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory. (Once you've changed these, it&rsquo;s not a &lsquo;15-puzzle&rsquo; any more, of course!)</p>
+</section>
+
+<section>
+<title>Fifteen user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the sense of the arrow keys. With the default setting, &lsquo;Move the tile&rsquo;, the arrow key you press indicates the direction that you want a tile to move, so that (for example) if you want to move the tile left of the gap rightwards into the gap, you&rsquo;d press <key>Right</key>. With the opposite setting, &lsquo;Move the gap&rsquo;, the behaviour of the arrow keys is reversed, and you would press <key>Left</key> to move the tile left of the gap into the gap, so that the <em>gap</em> ends up one square left of where it was.</p>
+</section>
+</chapter>
+
+<!-- Sixteen -->
+
+<chapter id="sixteen">
+<title>Sixteen</title>
+
+<section>
+<p>Another sliding tile puzzle, visually similar to <ref id="fifteen">Fifteen</ref>on the grid. By default, Twiddle will shuffle the grid so much
+that any arrangement is about as probable as any other. You can
+override this by requesting a precise number of shuffling moves
+to be performed. Typically your aim is then to determine the
+precise set of shuffling moves and invert them exactly, so that
+you answer (say) a four-move shuffle with a four-move solution.
+Note that the more moves you ask for, the more likely it is that
+solutions shorter than the target length will turn out to be
+possible.
+ but with a different type of move. This time, there is no hole: all 16 squares on the grid contain numbered squares. Your move is to shift an entire row left or right, or shift an entire column up or down; every time you do that, the tile you shift off the grid re-appears at the other end of the same row, in the space you just vacated. To win, arrange the tiles into numerical order (1,2,3,4 on the top row, 13,14,15,16 on the bottom). When you've done that, try playing on different sizes of grid.</p>
+
+<p>I <em>might</em> have invented this game myself, though only by accident if so (and I&rsquo;m sure other people have independently invented it). I
+thought I was imitating a screensaver I&rsquo;d seen, but I have a feeling
+that the screensaver might actually have been a Fifteen-type puzzle
+rather than this slightly different kind. So this might be the one
+thing in my puzzle collection which represents creativity on my part
+rather than just engineering.</p>
+</section>
+
+<section id="sixteen-controls">
+<title>Sixteen controls</title>
+
+<p><mouse>Select</mouse>-clicking on an arrow will move the appropriate row or column in the direction indicated. <mouse>Adjust</mouse>-clicking will move it in the opposite direction.</p>
+
+<p>Alternatively, use the cursor keys to move the position indicator around the edge of the grid, and use the return key to move the row/column in the direction indicated.</p>
+
+<p>You can also move the tiles directly. Move the cursor onto a tile, hold <key>Ctrl</key> and press an arrow key to move the tile under the cursor and move the cursor along with the tile. Or, hold <key>Shift</key> to move only the tile. Pressing <key>Enter</key> simulates holding down <key>Ctrl</key> (press <key>Enter</key> again to release), while pressing <key>Space</key> simulates holding down <key>Shift</key>.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section id="sixteen-params">
+<title>Sixteen parameters</title>
+
+<p>The parameters available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are:</p>
+
+<dl>
+<li><title><icon>Width</icon> and <icon>Height</icon></title>
+
+<p>Which are self-explanatory.</p></li>
+
+<li><title>Number of shuffling moves</title>
+
+<p>You can ask for a limited shuffling operation to be performed on the grid. By default, Sixteen will shuffle the grid in such a way that any arrangement is about as probable as any other. You can override this by requesting a precise number of shuffling moves to be performed. Typically your aim is then to determine the precise set of shuffling moves and invert them exactly, so that you answer (say) a four-move shuffle with a four-move solution. Note that the more moves you ask for, the more likely it is that solutions shorter than the target length will turn out to be possible.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Twiddle -->
+
+<chapter id="twiddle">
+<title>Twiddle</title>
+
+<section>
+<p>Twiddle is a tile-rearrangement puzzle, visually similar to <ref id="twiddle">Sixteen</ref>: you are given a grid of square tiles, each containing a number, and your aim is to arrange the numbers into ascending order.</p>
+
+<p>In basic Twiddle, your move is to rotate a square group of four tiles about their common centre. (Orientation is not significant in the basic puzzle, although you can select it.) On more advanced settings, you can rotate a larger square group of tiles.</p>
+
+<p>I first saw this type of puzzle in the GameCube game <cite>Metroid Prime 2</cite>. In the Main Gyro Chamber in that game, there is a puzzle you solve to unlock a door, which is a special case of Twiddle. I developed this game as a generalisation of that puzzle.</p>
+</section>
+
+<section>
+<title>Twiddle controls</title>
+
+<p>To play Twiddle, click the mouse in the centre of the square group you wish to rotate. In the basic mode, you rotate a 2&times;2 square, which means you have to click at a corner point where four tiles meet.</p>
+
+<p>In more advanced modes you might be rotating 3&times;3 or even more at a time; if the size of the square is odd then you simply click in the centre tile of the square you want to rotate.</p>
+
+<p>Clicking with <mouse>Select</mouse> rotates the group anticlockwise. Clicking with <mouse>Adjust</mouse> rotates it clockwise.</p>
+
+<p>You can also move an outline square around the grid with the cursor keys; the square is the size above (2&times;2 by default, or larger). Pressing the <key>Return</key> key or <key>Space</key> bar will rotate the current square anticlockwise or clockwise respectively.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Twiddle parameters</title>
+
+<p>Twiddle provides several configuration options via the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu:</p>
+
+<dl>
+<li><title><icon>Width</icon> and <icon>Height</icon></title>
+
+<p>You can configure the width and height of the puzzle grid.</p></li>
+
+<li><title><icon>Rotating block size</icon></title>
+
+<p>You can configure the size of square block that rotates at a time.</p></li>
+
+<li><title><icon>One number per row</icon></title>
+
+<p>You can ask for every square in the grid to be distinguishable (the default), or you can ask for a simplified puzzle in which there are groups of identical numbers. In the simplified puzzle your aim is just to arrange all the 1s into the first row, all the 2s into the second row, and so on.</p></li>
+
+<li><title><icon>Orientation matters</icon></title>
+
+<p>You can configure whether the orientation of tiles matters. If you ask for an orientable puzzle, each tile will have a triangle drawn in it. All the triangles must be pointing upwards to complete the puzzle.</p></li>
+
+<li><title><icon>Number of shuffling moves</icon></title>
+
+<p>You can ask for a limited shuffling operation to be performed on the grid. By default, Twiddle will shuffle the grid so much that any arrangement is about as probable as any other. You can override this by requesting a precise number of shuffling moves to be performed. Typically your aim is then to determine the precise set of shuffling moves and invert them exactly, so that you answer (say) a four-move shuffle with a four-move solution. Note that the more moves you ask for, the more likely it is that solutions shorter than the target length will turn out to be possible.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Rectangles -->
+
+<chapter id="rectangles">
+<title>Rectangles</title>
+
+<section>
+<p>You have a grid of squares, with numbers written in some (but not all) of the squares. Your task is to subdivide the grid into rectangles of various sizes, such that (a) every rectangle contains exactly one numbered square, and (b) the area of each rectangle is equal to the number written in its numbered square.</p>
+
+<p>Credit for this game goes to the Japanese puzzle magazine Nikoli<ref id="note-rectangles-1"/>; I've also seen a Palm implementation at Puzzle Palace<ref id="note-rectangles-2"/>. Unlike Puzzle Palace&rsquo;s implementation, my version automatically generates random grids of any size you like. The quality of puzzle design is therefore not quite as good as hand-crafted puzzles would be, but on the plus side you get an inexhaustible supply of puzzles tailored to your own specification.</p>
+
+<footnote id="note-rectangles-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/shikaku/" external="true"/></p></footnote>
+
+<footnote id="note-rectangles-2"><p><link href="https://web.archive.org/web/20041024001459/http://www.puzzle.gr.jp/puzzle/sikaku/palm/index.html.en" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Rectangles controls</title>
+
+<p>This game is played with the mouse or cursor keys.</p>
+
+<p><mouse>Select</mouse>-click any edge to toggle it on or off, or <mouse>Select</mouse>-drag to draw an entire rectangle (or line) on the grid in one go (removing any existing edges within that rectangle). <mouse>Adjust</mouse>-dragging will allow you to erase the contents of a rectangle without affecting its edges.</p>
+
+<p>Alternatively, use the cursor keys to move the position indicator around the board. Pressing the <key>Return</key> key then allows you to use the cursor keys to drag a rectangle out from that position, and pressing the <key>Return</key> key again completes the rectangle. Using the <key>Space</key> bar instead of the <key>Return</key> key allows you to erase the contents of a rectangle without affecting its edges, as above. Pressing <key>Escape</key> cancels a drag.</p>
+
+<p>When a rectangle of the correct size is completed, it will be shaded.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Rectangles parameters</title>
+
+<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid, in squares.</p></li>
+
+<li><title><icon>Expansion factor</icon></title>
+
+<p>This is a mechanism for changing the type of grids generated by the program. Some people prefer a grid containing a few large rectangles to one containing many small ones. So you can ask Rectangles to essentially generate a <em>smaller</em> grid than the size you specified, and then to expand it by adding rows and columns.</p>
+
+<p>The default expansion factor of zero means that Rectangles will simply generate a grid of the size you ask for, and do nothing further. If you set an expansion factor of (say) 0.5, it means that each dimension of the grid will be expanded to half again as big after generation. In other words, the initial grid will be 2/3 the size in each dimension, and will be expanded to its full size without adding any more rectangles.</p>
+
+<p>Setting an expansion factor of around 0.5 tends to make the game more difficult, and also (in my experience) rewards a less deductive and more intuitive playing style. If you set it <em>too</em> high, though, the game simply cannot generate more than a few rectangles to cover the entire grid, and the game becomes trivial.</p></li>
+
+<li><title><icon>Ensure unique solution</icon></title>
+
+<p>Normally, Rectangles will make sure that the puzzles it presents have only one solution. Puzzles with ambiguous sections can be more difficult and more subtle, so if you like you can turn off this feature and risk having ambiguous puzzles. Also, finding <em>all</em> the possible solutions can be an additional challenge for an advanced player. Turning off this option can also speed up puzzle generation.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Netslide -->
+
+<chapter id="netslide">
+<title>Netslide</title>
+
+<section>
+<p>This game combines the grid generation of <ref id="net">Net</ref> with the movement of <ref id="sixteen">Sixteen</ref>: you have a Net grid, but instead of rotating tiles back into place you have to slide them into place by moving a whole row at a time.</p>
+
+<p>As in Sixteen, control is with the mouse or cursor keys. See <ref id="net-controls"/>.</p>
+
+<p>The available game parameters have similar meanings to those in <ref id="net-params"/> and <ref id="sixteen-params"/>.</p>
+
+<p>Netslide was contributed to this collection by Richard Boulton.</p>
+</section>
+</chapter>
+
+<!-- Pattern -->
+
+<chapter id="pattern">
+<title>Pattern</title>
+
+<section>
+<p>You have a grid of squares, which must all be filled in either black or white. Beside each row of the grid are listed, in order, the lengths of the runs of black squares on that row; above each column are listed, in order, the lengths of the runs of black squares in that column. Your aim is to fill in the entire grid black or white.</p>
+
+<p>I first saw this puzzle form around 1995, under the name &lsquo;nonograms&rsquo;. I&rsquo;ve seen it in various places since then, under different names.</p>
+
+<p>Normally, puzzles of this type turn out to be a meaningful picture of something once you&rsquo;ve solved them. However, since this version generates the puzzles automatically, they will just look like random groupings of squares. (One user has suggested that this is actually a <em>good</em> thing, since it prevents you from guessing the colour of squares based on the picture, and forces you to use logic instead.) The advantage, though, is that you never run out of them.</p>
+</section>
+
+<section>
+<title>Pattern controls</title>
+
+<p>This game is played with the mouse.</p>
+
+<p><mouse>Select</mouse>-click in a square to colour it black. <mouse>Adjust</mouse>-click to colour it white. If you make a mistake, you can <key>Ctrl</key>-<mouse>Select</mouse>-click, or hold down <key>Shift</key> while clicking with either button, to colour the square in the default grey (meaning &lsquo;undecided&rsquo;) again.</p>
+
+<p>You can click and drag with <mouse>Select</mouse> or <mouse>Adjust</mouse> to colour a vertical or horizontal line of squares black or white at a time (respectively). If you click and drag with <key>Ctrl</key>-<mouse>Select</mouse>, or with <key>Shift</key> held down, you can colour a whole rectangle of squares grey.</p>
+
+<p>You can also move around the grid with the cursor keys. Pressing the <key>Return</key> key will cycle the current cell through empty, then black, then white, then empty, and the <key>Space</key> bar does the same cycle in reverse.</p>
+
+<p>Moving the cursor while holding <key>Ctrl</key> will colour the moved-over squares black. Holding <key>Shift</key> will colour the moved-over squares white, and holding both will colour them grey.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Pattern parameters</title>
+
+<p>The only options available from <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory.</p>
+</section>
+</chapter>
+
+<!-- Solo -->
+
+<chapter id="solo">
+<title>Solo</title>
+
+<section>
+<p>You have a square grid, which is divided into as many equally sized sub-blocks as the grid has rows. Each square must be filled in with a digit from 1 to the size of the grid, in such a way that</p>
+
+<ul>
+<li><p>every row contains only one occurrence of each digit,</p></li>
+
+<li><p>every column contains only one occurrence of each digit, and</p></li>
+
+<li><p>every block contains only one occurrence of each digit.</p></li>
+
+<li><p>(optionally, by default off) each of the square&rsquo;s two main diagonals contains only one occurrence of each digit.</p></li>
+</ul>
+
+<p>You are given some of the numbers as clues; your aim is to place the rest of the numbers correctly.</p>
+
+<p>Under the default settings, the sub-blocks are square or rectangular. The default puzzle size is 3&times;3 (a 9&times;9 actual grid, divided into nine 3&times;3 blocks). You can also select sizes with rectangular blocks instead of square ones, such as 2&times;3 (a 6&times;6 grid divided into six 3&times;2 blocks). Alternatively, you can select &lsquo;jigsaw&rsquo; mode, in which the sub-blocks are arbitrary shapes which differ between individual puzzles.</p>
+
+<p>Another available mode is &lsquo;killer&rsquo;. In this mode, clues are not given in the form of filled-in squares; instead, the grid is divided into &lsquo;cages&rsquo; by coloured lines, and for each cage the game tells you what the sum of all the digits in that cage should be. Also, no digit may appear more than once within a cage, even if the cage crosses the boundaries of existing regions.</p>
+
+<p>If you select a puzzle size which requires more than 9 digits, the additional digits will be letters of the alphabet. For example, if you select 3&times;4 then the digits which go in your grid will be 1 to 9, plus &lsquo;a&rsquo;, &lsquo;b&rsquo; and &lsquo;c&rsquo;. This cannot be selected for killer puzzles.</p>
+
+<p>I first saw this puzzle in Nikoli<ref id="note-solo-1"/>, although it&rsquo;s also been popularised by various newspapers under the name &lsquo;Sudoku&rsquo; or &lsquo;Su&nbsp;Doku&rsquo;. Howard Garns is considered the inventor of the modern form of the puzzle, and it was first published in <cite>Dell Pencil Puzzles and Word Games</cite>. A more elaborate treatment of the history of the puzzle can be found on Wikipedia<ref id="note-solo-2"/>.</p>
+
+<footnote id="note-solo-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/sudoku/" external="true"/></p></footnote>
+
+<footnote id="note-solo-2"><p><link href="http://en.wikipedia.org/wiki/Sudoku" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Solo controls</title>
+
+<p>To play Solo, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the Undo feature).</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
+
+<p>The game pays no attention to pencil marks, so exactly what you use them for is up to you: you can use them as reminders that a particular square needs to be re-examined once you know more about a particular number, or you can use them as lists of the possible numbers in a given square, or anything else you feel like.</p>
+
+<p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
+
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+
+<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <key>Return</key> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the space bar will clear a filled square.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Solo parameters</title>
+
+<p>Solo allows you to configure two separate dimensions of the puzzle grid using <menu>Type</menu> &msep; <menu>Custom</menu> from the <window>Game</window> window: the number of <icon>Columns of sub-blocks</icon>, and the number of <icon>Rows of sub-blocks</icon>, into which the main grid is divided. (The size of a block is the inverse of this: for example, if you select 2 columns and 3 rows, each actual block will have 3 columns and 2 rows.)</p>
+
+<p>If you tick the <icon>X</icon> checkbox, Solo will apply the optional extra constraint that the two main diagonals of the grid also contain one of every digit. (This is sometimes known as &lsquo;Sudoku-X&rsquo; in newspapers.) In this mode, the squares on the two main diagonals will be shaded slightly so that you know it's enabled.</p>
+
+<p>If you tick the <icon>Jigsaw</icon> checkbox, Solo will generate randomly shaped sub-blocks. In this mode, the actual grid size will be taken to be the product of the numbers entered in the <icon>Columns of sub-blocks</icon> and <icon>Rows of sub-blocks</icon> boxes. There is no reason why you have to enter a number greater than 1 in both boxes; Jigsaw mode has no constraint on the grid size, and it can even be a prime number if you feel like it.</p>
+
+<p>If you tick the <icon>Killer</icon> checkbox, Solo will generate a set of of cages, which are randomly shaped and drawn in an outline of a different colour. Each of these regions contains a smaller clue which shows the digit sum of all the squares in this region.</p>
+
+<p>You can also configure the type of <icon>Symmetry</icon> shown in the generated puzzles. More symmetry makes the puzzles look prettier but may also make them easier, since the symmetry constraints can force more clues than necessary to be present. Completely asymmetric puzzles have the freedom to contain as few clues as possible.</p>
+
+<p>Finally, you can configure the <icon>Difficulty</icon> of the generated puzzles. Difficulty levels are judged by the complexity of the techniques of deduction required to solve the puzzle: each level requires a mode of reasoning which was not necessary in the previous one. In particular, on difficulty levels &lsquo;Trivial&rsquo; and &lsquo;Basic&rsquo; there will be a square you can fill in with a single number at all times, whereas at &lsquo;Intermediate&rsquo; level and beyond you will have to make partial deductions about the <em>set</em> of squares a number could be in (or the set of numbers that could be in a square). At &lsquo;Unreasonable&rsquo; level, even this is not enough, and you will eventually have to make a guess, and then backtrack if it turns out to be wrong.</p>
+
+<p>Generating difficult puzzles is itself difficult: if you select one of the higher difficulty levels, Solo may have to make many attempts at generating a puzzle before it finds one hard enough for you. Be prepared to wait, especially if you have also configured a large puzzle size.</p>
+</section>
+</chapter>
+
+<!-- Mines -->
+
+<chapter id="mines">
+<title>Mines</title>
+
+<section>
+<p>You have a grid of covered squares, some of which contain mines, but you don't know which. Your job is to uncover every square which does <em>not</em> contain a mine. If you uncover a square containing a mine, you lose. If you uncover a square which does not contain a mine, you are told how many mines are contained within the eight surrounding squares.</p>
+
+<p>This game needs no introduction; popularised by Windows, it is perhaps the single best known desktop puzzle game in existence.</p>
+
+<p>This version of it has an unusual property. By default, it will generate its mine positions in such a way as to ensure that you never need to <em>guess</em> where a mine is: you will always be able to deduce it somehow. So you will never, as can happen in other versions, get to the last four squares and discover that there are two mines left but you have no way of knowing for sure where they are.</p>
+</section>
+
+<section>
+<title>Mines controls</title>
+
+<p>This game is played with the mouse.</p>
+
+<p>If you <mouse>Select</mouse>-click in a covered square, it will be uncovered.</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a covered square, it will place a flag which indicates that the square is believed to be a mine. <mouse>Select</mouse>-clicking in a marked square will not uncover it, for safety. You can <mouse>Adjust</mouse>-click again to remove a mark placed in error.</p>
+
+<p>If you <mouse>Select</mouse>-click in an <em>uncovered</em> square, it will &lsquo;clear around&rsquo; the square. This means: if the square has exactly as many flags surrounding it as it should have mines, then all the covered squares next to it which are <em>not</em> flagged will be uncovered. So once you think you know the location of all the mines around a square, you can use this function as a shortcut to avoid having to click on each of the remaining squares one by one.</p>
+
+<p>If you uncover a square which has <em>no</em> mines in the surrounding eight squares, then it is obviously safe to uncover those squares in turn, and so on if any of them also has no surrounding mines. This will be done for you automatically; so sometimes when you uncover a square, a whole new area will open up to be explored.</p>
+
+<p>You can also use the cursor keys to move around the minefield. Pressing the <key>Return</key> key in a covered square uncovers it, and in an uncovered square will clear around it (so it acts as the <mouse>Select</mouse> button), pressing the <key>Space</key> bar in a covered square will place a flag (similarly, it acts as the <mouse>Adjust</mouse> button).</p>
+
+<p>All the actions described in <ref id="common-actions" /> are also available.</p>
+
+<p>Even <menu>Undo</menu> is available, although you might consider it cheating to use it. If you step on a mine, the program will only reveal the mine in question (unlike most other implementations, which reveal all of them). You can then Undo your fatal move and continue playing if you like. The program will track the number of times you died (and Undo will not reduce that counter), so when you get to the end of the game you know whether or not you did it without making any errors.</p>
+
+<p>(If you really want to know the full layout of the grid, which other
+implementations will show you after you die, you can always use the
+<menu>Solve</menu> menu option.)</p>
+</section>
+
+<section>
+<title>Mines parameters</title>
+
+<p>The options available from <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are:</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Mines</icon></title>
+
+<p>Number of mines in the grid. You can enter this as an absolute mine count, or alternatively you can put a % sign on the end in which case the game will arrange for that proportion of the squares in the grid to be mines.</p>
+
+<p>Beware of setting the mine count too high. At very high densities, the program may spend forever searching for a solvable grid.</p></li>
+
+<li><title><icon>Ensure solubility</icon></title>
+
+<p>When this option is enabled (as it is by default), Mines will ensure that the entire grid can be fully deduced starting from the initial open space. If you prefer the riskier grids generated by other implementations, you can switch off this option.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Same Game -->
+
+<chapter id="samegame">
+<title>Same Game</title>
+
+<section>
+<p>You have a grid of coloured squares, which you have to clear by highlighting contiguous regions of more than one coloured square; the larger the region you highlight, the more points you get (and the faster you clear the arena).</p>
+
+<p>If you clear the grid you win. If you end up with nothing but single squares (ie., there are no more clickable regions left) you lose.</p>
+
+<p>Removing a region causes the rest of the grid to shuffle up: blocks that are suspended will fall down (first), and then empty columns are filled from the right.</p>
+
+<p>Same Game was contributed to this collection by James Harvey.</p>
+</section>
+
+<section>
+<title>Same Game controls</title>
+
+<p>This game can be played with either the keyboard or the mouse.</p>
+
+<p>If you <mouse>Select</mouse>-click an unselected region, it becomes selected (possibly clearing the current selection).</p>
+
+<p>If you <mouse>Select</mouse>-click the selected region, it will be removed (and the rest of the grid shuffled immediately).</p>
+
+<p>If you <mouse>Adjust</mouse>-click the selected region, it will be unselected.</p>
+
+<p>The cursor keys move a cursor around the grid. Pressing the <key>Space</key> or <key>Enter</key> keys while the cursor is in an unselected region selects it;
+pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Same Game parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>No. of colours</icon></title>
+
+<p>Number of different colours used to fill the grid; the more colours, the fewer large regions of colour and thus the more difficult it is to successfully clear the grid.</p></li>
+
+<li><title><icon>Scoring system</icon></title>
+
+<p>Controls the precise mechanism used for scoring. With the default system, &lsquo;(n-2)^2&rsquo;, only regions of three squares or more will score any points at all. With the alternative &lsquo;(n-1)^2&rsquo; system, regions of two squares score a point each, and larger regions score relatively more points.</p></li>
+
+<li><title><icon>Ensure solubility</icon></title>
+
+<p>If this option is ticked (the default state), generated grids will be guaranteed to have at least one solution.</p>
+
+<p>If you turn it off, the game generator will not try to guarantee soluble grids; it will, however, still ensure that there are at least 2 squares of each colour on the grid at the start (since a grid with exactly one square of a given colour is <em>definitely</em> insoluble). Grids generated with this option disabled may contain more large areas of contiguous colour, leading to opportunities for higher scores; they can also take less time to generate.</p></li>
+</dl>
+</section>
+</chapter>
+
+<!-- Flip -->
+
+<chapter id="flip">
+<title>Flip</title>
+
+</chapter>
+
+<!-- Guess -->
+
+<chapter id="guess">
+<title>Guess</title>
+
+</chapter>
+
+<!-- Pegs -->
+
+<chapter id="pegs">
+<title>Pegs</title>
+
+</chapter>
+
+<!-- Dominosa -->
+
+<chapter id="dominosa">
+<title>Dominosa</title>
+
+</chapter>
+
+<!-- Untangle -->
+
+<chapter id="untangle">
+<title>Untangle</title>
+
+</chapter>
+
+<!-- Black Box -->
+
+<chapter id="blackbox">
+<title>Black Box</title>
+
+</chapter>
+
+<!-- Slant -->
+
+<chapter id="slant">
+<title>Slant</title>
+
+</chapter>
+
+<!-- Light Up -->
+
+<chapter id="lightup">
+<title>Light Up</title>
+
+</chapter>
+
+<!-- Map -->
+
+<chapter id="map">
+<title>Map</title>
+
+</chapter>
+
+<!-- Loopy -->
+
+<chapter id="loopy">
+<title>Loopy</title>
+
+</chapter>
+
+<!-- Inertia -->
+
+<chapter id="inertia">
+<title>Inertia</title>
+
+</chapter>
+
+<!-- Tents -->
+
+<chapter id="tents">
+<title>Tents</title>
+
+</chapter>
+
+<!-- Bridges -->
+
+<chapter id="bridges">
+<title>Bridges</title>
+
+</chapter>
+
+<!-- Unequal -->
+
+<chapter id="unequal">
+<title>Unequal</title>
+
+</chapter>
+
+<!-- Galaxies -->
+
+<chapter id="galaxies">
+<title>Galaxies</title>
+
+</chapter>
+
+<!-- Filling -->
+
+<chapter id="filling">
+<title>Filling</title>
+
+</chapter>
+
+<!-- Keen -->
+
+<chapter id="keen">
+<title>Keen</title>
+
+</chapter>
+
+<!-- Towers -->
+
+<chapter id="towers">
+<title>Towers</title>
+
+</chapter>
+
+<!-- Singles -->
+
+<chapter id="singles">
+<title>Singles</title>
+
+</chapter>
+
+<!-- Magnets -->
+
+<chapter id="magnets">
+<title>Magnets</title>
+
+</chapter>
+
+<!-- Signpost -->
+
+<chapter id="signpost">
+<title>Signpost</title>
+
+</chapter>
+
+<!-- Range -->
+
+<chapter id="range">
+<title>Range</title>
+
+</chapter>
+
+<!-- Pearl -->
+
+<chapter id="pearl">
+<title>Pearl</title>
+
+</chapter>
+
+<!-- Undead -->
+
+<chapter id="undead">
+<title>Undead</title>
+
+</chapter>
+
+<!-- Unruly -->
+
+<chapter id="unruly">
+<title>Unruly</title>
+
+</chapter>
+
+<!-- Flood -->
+
+<chapter id="flood">
+<title>Flood</title>
+
+</chapter>
+
+<!-- Tracks -->
+
+<chapter id="tracks">
+<title>Tracks</title>
+
+</chapter>
+
+<!-- Palisade -->
+
+<chapter id="palisade">
+<title>Palisade</title>
+
+</chapter>
+
+<!-- Mosaic -->
+
+<chapter id="mosaic">
+<title>Mosaic</title>
+
+</chapter>
+
+<!-- Known Issues -->
+
+<chapter id="issues">
+<title>Known Issues</title>
+
+<section>
+<p>This version of <cite>Puzzles</cite> is best described as an early Alpha release, and is still very much a work in progress. As such, there are many things which have either not yet been implemented, are incomplete, or contain bugs and mis-features.</p>
+
+<p>The following is a non-exhaustive list of things which are known to need attention.</p>
+
+<ul>
+<li><p>The status bar does not correctly redraw when the game canvas changes size. Dragging a window or menu over it will fix the problem.</p></li>
+<li><p>The canvas redraw can fail when a game canvas changes size: such as when starting a new game with different parameters. Selecting <menu>New game</menu> from the menu to start another new game with the same parameters will resolve this.</p></li>
+<li><p>The game windows, toolbars and drawing canvases may not be perfectly aligned in EX0&nbsp;EY0 modes.</p></li>
+<li><p>Font antialiasing is poor.</p></li>
+<li><p>Graphics can sometimes render poorly, with artefacts on corners.</p></li>
+<li><p>The games do not have their own icons in the <window>Game List</window> window.</p></li>
+<li><p>There is no documentation for the games! For now, details of how to play the games, and their controls, can be found on Simon&rsquo;s website (see links above).</p></li>
+<li><p>The game windows can not be resized from their defaults.</p></li>
+<li><p>Games can not be saved or loaded.</p></li>
+<li><p>The printing of games is not supported.</p></li>
+</ul>
+
+<p>The intention is to address many of these items before a full release takes place. The implementation of features such as printing will depend on the level of interest shown in the RISC&nbsp;OS port.</p>
+</section>
+</chapter>
+
+<!-- History -->
+
+<chapter id="history">
+<title>Version History</title>
+
+<section>
+<p>This is a complete list of all the changes made to the publicly released versions of <cite>Puzzles</cite> on the RISC&nbsp;OS platform.</p>
+</section>
+
+<section>
+<title>Test Build (<define name="date" />)</title>
+
+<p>First alpha release, for testing and feedback.</p>
+</section>
+</chapter>
+
+<!-- Contact Details -->
+
+<section id="contact">
+<title>Updates and Contacting Me</title>
+
+<p>If you have any comments about the RISC OS port of <cite>Puzzles</cite>, or would like to report any bugs that you find, you can email me at the address below. Please contact me in the first instance for issues encountered on RISC&nbsp;OS, so that it can be confirmed that they are not due to the front end.</p>
+
+<p>Updates to the RISC OS port of <cite>Puzzles</cite> and more software for RISC&nbsp;OS computers can be found on my website at <link href="http://www.stevefryatt.org.uk/risc-os"/>.</p>
+
+<p>Stephen Fryatt<br/>
+email: <link href="mailto:info@stevefryatt.org.uk" flatten="true">info@stevefryatt.org.uk</link></p>
+</section>
+</manual>
