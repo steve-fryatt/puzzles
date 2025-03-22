@@ -30,7 +30,18 @@
 #ifndef PUZZLES_SPRITES
 #define PUZZLES_SPRITES
 
+#include <stddef.h>
 #include "oslib/osspriteop.h"
+
+/**
+ * A set of the available sprite sizes.
+ */
+
+enum sprites_size {
+	SPRITES_SIZE_NONE,	/**< No sprite -- possibly an error?	*/
+	SPRITES_SIZE_LARGE,	/**< A large sprite.			*/
+	SPRITES_SIZE_SMALL	/**< A small sprite.			*/
+};
 
 /**
  * Initialise the application sprites database.
@@ -49,13 +60,21 @@ void sprites_initialise(osspriteop_area *sprites);
 osspriteop_area *sprites_get_area(void);
 
 /**
- * Test whether a given sprite exists.
+ * Find a suitable sprite for a given game name. This will attempt to find a
+ * suitable name in the application sprite area, then fall back to the base
+ * Puzzles application sprite.
+ *
+ * If SPRITES_SIZE_NONE is returned, the buffer state is undefined.
  *
  * \param *name		The name of the sprite to test for.
- * \return		TRUE if the sprite exists; otherwise FALSE.
+ * \param requirement	The requirement for a large or small sprite.
+ * \param *buffer	Pointer to a buffer to hold the sprite name, as a
+ *			validation string.
+ * \param length	The length of the supplied buffer.
+ * \return		The type of sprite found.
  */
 
-osbool sprites_test_sprite(char *name);
+enum sprites_size sprites_find_sprite_validation(char *name, enum sprites_size requirement, char *buffer, size_t length);
 
 #endif
 

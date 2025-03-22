@@ -448,6 +448,7 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 	int			ox, left, right, x, oy, top, bottom, y, i;
 	osbool			more;
 	wimp_icon		*icon;
+	enum sprites_size	target_size = SPRITES_SIZE_LARGE, sprite_size;
 	char			buffer[INDEX_WINDOW_BUFFER_LENGTH], validation[INDEX_WINDOW_VALIDATION_LENGTH];
 
 
@@ -458,6 +459,16 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 	icon[index_window_active_icon].data.indirected_text_and_sprite.text = buffer;
 	icon[index_window_active_icon].data.indirected_text_and_sprite.size = INDEX_WINDOW_BUFFER_LENGTH;
 	icon[index_window_active_icon].data.indirected_text_and_sprite.validation = validation;
+
+	switch (index_window_active_icon) {
+	case INDEX_WINDOW_ICON_SMALL:
+		target_size = SPRITES_SIZE_SMALL;
+		break;
+	case INDEX_WINDOW_ICON_LARGE:
+	default:
+		target_size = SPRITES_SIZE_LARGE;
+		break;
+	}
 
 	/* Redraw the window. */
 
@@ -494,17 +505,21 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 				icon[index_window_active_icon].extent.y0 = LINE_Y0(y);
 				icon[index_window_active_icon].extent.y1 = LINE_Y1(y);
 
-				/* Check for the correct sprite. */
-
-				if (sprites_test_sprite((char *) gamelist[i]->name)) {
-					string_printf(validation, INDEX_WINDOW_VALIDATION_LENGTH, "S%s",
-							(char *) gamelist[i]->name);
-				} else {
-					string_printf(validation, INDEX_WINDOW_VALIDATION_LENGTH, "S%s",
-						"!puzzles");
-				}
+				/* Copy the game name. */
 
 				string_copy(buffer, (char *) gamelist[i]->name, INDEX_WINDOW_BUFFER_LENGTH);
+
+				/* Find a suitable sprite. */
+
+				sprite_size = sprites_find_sprite_validation((char *) gamelist[i]->name,
+						target_size, validation, INDEX_WINDOW_VALIDATION_LENGTH);
+
+				if (target_size == SPRITES_SIZE_SMALL && sprite_size == SPRITES_SIZE_LARGE)
+					icon[index_window_active_icon].flags |= wimp_ICON_HALF_SIZE;
+				else
+					icon[index_window_active_icon].flags &= ~wimp_ICON_HALF_SIZE;
+
+				/* Plot the icon. */
 
 				wimp_plot_icon(&(icon[index_window_active_icon]));
 			}
