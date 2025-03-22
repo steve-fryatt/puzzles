@@ -307,7 +307,7 @@ static osbool main_message_font_changed(wimp_message *message)
 		error_report_program(error);
 
 	index_window_recalculate_icon_dimensions();
-	if (index_window_recalculate_rows_and_columns((wimp_open *) &state))
+	if ((state.flags & wimp_WINDOW_OPEN) && index_window_recalculate_rows_and_columns((wimp_open *) &state))
 		windows_redraw(state.w);
 
 	return TRUE;
