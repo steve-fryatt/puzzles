@@ -478,7 +478,7 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 
 				/* Find a suitable sprite. */
 
-				sprite_size = sprites_find_sprite_validation((char *) gamelist[i]->name,
+				sprite_size = sprites_find_sprite_validation((char *) gamelist[i]->htmlhelp_topic,
 						target_size, validation, INDEX_WINDOW_VALIDATION_LENGTH);
 
 				if (target_size == SPRITES_SIZE_SMALL && sprite_size == SPRITES_SIZE_LARGE)
