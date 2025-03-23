@@ -46,6 +46,7 @@
 #include "sflib/errors.h"
 #include "sflib/general.h"
 #include "sflib/ihelp.h"
+#include "sflib/menus.h"
 #include "sflib/string.h"
 #include "sflib/templates.h"
 #include "sflib/windows.h"
@@ -57,6 +58,11 @@
 #include "core/puzzles.h"
 #include "frontend.h"
 #include "sprites.h"
+
+/* Index Window menu */
+
+#define INDEX_WINDOW_MENU_LARGE_ICONS 0
+#define INDEX_WINDOW_MENU_SMALL_ICONS 1
 
 /**
  * The margin around the edge of the window, in OS units.
@@ -134,6 +140,9 @@ static void index_window_open_handler(wimp_open *open);
 static void index_window_click_handler(wimp_pointer *pointer);
 static void index_window_redraw_handler(wimp_draw *redraw);
 static void index_window_scroll_event_handler(wimp_scroll *scroll);
+static void index_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
+static void index_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
+static void index_window_set_display_icon_size(wimp_i icon);
 static void index_window_decode_help(char *buffer, wimp_w w, wimp_i i, os_coord pos, wimp_mouse_state buttons);
 static void index_window_recalculate_icon_dimensions(void);
 static osbool index_window_recalculate_rows_and_columns(wimp_open *open);
@@ -149,6 +158,12 @@ static wimp_window	*index_window_def = NULL;
  */
 
 static wimp_w		index_window_handle = NULL;
+
+/**
+ * The index window menu.
+ */
+
+static wimp_menu *index_window_menu = NULL;
 
 /**
  * The width of an icon in the index window.
@@ -213,7 +228,7 @@ static int		index_window_starting_icon_width[INDEX_WINDOW_ICON_COUNT];
 
 #define ROW_ABOVE(y) ((y) < ((index_window_icon_height + INDEX_WINDOW_ICON_GUTTER) - (INDEX_WINDOW_ICON_GUTTER + index_window_icon_height)))
 #define ROW_BELOW(y) ((y) > ((index_window_icon_height + INDEX_WINDOW_ICON_GUTTER) - INDEX_WINDOW_ICON_GUTTER))
- 
+
 
 /**
  * Initialise the index window and its associated menus and dialogues.
@@ -223,6 +238,13 @@ void index_window_initialise(void)
 {
 	int		columns, rows;
 	os_error	*error;
+
+	/* The window menu. */
+
+	index_window_menu = templates_get_menu("IndexWindowMenu");
+	ihelp_add_menu(index_window_menu, "IndexMenu");
+
+	/* The index window template. */
 
 	index_window_def = templates_load_window("Index");
 	if (index_window_def == NULL)
@@ -289,6 +311,9 @@ void index_window_initialise(void)
 	}
 
 	ihelp_add_window(index_window_handle, "Index", index_window_decode_help);
+	event_add_window_menu(index_window_handle, index_window_menu);
+	event_add_window_menu_prepare(index_window_handle, index_window_menu_prepare_handler);
+	event_add_window_menu_selection(index_window_handle, index_window_menu_selection_handler);
 
 	event_add_window_redraw_event(index_window_handle, index_window_redraw_handler);
 	event_add_window_open_event(index_window_handle, index_window_open_handler);
@@ -318,9 +343,9 @@ static osbool main_message_font_changed(wimp_message *message)
 
 	return TRUE;
 }
- 
+
 /**
- * (Re-)open the Index window on screen. 
+ * (Re-)open the Index window on screen.
  */
 
 void index_window_open(void)
@@ -341,7 +366,7 @@ void index_window_open(void)
 
 		state.visible.y0 = state.visible.y1 - (2 * LIST_WINDOW_MARGIN) + INDEX_WINDOW_ICON_GUTTER -
 				(INDEX_WINDOW_INITIAL_MAX_ROWS * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER));
-	
+
 		index_window_recalculate_rows_and_columns((wimp_open *) &state);
 	}
 
@@ -452,7 +477,7 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 		right = ((index_window_icon_width * 1.5) + redraw->clip.x1 - ox) / (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
 		if (right > index_window_columns)
 			right = index_window_columns;
-	
+
 		top = (oy - redraw->clip.y1) / (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
 		if (top < 0)
 			top = 0;
@@ -569,7 +594,7 @@ static void index_window_scroll_event_handler(wimp_scroll *scroll)
 	case wimp_SCROLL_PAGE_DOWN:
 		distance = -height;
 		break;
-	
+
 	case wimp_SCROLL_AUTO_UP:
 	case wimp_SCROLL_AUTO_DOWN:
 		/* We don't support Auto Scroll. */
@@ -595,6 +620,48 @@ static void index_window_scroll_event_handler(wimp_scroll *scroll)
 }
 
 /**
+ * Handle Menu Selection events from the index window.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *selection	The menu selection details.
+ */
+
+static void index_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection)
+{
+	if (menu != index_window_menu)
+		return;
+
+	switch (selection->items[0]) {
+	case INDEX_WINDOW_MENU_LARGE_ICONS:
+		index_window_set_display_icon_size(INDEX_WINDOW_ICON_LARGE);
+		break;
+	case INDEX_WINDOW_MENU_SMALL_ICONS:
+		index_window_set_display_icon_size(INDEX_WINDOW_ICON_SMALL);
+		break;
+	}
+}
+
+/**
+ * Handle Menu Prepare events from the index window.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *pointer	The pointer position, or NULL for a re-open.
+ */
+
+static void index_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer)
+{
+	if (menu != index_window_menu)
+		return;
+
+	/* Update the menu state. */
+
+	menus_tick_entry(menu, INDEX_WINDOW_MENU_LARGE_ICONS, index_window_active_icon == INDEX_WINDOW_ICON_LARGE);
+	menus_tick_entry(menu, INDEX_WINDOW_MENU_SMALL_ICONS, index_window_active_icon == INDEX_WINDOW_ICON_SMALL);
+}
+
+/**
  * Turn a mouse position over the index window into an interactive
  * help token.
  *
@@ -617,7 +684,42 @@ static void index_window_decode_help(char *buffer, wimp_w w, wimp_i i, os_coord 
 
 	string_printf(buffer, IHELP_INAME_LEN, "%s", gamelist[game]->htmlhelp_topic);
 }
- 
+
+/**
+ * Change the icon in use for the index listing, and force a redraw of the
+ * window contents.
+ *
+ * \param icon			The new icon to use.
+ */
+
+static void index_window_set_display_icon_size(wimp_i icon)
+{
+	wimp_window_state state;
+	os_error *error;
+
+	if (icon < 0 || icon >= INDEX_WINDOW_ICON_COUNT)
+		return;
+
+	/* Is there anything to do? */
+
+	if (icon == index_window_active_icon)
+		return;
+
+	/* Set the new icon and force a recalculation. */
+
+	index_window_active_icon = icon;
+
+	state.w = index_window_handle;
+	error = xwimp_get_window_state(&state);
+	if (error != NULL)
+		error_report_program(error);
+
+	index_window_recalculate_icon_dimensions();
+	if ((state.flags & wimp_WINDOW_OPEN) && index_window_recalculate_rows_and_columns((wimp_open *) &state))
+		windows_redraw(state.w);
+
+}
+
 /**
  * Recalculate the icon dimensions for the index window, following a layout or
  * desktop font change.
@@ -651,7 +753,7 @@ static void index_window_recalculate_icon_dimensions(void)
 		break;
 	case INDEX_WINDOW_ICON_SMALL:
 		max_width += INDEX_WINDOW_SMALL_ICON_PADDING;
-		break; 
+		break;
 	}
 
 	index_window_icon_width = max_width;
@@ -715,7 +817,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 
 	index_window_rows = rows;
 	index_window_columns = columns;
-	
+
 	debug_printf("We're changing the window layout...");
 
 	/* Work out and set the new extent of the window. */
@@ -753,7 +855,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 /**
  * Given a window handle and a screen pointer position, decode the details into
  * a game icon number from the index window.
- * 
+ *
  * \param w		The handle of the index window.
  * \param pos		The screen coordinates.
  * \return		The index of the game into the gamelist array, or
@@ -794,21 +896,21 @@ static int index_window_find_game_from_pointer(wimp_w w, os_coord pos) {
 
 	if (xpos < 0 || xpos > index_window_icon_width)
 		return INDEX_WINDOW_NO_GAME;
-	
+
 	if (ypos < 0 || ypos >= index_window_icon_height)
 		return INDEX_WINDOW_NO_GAME;
 
 	icon = (row * index_window_columns) + column;
 	if (icon < 0 || icon >= gamecount)
 		return INDEX_WINDOW_NO_GAME;
-	
+
 	return icon;
 }
 
 /**
  * Read the size of the vertical scroll bar and window borders for a given
  * window.
- * 
+ *
  * \param w		The window handle of interest.
  * \return		The combined size of the borders, in OS units.
  */
@@ -838,5 +940,5 @@ static int index_window_read_horizontal_border_width(wimp_w w)
 	if (sizes.border_widths.x0 == 0 && sizes.border_widths.x1 == 0)
 		return 100;
 
-	return sizes.border_widths.x0 + sizes.border_widths.x1;	
+	return sizes.border_widths.x0 + sizes.border_widths.x1;
 }

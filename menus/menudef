@@ -35,6 +35,16 @@ menu(IconBarMenu, "Puzzles")
 }
 
 /**
+ * Index window menu.
+ */
+
+menu(IndexWindowMenu, "Puzzles")
+{
+	item("Large icons");
+	item("Small icons");
+}
+
+/**
  * Game window menu.
  */
 
