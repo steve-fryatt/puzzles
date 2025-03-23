@@ -529,49 +529,7 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 
 static void index_window_scroll_event_handler(wimp_scroll *scroll)
 {
-	int width, height, error, distance;
-
-	/* Add in the X scroll offset. */
-
-	width = scroll->visible.x1 - scroll->visible.x0;
-	distance = 0;
-
-	switch (scroll->xmin) {
-	case wimp_SCROLL_COLUMN_LEFT:
-		distance = -(index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-		break;
-
-	case wimp_SCROLL_COLUMN_RIGHT:
-		distance = +(index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-		break;
-
-	case wimp_SCROLL_PAGE_LEFT:
-		distance = -width;
-		break;
-
-	case wimp_SCROLL_PAGE_RIGHT:
-		distance = +width;
-		break;
-
-	case wimp_SCROLL_AUTO_LEFT:
-	case wimp_SCROLL_AUTO_RIGHT:
-		/* We don't support Auto Scroll. */
-		break;
-
-	default: /* Extended Scroll */
-		if (scroll->xmin > 0)
-			distance = (scroll->xmin >> 2) * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-		else if (scroll->xmin < 0)
-			distance = -((-scroll->xmin) >> 2) * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-		break;
-	}
-
-	/* Align to an icon boundary in the direction of scroll. */
-
-	scroll->xscroll += distance;
-	if ((error = ((scroll->xscroll - ((distance > 0) ? 0 : width)) % (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER))))
-		scroll->xscroll -= ((distance > 0) ? (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER) : INDEX_WINDOW_ICON_GUTTER) + error;
-
+	int height, error, distance;
 
 	/* Add in the Y scroll offset. */
 
