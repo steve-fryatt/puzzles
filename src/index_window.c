@@ -45,9 +45,7 @@
 #include "sflib/event.h"
 #include "sflib/errors.h"
 #include "sflib/general.h"
-//#include "sflib/icons.h"
 #include "sflib/ihelp.h"
-//#include "sflib/msgs.h"
 #include "sflib/string.h"
 #include "sflib/templates.h"
 #include "sflib/windows.h"
@@ -115,6 +113,12 @@
 #define INDEX_WINDOW_VALIDATION_LENGTH 14
 
 /**
+ * No game matched from the window coordinates.
+ */
+
+#define INDEX_WINDOW_NO_GAME ((int) -1)
+
+/**
  * The definition icon handles.
  */
 
@@ -130,8 +134,10 @@ static void index_window_open_handler(wimp_open *open);
 static void index_window_click_handler(wimp_pointer *pointer);
 static void index_window_redraw_handler(wimp_draw *redraw);
 static void index_window_scroll_event_handler(wimp_scroll *scroll);
+static void index_window_decode_help(char *buffer, wimp_w w, wimp_i i, os_coord pos, wimp_mouse_state buttons);
 static void index_window_recalculate_icon_dimensions(void);
 static osbool index_window_recalculate_rows_and_columns(wimp_open *open);
+static int index_window_find_game_from_pointer(wimp_w w, os_coord pos);
 static int index_window_read_horizontal_border_width(wimp_w w);
 
 /* Global variables. */
@@ -282,7 +288,7 @@ void index_window_initialise(void)
 		return;
 	}
 
-	ihelp_add_window(index_window_handle, "Index", NULL);
+	ihelp_add_window(index_window_handle, "Index", index_window_decode_help);
 
 	event_add_window_redraw_event(index_window_handle, index_window_redraw_handler);
 	event_add_window_open_event(index_window_handle, index_window_open_handler);
@@ -370,7 +376,6 @@ static void index_window_open_handler(wimp_open *open)
 	wimp_open_window(open);
 }
 
-
 /**
  * Handle mouse clicks in the index window.
  *
@@ -379,63 +384,25 @@ static void index_window_open_handler(wimp_open *open)
 
 static void index_window_click_handler(wimp_pointer *pointer)
 {
-	wimp_window_state window;
-	int xpos, ypos, row, column, icon;
+	int game;
 
-	if (pointer == NULL)
+	if (pointer == NULL || pointer->w != index_window_handle)
 		return;
 
-	/* Calculate the work area coordinates. */
-
-	window.w = pointer->w;
-	wimp_get_window_state(&window);
-
-	xpos = (pointer->pos.x - window.visible.x0) + window.xscroll;
-	ypos = (pointer->pos.y - window.visible.y1) + window.yscroll;
-
-	/* Calculate the row and column. */
-
-	row = (-ypos - LIST_WINDOW_MARGIN) / (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
-	column = (xpos - LIST_WINDOW_MARGIN) / (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-
-	/* Calculate the position within the icon cell. */
-
-	xpos = (xpos - LIST_WINDOW_MARGIN) % (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
-	ypos = (-ypos - LIST_WINDOW_MARGIN) % (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
-
-	/* If the row or column are out of range. */
-
-	if (row < 0 || row >= index_window_rows)
+	game = index_window_find_game_from_pointer(pointer->w, pointer->pos);
+	if (game == INDEX_WINDOW_NO_GAME)
 		return;
-
-	if (column < 0 || column >= index_window_columns)
-		return;
-
-	/* If the click was outside the icon bounds. */
-
-	if (xpos < 0 || xpos > index_window_icon_width)
-		return;
-	
-	if (ypos < 0 || ypos >= index_window_icon_height)
-		return;
-
-	icon = (row * index_window_columns) + column;
-	if (icon >= gamecount)
-		return;
-
-	debug_printf("Found game %d", icon);
 
 	switch (pointer->buttons) {
 	case wimp_CLICK_SELECT:
 	case wimp_CLICK_ADJUST:
-		frontend_create_instance(icon, pointer);
+		frontend_create_instance(game, pointer);
 
 		if (pointer->buttons == wimp_CLICK_ADJUST)
 			wimp_close_window(pointer->w);
 		break;
 	}
 }
-
 
 /**
  * Callback to handle redraw events on the index window.
@@ -528,9 +495,6 @@ static void index_window_redraw_handler(wimp_draw *redraw)
 		more = wimp_get_rectangle(redraw);
 	}
 }
-
-
-
 
 /**
  * Handle scroll events in the index window.
@@ -630,6 +594,30 @@ static void index_window_scroll_event_handler(wimp_scroll *scroll)
 	wimp_open_window((wimp_open *) scroll);
 }
 
+/**
+ * Turn a mouse position over the index window into an interactive
+ * help token.
+ *
+ * \param *buffer		A buffer to take the generated token.
+ * \param w			The window under the pointer.
+ * \param i			The icon under the pointer.
+ * \param pos			The current mouse position.
+ * \param buttons		The current mouse button state.
+ */
+
+static void index_window_decode_help(char *buffer, wimp_w w, wimp_i i, os_coord pos, wimp_mouse_state buttons)
+{
+	int game = INDEX_WINDOW_NO_GAME;
+
+	*buffer = '\0';
+
+	game = index_window_find_game_from_pointer(w, pos);
+	if (game == INDEX_WINDOW_NO_GAME)
+		return;
+
+	string_printf(buffer, IHELP_INAME_LEN, "%s", gamelist[game]->htmlhelp_topic);
+}
+ 
 /**
  * Recalculate the icon dimensions for the index window, following a layout or
  * desktop font change.
@@ -760,6 +748,61 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 	wimp_set_extent(open->w, &extent);
 
 	return TRUE;
+}
+
+/**
+ * Given a window handle and a screen pointer position, decode the details into
+ * a game icon number from the index window.
+ * 
+ * \param w		The handle of the index window.
+ * \param pos		The screen coordinates.
+ * \return		The index of the game into the gamelist array, or
+ *			INDEX_WINDOW_NO_GAME on failure.
+ */
+
+static int index_window_find_game_from_pointer(wimp_w w, os_coord pos) {
+	wimp_window_state window;
+	int xpos, ypos, row, column, icon;
+
+	/* Calculate the work area coordinates. */
+
+	window.w = w;
+	wimp_get_window_state(&window);
+
+	xpos = (pos.x - window.visible.x0) + window.xscroll;
+	ypos = (pos.y - window.visible.y1) + window.yscroll;
+
+	/* Calculate the row and column. */
+
+	row = (-ypos - LIST_WINDOW_MARGIN) / (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+	column = (xpos - LIST_WINDOW_MARGIN) / (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+
+	/* Calculate the position within the icon cell. */
+
+	xpos = (xpos - LIST_WINDOW_MARGIN) % (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
+	ypos = (-ypos - LIST_WINDOW_MARGIN) % (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER);
+
+	/* If the row or column are out of range. */
+
+	if (row < 0 || row >= index_window_rows)
+		return INDEX_WINDOW_NO_GAME;
+
+	if (column < 0 || column >= index_window_columns)
+		return INDEX_WINDOW_NO_GAME;
+
+	/* If the click was outside the icon bounds. */
+
+	if (xpos < 0 || xpos > index_window_icon_width)
+		return INDEX_WINDOW_NO_GAME;
+	
+	if (ypos < 0 || ypos >= index_window_icon_height)
+		return INDEX_WINDOW_NO_GAME;
+
+	icon = (row * index_window_columns) + column;
+	if (icon < 0 || icon >= gamecount)
+		return INDEX_WINDOW_NO_GAME;
+	
+	return icon;
 }
 
 /**

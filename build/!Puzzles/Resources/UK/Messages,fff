@@ -63,7 +63,47 @@ BadBlitterSet:The blitter to be deleted was not found in the set.
 
 Help.IconBar:\TPuzzles application: a version of Simon Tatham's Portable Puzzles.|M\Schoose a new puzzle to play.
 
-Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|M\Sover a puzzle to open a copy in a new window.|M\Aopen a copy of the puzzle and close the index window.
+Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|MClick \s over a puzzle to open a copy in a new window.|M\Aopen a copy of the puzzle and close the index window.
+Help.Index.blackbox:\Sto play Black Box.|MLocate the balls inside the box by firing lasers and observing how they are deflected or absorbed.
+Help.Index.bridges:\Sto play Bridges.|MConnect the islands with the given bridge counts so that no bridges are crossing.
+Help.Index.cube:\Sto play Cube.|MRoll the cube to collect all of the paint.
+Help.Index.dominosa:\Sto play Dominosa.|MPair the numbers to form a complete and distinct set of dominoes.
+Help.Index.fifteen:\Sto play Fifteen.|MSlide tiles around to form a grid in numerical order.
+Help.Index.filling:\Sto play Filling.|MNumber the squares to form regions with the same number, which are also that number of squares in size.
+Help.Index.flip:\Sto play Flip.|MTurn over squares until all are light side up, but where flipping one square also flips its neighbours.
+Help.Index.flood:\Sto play Flood.|MTry to get the whole grid to be the same colour within the given number of moves, by repeatedly flood-filling the top left corner in different colours.
+Help.Index.galaxies:\Sto play Galaxies.|MDivide the grid into 180-degree rotationally symmetric regions, each centred on a dot.
+Help.Index.guess:\Sto play Guess.|MGuess the hidden colour sequence: black shows the correct colour in the correct place, while white shows the correct colour in the wrong place.
+Help.Index.inertia:\Sto play Inertia.|MSlide the ball around to collect all of the gems without hitting a mine.
+Help.Index.keen:\Sto play Keen.|MEnter digits so that every row and column contains exactly one of each digit and the arithmetic clues are satisfied.
+Help.Index.lightup:\Sto play Light Up.|MPlace lamps so that all squares are lit, no lamp lights another lamp, and numbered squares have the given number of adjacent lamps.
+Help.Index.loopy:\Sto play Loopy.|MDraw a single unbroken and uncrossing line, such that numbered squares have the given number of edges filled.
+Help.Index.magnets:\Sto play Magnets.|MPlace magnets and blanks to satisfy the + and - counts, as well as to avoid magnets repelling.
+Help.Index.map:\Sto play Map.|MCopy the four colours to colour the map, with no regions of the same colour touching.
+Help.Index.mines:\Sto play Mine.|MUncover all of the squares except those with mines, using the given counts of adjacent mines as clues.|MThe game is generated after first move, so you may see the hourglass at that point.
+Help.Index.mosaic:\Sto play Mosaic.|MColour squares black or white. Clues give the number of black squares in the 3 by 3 region around (and including) the clue square itself.
+Help.Index.net:\Sto play Net.|MRotate tiles to connect all of the tiles (not just endpoints) to the centre tile using the joining lines.
+Help.Index.netslide:\Sto play Netslide.|MSlide rows and columns to connect all the tiles (not just the endpoints) to the centre tile.
+Help.Index.palisade:\Sto play Palisade.|MDraw lines along grid edges, such that the grid is divided into connected regions, all of the size shown in the status line. Each square containing a number should have that many of its edges drawn in.
+Help.Index.pattern:\Sto play Pattern.|MFill the grid so that the numbers give the length of each stretch of black tiles in order.
+Help.Index.pearl:\Sto play Pearl.|MDraw a single loop through all of the dots, which has corners on (but not adjacent to) every black dot and before or after every white dot.
+Help.Index.pegs:\Sto play Pegs.|MRemove pegs by jumping others over them, until only one is left.
+Help.Index.range:\Sto play Range.|MPlace black squares to limit the visible distance from each numbered cell.
+Help.Index.rect:\Sto play Rectangles.|MDivide the grid into rectangles containing only one number, which also gives the area of the rectangle.
+Help.Index.samegame:\Sto play Same Game.|MRemove groups (of two or more) of the same colour blocks to clear the grid, scoring more for removing larger groups.
+Help.Index.signpost:\Sto play Signpost.|MConnect the squares into a path following the arrows, from top-left to bottom-right.
+Help.Index.singles:\Sto play Singles.|MRemove numbers so that no number appears twice in any row/column, no two black squares are adjacent, and the white squares are all connected.
+Help.Index.sixteen:\Sto play Sixteen.|MSlide rows and columns of tiles around to form a grid in numerical order.
+Help.Index.slant:\Sto play Slant.|MDraw diagonal lines in every square such that the circles have the given numbers of lines meeting at them and there are no loops.
+Help.Index.solo:\Sto play Solo.|MFill the grid so that each block, row and column contains exactly one of each digit.
+Help.Index.tents:\Sto play Tents.|MPlace tents so that each tree has a single adjacent tent horizontally or vertically, no tents are next to each other (even diagonally) and the row and column counts are correct.
+Help.Index.towers:\Sto play Towers.|MPlace towers so each row and column contains one of each height and each clue matches the number of towers visible looking into the grid from that point.
+Help.Index.tracks:\Sto play Train Tracks.|MComplete the track from A to B so that the rows and columns contain the numbers of track segments indicated. The track may not cross itself.
+Help.Index.twiddle:\Sto play Twiddle.|MRotate groups of four (or more) tiles at a time to form a grid in numerical order.
+Help.Index.undead:\Sto play Undead.|MFill the grid with monsters so that the correct numbers of them can be seen from each point, taking mirrors into account.
+Help.Index.unequal:\Sto play Unequal.|MEnter digits so that every row and column contains exactly one of each digit and the greater-than signs are satisfied.
+Help.Index.unruly:\Sto play Unruly.|MColour every square either black or white such that no three consecutive squares, horizontally or vertically, are the same colour, and each row and column contains the same number of black and white squares.
+Help.Index.untangle:\Sto play Untangle.|MMove the points around until no connecting lines cross.
 
 Help.Game:\Tone of Simon Tatham's Portable Puzzles.
 
