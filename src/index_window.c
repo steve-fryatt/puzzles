@@ -291,7 +291,7 @@ void index_window_initialise(void)
 
 	rows = (gamecount + columns - 1) / columns;
 
-	debug_printf("Initialising to %d columns, %d rows.", columns, rows);
+	// debug_printf("Initialising to %d columns, %d rows.", columns, rows);
 
 	index_window_def->extent.x1 = index_window_def->extent.x0 + (2 * LIST_WINDOW_MARGIN) - INDEX_WINDOW_ICON_GUTTER +
 			(gamecount * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER));
@@ -359,7 +359,7 @@ void index_window_open(void)
 	wimp_get_window_state(&state);
 
 	if ((state.flags & wimp_WINDOW_OPEN) == 0) {
-		debug_printf("Resetting window size...");
+		// debug_printf("Resetting window size...");
 
 		state.visible.x1 = state.visible.x0 + (2 * LIST_WINDOW_MARGIN) - INDEX_WINDOW_ICON_GUTTER +
 				(INDEX_WINDOW_INITIAL_MAX_COLUMNS * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER));
@@ -381,7 +381,7 @@ void index_window_open(void)
 
 static void index_window_open_handler(wimp_open *open)
 {
-	wimp_window_state state;
+//	wimp_window_state state;
 
 	if (open == NULL)
 		return;
@@ -389,14 +389,14 @@ static void index_window_open_handler(wimp_open *open)
 	if (index_window_recalculate_rows_and_columns(open))
 		windows_redraw(open->w);
 
-	state.w = open->w;
-	wimp_get_window_state(&state);
+//	state.w = open->w;
+//	wimp_get_window_state(&state);
 
-	if (state.flags & wimp_WINDOW_TOGGLED)
-		debug_printf("Click on toggle size icon");
+//	if (state.flags & wimp_WINDOW_TOGGLED)
+//		debug_printf("Click on toggle size icon");
 
-	if (state.flags & wimp_WINDOW_FULL_SIZE)
-		debug_printf("Window at full size");
+//	if (state.flags & wimp_WINDOW_FULL_SIZE)
+//		debug_printf("Window at full size");
 
 	wimp_open_window(open);
 }
@@ -746,7 +746,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 	max_columns = (screen_width - (2 * LIST_WINDOW_MARGIN) + INDEX_WINDOW_ICON_GUTTER) /
 			(index_window_icon_width + INDEX_WINDOW_ICON_GUTTER);
 
-	debug_printf("Max columns = %d", max_columns);
+	// debug_printf("Max columns = %d", max_columns);
 
 	/* How many rows and columns are we being asked to fit? */
 
@@ -755,7 +755,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 
 	rows = (gamecount + columns - 1) / columns;
 
-	debug_printf("New window size is: columns=%d, rows=%d", columns, rows);
+	// debug_printf("New window size is: columns=%d, rows=%d", columns, rows);
 
 	/* If the request to open the window is wider than the screen, resize.  */
 
@@ -763,7 +763,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 		columns = max_columns;
 		rows = (gamecount + columns - 1) / columns;
 
-		debug_printf("Too big! Resize to: columns=%d, rows=%d", columns, rows);
+		// debug_printf("Too big! Resize to: columns=%d, rows=%d", columns, rows);
 	}
 
 	/* If the rows and columns haven't changed, we're done. */
@@ -776,7 +776,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 	index_window_rows = rows;
 	index_window_columns = columns;
 
-	debug_printf("We're changing the window layout...");
+	// debug_printf("We're changing the window layout...");
 
 	/* Work out and set the new extent of the window. */
 
