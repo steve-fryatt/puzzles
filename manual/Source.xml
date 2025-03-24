@@ -82,6 +82,8 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <section>
 <p>To play the puzzles, double-click on the <file>!Puzzles</file> application to load it on to the iconbar. Once loaded, a <mouse>Select</mouse> click on its iconbar icon will open the <window>Puzzles list</window> window, showing all of the available games. To play a game, click <mouse>Select</mouse> on its icon (or <mouse>Adjust</mouse> to open the game and close the <window>Puzzles list</window> window).</p>
 
+<p>The window supports interactive help, to provide a few more details about the individual games. The layout can be changed from large to small icons using the window menu.</p>
+
 <p>As part of a suite, there are many features which are common to all of the games in <cite>Puzzles</cite>, and these are described here. Details of the individual games are in the following chapters.</p>
 </section>
 
@@ -282,7 +284,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <p>This is another one I originally saw as a web game. This one was a Java game<ref id="note-cube-1"/>, by Paul Scott. You have a grid of 16 squares, six of which are blue; on one square rests a cube. Your move is to use the arrow keys to roll the cube through 90 degrees so that it moves to an adjacent square. If you roll the cube on to a blue square, the blue square is picked up on one face of the cube; if you roll a blue face of the cube on to a non-blue square, the blueness is put down again. (In general, whenever you roll the cube, the two faces that come into contact swap colours.) Your job is to get all six blue squares on to the six faces of the cube at the same time. Count your moves and try to do it in as few as possible.</p>
 
-<p>Unlike the original Java game, my version has an additional feature: once you've mastered the game with a cube rolling on a square grid, you can change to a triangular grid and roll any of a tetrahedron, an octahedron or an icosahedron.</p>
+<p>Unlike the original Java game, my version has an additional feature: once you&rsquo;ve mastered the game with a cube rolling on a square grid, you can change to a triangular grid and roll any of a tetrahedron, an octahedron or an icosahedron.</p>
 
 <footnote id="note-cube-1"><p><link href="http://www3.sympatico.ca/paulscott/cube/cube.htm"/></p></footnote>
 </section>
@@ -342,13 +344,13 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Fifteen parameters</title>
 
-<p>The only options available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory. (Once you've changed these, it&rsquo;s not a &lsquo;15-puzzle&rsquo; any more, of course!)</p>
+<p>The only options available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory. (Once you&rsquo;ve changed these, it&rsquo;s not a &lsquo;15-puzzle&rsquo; any more, of course!)</p>
 </section>
 
 <section>
 <title>Fifteen user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the sense of the arrow keys. With the default setting, &lsquo;Move the tile&rsquo;, the arrow key you press indicates the direction that you want a tile to move, so that (for example) if you want to move the tile left of the gap rightwards into the gap, you&rsquo;d press <key>Right</key>. With the opposite setting, &lsquo;Move the gap&rsquo;, the behaviour of the arrow keys is reversed, and you would press <key>Left</key> to move the tile left of the gap into the gap, so that the <em>gap</em> ends up one square left of where it was.</p>
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the sense of the arrow keys. With the default setting, <menu>Move the tile</menu>, the arrow key you press indicates the direction that you want a tile to move, so that (for example) if you want to move the tile left of the gap rightwards into the gap, you&rsquo;d press <key>Right</key>. With the opposite setting, <menu>Move the gap</menu>, the behaviour of the arrow keys is reversed, and you would press <key>Left</key> to move the tile left of the gap into the gap, so that the <em>gap</em> ends up one square left of where it was.</p>
 </section>
 </chapter>
 
@@ -367,7 +369,7 @@ you answer (say) a four-move shuffle with a four-move solution.
 Note that the more moves you ask for, the more likely it is that
 solutions shorter than the target length will turn out to be
 possible.
- but with a different type of move. This time, there is no hole: all 16 squares on the grid contain numbered squares. Your move is to shift an entire row left or right, or shift an entire column up or down; every time you do that, the tile you shift off the grid re-appears at the other end of the same row, in the space you just vacated. To win, arrange the tiles into numerical order (1,2,3,4 on the top row, 13,14,15,16 on the bottom). When you've done that, try playing on different sizes of grid.</p>
+ but with a different type of move. This time, there is no hole: all 16 squares on the grid contain numbered squares. Your move is to shift an entire row left or right, or shift an entire column up or down; every time you do that, the tile you shift off the grid re-appears at the other end of the same row, in the space you just vacated. To win, arrange the tiles into numerical order (1,2,3,4 on the top row, 13,14,15,16 on the bottom). When you&rsquo;ve done that, try playing on different sizes of grid.</p>
 
 <p>I <em>might</em> have invented this game myself, though only by accident if so (and I&rsquo;m sure other people have independently invented it). I
 thought I was imitating a screensaver I&rsquo;d seen, but I have a feeling
@@ -470,7 +472,7 @@ rather than just engineering.</p>
 <section>
 <p>You have a grid of squares, with numbers written in some (but not all) of the squares. Your task is to subdivide the grid into rectangles of various sizes, such that (a) every rectangle contains exactly one numbered square, and (b) the area of each rectangle is equal to the number written in its numbered square.</p>
 
-<p>Credit for this game goes to the Japanese puzzle magazine Nikoli<ref id="note-rectangles-1"/>; I've also seen a Palm implementation at Puzzle Palace<ref id="note-rectangles-2"/>. Unlike Puzzle Palace&rsquo;s implementation, my version automatically generates random grids of any size you like. The quality of puzzle design is therefore not quite as good as hand-crafted puzzles would be, but on the plus side you get an inexhaustible supply of puzzles tailored to your own specification.</p>
+<p>Credit for this game goes to the Japanese puzzle magazine Nikoli<ref id="note-rectangles-1"/>; I&rsquo;ve also seen a Palm implementation at Puzzle Palace<ref id="note-rectangles-2"/>. Unlike Puzzle Palace&rsquo;s implementation, my version automatically generates random grids of any size you like. The quality of puzzle design is therefore not quite as good as hand-crafted puzzles would be, but on the plus side you get an inexhaustible supply of puzzles tailored to your own specification.</p>
 
 <footnote id="note-rectangles-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/shikaku/" external="true"/></p></footnote>
 
@@ -624,7 +626,7 @@ rather than just engineering.</p>
 
 <p>Solo allows you to configure two separate dimensions of the puzzle grid using <menu>Type</menu> &msep; <menu>Custom</menu> from the <window>Game</window> window: the number of <icon>Columns of sub-blocks</icon>, and the number of <icon>Rows of sub-blocks</icon>, into which the main grid is divided. (The size of a block is the inverse of this: for example, if you select 2 columns and 3 rows, each actual block will have 3 columns and 2 rows.)</p>
 
-<p>If you tick the <icon>X</icon> checkbox, Solo will apply the optional extra constraint that the two main diagonals of the grid also contain one of every digit. (This is sometimes known as &lsquo;Sudoku-X&rsquo; in newspapers.) In this mode, the squares on the two main diagonals will be shaded slightly so that you know it's enabled.</p>
+<p>If you tick the <icon>X</icon> checkbox, Solo will apply the optional extra constraint that the two main diagonals of the grid also contain one of every digit. (This is sometimes known as &lsquo;Sudoku-X&rsquo; in newspapers.) In this mode, the squares on the two main diagonals will be shaded slightly so that you know it&rsquo;s enabled.</p>
 
 <p>If you tick the <icon>Jigsaw</icon> checkbox, Solo will generate randomly shaped sub-blocks. In this mode, the actual grid size will be taken to be the product of the numbers entered in the <icon>Columns of sub-blocks</icon> and <icon>Rows of sub-blocks</icon> boxes. There is no reason why you have to enter a number greater than 1 in both boxes; Jigsaw mode has no constraint on the grid size, and it can even be a prime number if you feel like it.</p>
 
@@ -632,7 +634,7 @@ rather than just engineering.</p>
 
 <p>You can also configure the type of <icon>Symmetry</icon> shown in the generated puzzles. More symmetry makes the puzzles look prettier but may also make them easier, since the symmetry constraints can force more clues than necessary to be present. Completely asymmetric puzzles have the freedom to contain as few clues as possible.</p>
 
-<p>Finally, you can configure the <icon>Difficulty</icon> of the generated puzzles. Difficulty levels are judged by the complexity of the techniques of deduction required to solve the puzzle: each level requires a mode of reasoning which was not necessary in the previous one. In particular, on difficulty levels &lsquo;Trivial&rsquo; and &lsquo;Basic&rsquo; there will be a square you can fill in with a single number at all times, whereas at &lsquo;Intermediate&rsquo; level and beyond you will have to make partial deductions about the <em>set</em> of squares a number could be in (or the set of numbers that could be in a square). At &lsquo;Unreasonable&rsquo; level, even this is not enough, and you will eventually have to make a guess, and then backtrack if it turns out to be wrong.</p>
+<p>Finally, you can configure the <icon>Difficulty</icon> of the generated puzzles. Difficulty levels are judged by the complexity of the techniques of deduction required to solve the puzzle: each level requires a mode of reasoning which was not necessary in the previous one. In particular, on difficulty levels <menu>Trivial</menu> and <menu>Basic</menu> there will be a square you can fill in with a single number at all times, whereas at <menu>Intermediate</menu> level and beyond you will have to make partial deductions about the <em>set</em> of squares a number could be in (or the set of numbers that could be in a square). At <menu>Unreasonable</menu> level, even this is not enough, and you will eventually have to make a guess, and then backtrack if it turns out to be wrong.</p>
 
 <p>Generating difficult puzzles is itself difficult: if you select one of the higher difficulty levels, Solo may have to make many attempts at generating a puzzle before it finds one hard enough for you. Be prepared to wait, especially if you have also configured a large puzzle size.</p>
 </section>
@@ -644,7 +646,7 @@ rather than just engineering.</p>
 <title>Mines</title>
 
 <section>
-<p>You have a grid of covered squares, some of which contain mines, but you don't know which. Your job is to uncover every square which does <em>not</em> contain a mine. If you uncover a square containing a mine, you lose. If you uncover a square which does not contain a mine, you are told how many mines are contained within the eight surrounding squares.</p>
+<p>You have a grid of covered squares, some of which contain mines, but you don&rsquo;t know which. Your job is to uncover every square which does <em>not</em> contain a mine. If you uncover a square containing a mine, you lose. If you uncover a square which does not contain a mine, you are told how many mines are contained within the eight surrounding squares.</p>
 
 <p>This game needs no introduction; popularised by Windows, it is perhaps the single best known desktop puzzle game in existence.</p>
 
@@ -746,7 +748,7 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 
 <li><title><icon>Scoring system</icon></title>
 
-<p>Controls the precise mechanism used for scoring. With the default system, &lsquo;(n-2)^2&rsquo;, only regions of three squares or more will score any points at all. With the alternative &lsquo;(n-1)^2&rsquo; system, regions of two squares score a point each, and larger regions score relatively more points.</p></li>
+<p>Controls the precise mechanism used for scoring. With the default system, <menu>(n-2)^2</menu>, only regions of three squares or more will score any points at all. With the alternative <menu>(n-1)^2</menu> system, regions of two squares score a point each, and larger regions score relatively more points.</p></li>
 
 <li><title><icon>Ensure solubility</icon></title>
 
@@ -762,6 +764,39 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="flip">
 <title>Flip</title>
 
+<section>
+<p>You have a grid of squares, some light and some dark. Your aim is to light all the squares up at the same time. You can choose any square and flip its state from light to dark or dark to light, but when you do so, other squares around it change state as well.</p>
+
+<p>Each square contains a small diagram showing which other squares change when you flip it.</p>
+</section>
+
+<section>
+<title>Flip controls</title>
+
+<p>This game can be played with either the keyboard or the mouse.</p>
+
+<p><mouse>Select</mouse>-click in a square to flip it and its associated squares, or use the cursor keys to choose a square and the <key>Space</key> bar or <key>Enter</key> key to flip.</p>
+
+<p>If you use the <menu>Solve</menu> function on this game, it will mark some of the squares in red. If you click once in every square with a red mark, the game should be solved. (If you click in a square <em>without</em> a red mark, a red mark will appear in it to indicate that you will need to reverse that operation to reach the solution.)</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Flip parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Shape type</icon></title>
+
+<p>This control determines the shape of the region which is flipped by clicking in any given square. The default setting, <menu>Crosses</menu>,causes every square to flip itself and its four immediate neighbours (or three or two if it&rsquo;s at an edge or corner). The other setting, <menu>Random</menu>, causes a random shape to be chosen for every square, so the game is different every time.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Guess -->
@@ -769,6 +804,74 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="guess">
 <title>Guess</title>
 
+<section>
+<p>You have a set of coloured pegs, and have to reproduce a predetermined sequence of them (chosen by the computer) within a certain number of guesses.</p>
+
+<p>Each guess gets marked with the number of correctly-coloured pegs in the correct places (in black), and also the number of correctly-coloured pegs in the wrong places (in white).</p>
+
+<p>This game is also known (and marketed, by Hasbro, mainly) as a board game <cite>Mastermind</cite>, with 6 colours, 4 pegs per row, and 10 guesses.However, this version allows custom settings of number of colours (up to 10), number of pegs per row, and number of guesses.</p>
+
+<p>Guess was contributed to this collection by James Harvey.</p>
+</section>
+
+<section>
+<title>Guess controls</title>
+
+<p>This game can be played with either the keyboard or the mouse.</p>
+
+<p>With the mouse, drag a coloured peg from the tray on the left-hand side to its required position in the current guess; pegs may also be dragged from current and past guesses to copy them elsewhere. To remove a peg, drag it off its current position to somewhere invalid.</p>
+
+<p><mouse>Adjust</mouse>-clicking in the current guess adds a &lsquo;hold&rsquo; marker; pegs that have hold markers will be automatically added to the next guess after marking.</p>
+
+<p>Alternatively, with the keyboard, the <key>Up</key> and <key>Down</key> cursor keys can be used to select a peg colour, the <key>Left</key> and <key>Right</key> keys to select a peg position, and the <key>Enter</key> key to place a peg of the selected colour in the chosen position. <key>D</key> or <key>Backspace</key> removes a peg, and <key>Space</key> adds a hold marker.</p>
+
+<p>The number keys can also be used to insert pegs: <key>1</key> inserts the top-most colour, <key>2</key> the second one, and so forth. These also move the peg cursor to the right. Pressing <key>L</key> will label the pegs with their numbers.</p>
+
+<p>Pressing <key>H</key> or <key>?</key> will fill the current guess with a suggested guess. Using this is not recommended for 10 or more pegs as it is
+slow.</p>
+
+<p>When the guess is complete, the smaller feedback pegs will be highlighted; clicking on these (or moving the peg cursor to them with the arrow keys and pressing the <key>Space</key> bar or <key>Enter</key> key) will mark the current guess, copy any held pegs to the next guess, and move the &lsquo;current guess&rsquo; marker.</p>
+
+<p>If you correctly position all the pegs the solution will be displayed below; if you run out of guesses (or select <menu>Solve...</menu>) the solution will also be revealed.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Guess parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu. The default game matches the parameters for the board game <cite>Mastermind</cite>.</p>
+
+<dl>
+<li><title><icon>Colours</icon></title>
+
+<p>Number of colours the solution is chosen from; from 2 to 10 (more is harder).</p></li>
+
+<li><title><icon>Pegs per guess</icon></title>
+
+<p>Number of pegs per guess (more is harder).</p></li>
+
+<li><title><icon>Guesses</icon></title>
+
+<p>Number of guesses you have to find the solution in (fewer is harder).</p></li>
+
+<li><title><icon>Allow blanks</icon></title>
+
+<p>Allows blank pegs to be given as part of a guess (makes it easier, because you know that those will never be counted as part of the solution). This is turned off by default.</p>
+
+<p>Note that this doesn&rsquo;t allow blank pegs in the solution; if you really wanted that, use one extra colour.</p></li>
+
+<li><title><icon>Allow duplicates</icon></title>
+
+<p>Allows the solution (and the guesses) to contain colours more than once; this increases the search space (making things harder), and is turned on by default.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Guess user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether pegs are labelled with their numbers. Unlike the <key>L</key> key, this will persist between games.</p>
+</section>
 </chapter>
 
 <!-- Pegs -->
@@ -776,6 +879,39 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="pegs">
 <title>Pegs</title>
 
+<section>
+<p>A number of pegs are placed in holes on a board. You can remove a peg by jumping an adjacent peg over it (horizontally or vertically) to a vacant hole on the other side. Your aim is to remove all but one of the pegs initially present.</p>
+
+<p>This game, best known as &lsquo;Peg Solitaire&rsquo;, is possibly one of the oldest puzzle games still commonly known.</p>
+</section>
+
+<section>
+<title>Pegs controls</title>
+
+<p>To move a peg, drag it with the mouse from its current position to its final position. If the final position is exactly two holes away from the initial position, is currently unoccupied by a peg, and there is a peg in the intervening square, the move will be permitted and the intervening peg will be removed.</p>
+
+<p>Vacant spaces which you can move a peg into are marked with holes. A space with no peg and no hole is not available for moving at all: it is an obstacle which you must work around.</p>
+
+<p>You can also use the cursor keys to move a position indicator around the board. Pressing the <key>Return</key> key while over a peg, followed by a cursor key, will jump the peg in that direction (if that is a legal move).</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Pegs parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in holes.</p></li>
+
+<li><title><icon>Board type</icon></title>
+
+<p>Controls whether you are given a board of a standard shape or a randomly generated shape. The two standard shapes currently supported are <menu>Cross</menu> (in various sizes) and <menu>Octagon</menu>;. The 7&times;7 Cross is the traditional English board layout. The Octagon is the traditional French one. Selecting <menu>Random</menu>; will give you a different board shape every time (but always one that is known to have a solution).</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Dominosa -->
@@ -783,6 +919,41 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="dominosa">
 <title>Dominosa</title>
 
+<section>
+<p>A normal set of dominoes &ndash; that is, one instance of every (unordered) pair of numbers from 0 to 6 &ndash; has been arranged irregularly into a rectangle; then the number in each square has been written down and the dominoes themselves removed. Your task is to reconstruct the pattern by arranging the set of dominoes to match the provided array of numbers.</p>
+
+<p>This puzzle is widely credited to O. S. Adler, and takes part of its name from those initials.</p>
+</section>
+
+<section>
+<title>Dominosa controls</title>
+
+<p><mouse>Select</mouse>-clicking between any two adjacent numbers places a domino covering them, or removes one if it is already present. Trying to place a domino which overlaps existing dominoes will remove the ones it overlaps.</p>
+
+<p><mouse>Adjust</mouse>-clicking between two adjacent numbers draws a line between them, which you can use to remind yourself that you know those two numbers are <em>not</em> covered by a single domino. <mouse>Adjust</mouse>-clicking again removes the line.</p>
+
+<p>You can also use the cursor keys to move a cursor around the grid. When the cursor is half way between two adjacent numbers, pressing the <key>Return</key> key will place a domino covering those numbers, or pressing the <key>Space</key> bar will lay a line between the two squares. Repeating either action removes the domino or line.</p>
+
+<p>Pressing a number key will highlight all occurrences of that number. Pressing that number again will clear the highlighting. Up to two different numbers can be highlighted at any given time.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Dominosa parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Maximum number on dominoes</icon></title>
+
+<p>Controls the size of the puzzle, by controlling the size of the set of dominoes used to make it. Dominoes with numbers going up to <maths>N</maths> will give rise to an (<maths>N</maths>&nbsp;+&nbsp;2)&nbsp;&times;&nbsp;(<maths>N</maths>&nbsp;+&nbsp;1) rectangle; so, in particular, the default value of 6 gives an 8&times;7 grid.</p></li>
+
+<li><title><icon>Ensure unique solution</icon></title>
+
+<p>Normally, Dominosa will make sure that the puzzles it presents have only one solution. Puzzles with ambiguous sections can be more difficult and sometimes more subtle, so if you like you can turn off this feature. Also, finding <em>all</em> the possible solutions can be an additional challenge for an advanced player. Turning off this option can also speed up puzzle generation.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Untangle -->
@@ -790,6 +961,35 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="untangle">
 <title>Untangle</title>
 
+<section>
+<p>You are given a number of points, some of which have lines drawn between them. You can move the points about arbitrarily; your aim is to position the points so that no line crosses another.</p>
+
+<p>I originally saw this in the form of a Flash game called Planarity<ref id="untangle-note-1"/>, written by John Tantalo.</p>
+
+<footnote id="untangle-note-1"><p><link href="http://planarity.net" external="true" /></p></footnote>
+</section>
+
+<section>
+<title>Untangle controls</title>
+
+<p>To move a point, drag it into a new position with <mouse>Select</mouse>.</p>
+
+<p>The cursor keys may also be used to navigate amongst the points. Pressing the <key>Enter</key> key will toggle dragging the currently-highlighted point. Pressing <key>Tab</key> or <key>Space</key> will cycle through all the points.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Untangle parameters</title>
+
+<p>There is only one parameter available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Number of points</icon></title>
+
+<p>Controls the size of the puzzle, by specifying the number of points in the generated graph.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Black Box -->
@@ -797,6 +997,96 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="blackbox">
 <title>Black Box</title>
 
+<section>
+<p>A number of balls are hidden in a rectangular arena. You have to deduce the positions of the balls by firing lasers positioned at the edges of the arena and observing how their beams are deflected.</p>
+
+<p>Beams will travel straight from their origin until they hit the opposite side of the arena (at which point they emerge), unless affected by balls in one of the following ways:</p>
+
+<ul>
+<li><p>A beam that hits a ball head-on is absorbed and will never re-
+emerge. This includes beams that meet a ball on the first rank of the arena.</p></li>
+
+<li><p>A beam with a ball in its front-left square and no ball ahead of it gets deflected 90 degrees to the right.</p></li>
+
+<li><p>A beam with a ball in its front-right square and no ball ahead of it gets similarly deflected to the left.</p></li>
+
+<li><p>A beam that would re-emerge from its entry location is considered to be &lsquo;reflected&rsquo;.</p></li>
+
+<li><p>A beam which would get deflected before entering the arena by a ball to the front-left or front-right of its entry point is also considered to be &lsquo;reflected&rsquo;.</p></li>
+</ul>
+
+<p>Beams that are reflected appear as a &lsquo;R&rsquo;; beams that hit balls head-on appear as &lsquo;H&rsquo;. Otherwise, a number appears at the firing point and the location where the beam emerges (this number is unique to that shot).</p>
+
+<p>You can place guesses as to the location of the balls, based on the entry and exit patterns of the beams; once you have placed enough balls a button appears enabling you to have your guesses checked.</p>
+
+<p>Here is a diagram showing how the positions of balls can create each of the beam behaviours shown above:</p>
+
+<code> 1RHR---- 
+|..O.O...|
+2........3
+|........|
+|........|
+3........|
+|......O.|
+H........|
+|.....O..|
+ 12-RR---</code>
+
+<p>As shown, it is possible for a beam to receive multiple reflections before re-emerging (see turn 3). Similarly, a beam may be reflected (possibly more than once) before receiving a hit (the &lsquo;H&rsquo; on the left side of the example).</p>
+
+<p>Note that any layout with more than 4 balls may have a non-unique solution. The following diagram illustrates this; if you know the board contains 5 balls, it is impossible to determine where the fifth ball is (possible positions marked with an x):</p>
+
+<code> -------- 
+|........|
+|........|
+|..O..O..|
+|...xx...|
+|...xx...|
+|..O..O..|
+|........|
+|........|
+ --------</code>
+
+<p>For this reason, when you have your guesses checked, the game will check that your solution <em>produces the same results</em> as the computer&rsquo;s, rather than that your solution is identical to the computer&rsquo;s. So in the above example, you could put the fifth ball at <em>any</em> of the locations marked with an x, and you would still win.</p>
+
+<p>Acornsoft published versions of Black Box for the Acorn Atom and the BBC&nbsp;Microcomputer in the early 1980s. The puzzle was contributed to this collection by James Harvey.</p>
+</section>
+
+<section>
+<title>Black Box controls</title>
+
+<p>To fire a laser beam, <mouse>Select</mouse>-click in a square around the edge of the arena. The results will be displayed immediately. Clicking or holding <mouse>Select</mouse> on one of these squares will highlight the current go (or a previous go) to confirm the exit point for that laser, if applicable.</p>
+
+<p>To guess the location of a ball, <mouse>Select</mouse>-click within the arena and a black circle will appear marking the guess; click again to remove the guessed ball.</p>
+
+<p>Locations in the arena may be locked against modification by <mouse>Adjust</mouse>-clicking; whole rows and columns may be similarly locked by <mouse>Adjust</mouse>-clicking in the laser square above/below that column, or to the left/right of that row.</p>
+
+<p>The cursor keys may also be used to move around the grid. Pressing the <key>Enter</key> key will fire a laser or add a new ball-location guess, and pressing <key>Space</key> will lock a cell, row, or column.</p>
+
+<p>When an appropriate number of balls have been guessed, a button will appear at the top-left corner of the grid; clicking that (with mouse or cursor) will check your guesses.</p>
+
+<p>If you click the &lsquo;check&rsquo; button and your guesses are not correct, the game will show you the minimum information necessary to demonstrate this to you, so you can try again. If your ball positions are not consistent with the beam paths you already know about, one beam path will be circled to indicate that it proves you wrong. If your positions match all the existing beam paths but are still wrong, one new beam path will be revealed (written in red) which is not consistent with your current guesses.</p>
+
+<p>If you decide to give up completely, you can select <menu>Solve</menu> to reveal the actual ball positions. At this point, correctly-placed balls will be displayed as filled black circles, incorrectly-placed balls as filled black circles with red crosses, and missing balls as filled red circles. In addition, a red circle marks any laser you had already fired which is not consistent with your ball layout (just as when you press the &lsquo;check&rsquo; button), and red text marks any laser you <em>could</em> have fired in order to distinguish your ball layout from the correct one.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Black Box parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares. There are 2 &times; <icon>Width</icon> &times; <icon>Height</icon> lasers per grid, two per row and two per column.</p></li>
+
+<li><title><icon>No. of balls</icon></title>
+
+<p>Number of balls to place in the grid. This can be a single number, or a range (separated with a hyphen, like <entry>2-6</entry>), and determines the number of balls to place on the grid. The &lsquo;reveal&rsquo; button is only enabled if you have guessed an appropriate number of balls; a guess using a different number to the original solution is still acceptable, if all the beam inputs and outputs match.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Slant -->
@@ -804,6 +1094,53 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="slant">
 <title>Slant</title>
 
+<section>
+<p>You have a grid of squares. Your aim is to draw a diagonal line through each square, and choose which way each line slants so that the following conditions are met:</p>
+
+<ul>
+<li><p>The diagonal lines never form a loop.</p></li>
+
+<li><p>Any point with a circled number has precisely that many lines meeting at it. (Thus, a 4 is the centre of a cross shape, whereas a zero is the centre of a diamond shape &ndash; or rather, a partial diamond shape, because a zero can never appear in the middle of the grid because that would immediately cause a loop.)</p></li>
+</ul>
+
+<p>Credit for this puzzle goes to Nikoli<ref id="slant-note-1"/>.</p>
+
+<footnote id="slant-note-1"><p><link href="https://www.nikoli.co.jp/ja/puzzles/gokigen_naname/" external="true"/> (in Japanese)</p></footnote>
+</section>
+
+<section>
+<title>Slant controls</title>
+
+<p><mouse>Select</mouse>-clicking in a blank square will place a <code>\</code> in it (a line leaning to the left, ie. running from the top left of the square to the bottom right). <mouse>Adjust</mouse>-clicking in a blank square will place a <code>/</code> in it (leaning to the right, running from top right to bottom left).</p>
+
+<p>Continuing to click either button will cycle between the three possible square contents. Thus, if you <mouse>Select</mouse>-click repeatedly in a blank square it will change from blank to <code>\</code> to <code>/</code> back to blank, and if you <mouse>Adjust</mouse>-click repeatedly the square will change from blank to <code>/</code> to <code>\</code> back to blank. (Therefore, you can play the game entirely with one button if you need to.)</p>
+
+<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will place a <code>\</code> or a <code>/</code>, respectively, and will then cycle them as above. You can also press <key>/</key> or <key>\</key> to place a <code>/</code> or <code>\</code>, respectively, independent of what is already in the cursor square. Backspace removes any line from the cursor square.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Slant parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. At <menu>Hard</menu> level, you are required to do deductions based on knowledge of <em>relationships</em> between squares rather than always being able to deduce the exact contents of one square at a time. (For example, you might know that two squares slant in the same direction, even if you don&rsquo;t yet know what that direction is, and this might enable you to deduce something about still other squares.) Even at <menu>Hard</menu> level, guesswork and backtracking should never be necessary.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Slant user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
+</section>
 </chapter>
 
 <!-- Light Up -->
@@ -811,6 +1148,75 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="lightup">
 <title>Light Up</title>
 
+<section>
+<p>You have a grid of squares. Some are filled in black; some of the black squares are numbered. Your aim is to &lsquo;light up&rsquo; all the empty squares by placing light bulbs in some of them.</p>
+
+<p>Each light bulb illuminates the square it is on, plus all squares in line with it horizontally or vertically unless a black square is blocking the way.</p>
+
+<p>To win the game, you must satisfy the following conditions:</p>
+
+<ul>
+<li><p>All non-black squares are lit.</p></li>
+
+<li><p>No light is lit by another light.</p></li>
+
+<li><p>All numbered black squares have exactly that number of lights 	adjacent to them (in the four squares above, below, and to the side).</p></li>
+</ul>
+
+<p>Non-numbered black squares may have any number of lights adjacent to them.</p>
+
+<p>Credit for this puzzle goes to Nikoli<ref id="lightup-note-1"/>.</p>
+
+<p>Light Up was contributed to this collection by James Harvey.</p>
+
+<footnote id="lightup-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/akari/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Light Up controls</title>
+
+<p><mouse>Select</mouse>-clicking in a non-black square will toggle the presence of a light in that square. <mouse>Adjust</mouse>-clicking in a non-black square toggles a mark there to aid solving; it can be used to highlight squares that cannot be lit, for example.</p>
+
+<p>You may not place a light in a marked square, nor place a mark in a lit square.</p>
+
+<p>The game will highlight obvious errors in red. Lights lit by other lights are highlighted in this way, as are numbered squares which do not (or cannot) have the right number of lights next to them.</p>
+
+<p>Thus, the grid is solved when all non-black squares have yellow highlights and there are no red lights.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Light Up parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>%age of black squares</icon></title>
+
+<p>Rough percentage of black squares in the grid.</p>
+
+<p>This is a hint rather than an instruction. If the grid generator is unable to generate a puzzle to this precise specification, it will increase the proportion of black squares until it can.</p></li>
+
+<li><title><icon>Symmetry</icon></title>
+
+<p>Allows you to specify the required symmetry of the black squares in the grid. (This does not affect the difficulty of the puzzles noticeably.)</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p><menu>Easy</menu> means that the puzzles should be soluble without backtracking or guessing, <menu>Hard</menu> means that some guesses will probably be necessary.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Light Up user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether &lsquo;this is not a light&rsquo; marks are shown when the square is also lit.</p>
+</section>
 </chapter>
 
 <!-- Map -->
@@ -818,6 +1224,59 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="map">
 <title>Map</title>
 
+<section>
+<p>You are given a map consisting of a number of regions. Your task is to colour each region with one of four colours, in such a way that no two regions sharing a boundary have the same colour. You are provided with some regions already coloured, sufficient to make the remainder of the solution unique, and these cannot be changed.</p>
+
+<p>Only regions which share a length of border are required to be different colours. Two regions which meet at only one <em>point</em> (ie. are diagonally separated) may be the same colour.</p>
+
+<p>I believe this puzzle is original; I&rsquo;ve never seen an implementation of it anywhere else. The concept of a four-colouring puzzle was suggested by Alexandra Lanes; credit must also go to Nikoli and to Verity Allan for inspiring the train of thought that led to me realising Alex&rsquo;s suggestion was a viable puzzle. Thanks also to Gareth Taylor for many detailed suggestions.</p>
+</section>
+
+<section>
+<title>Map controls</title>
+
+<p>To colour a region, click <mouse>Select</mouse> on an existing region of the desired colour and drag that colour into the new region.</p>
+
+<p>(The program will always ensure the starting puzzle has at least one region of each colour, so that this is always possible!)</p>
+
+<p>If you need to clear a region, you can drag from an empty region, or from the puzzle boundary if there are no empty regions left.</p>
+
+<p>Dragging a colour using <mouse>Adjust</mouse> will stipple the region in that colour, which you can use as a note to yourself that you think the region <em>might</em> be that colour. A region can contain stipples in multiple colours at once. (This is often useful at the harder difficulty levels.)</p>
+
+<p>You can also use the cursor keys to move around the map: the colour of the cursor indicates the position of the colour you would drag (which is not obvious if you&rsquo;re on a region&rsquo;s boundary, since it depends on the direction from which you approached the boundary). Pressing the <key>Return</key> key starts a drag of that colour, as above, which you control with the cursor keys; pressing the <key>Return</key> key again finishes the drag. The <key>Space</key> bar can be used similarly to create a stippled region. Double-pressing the <key>Return</key> key (without moving the cursor) will clear the region, as a drag from an empty region does: this is useful with the cursor mode if you have filled the entire map in but need to correct the layout.</p>
+
+<p>If you press <key>L</key> during play, the game will toggle display of a number in each region of the map. This is useful if you want to discuss a particular puzzle instance with a friend &ndash; having an unambiguous name for each region is much easier than trying to refer to them all by names such as &lsquo;the one down and right of the brown one on the top border&rsquo;.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Map parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Regions</icon></title>
+
+<p>Number of regions in the generated map.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>In <menu>Easy</menu> mode, there should always be at least one region whose colour can be determined trivially. In <menu>Normal</menu> and <menu>Hard</menu> modes, you will have to use increasingly complex logic to deduce the colour of some regions. However, it will always be possible without having to guess or backtrack.</p>
+
+<p>In <menu>Unreasonable</menu> mode, the program will feel free to generate puzzles which are as hard as it can possibly make them: the only constraint is that they should still have a unique solution. Solving Unreasonable puzzles may require guessing and backtracking.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Map user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the victory flash and also whether the regions start out labelled with numbers.</p>
+</section>
 </chapter>
 
 <!-- Loopy -->
@@ -825,6 +1284,65 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="loopy">
 <title>Loopy</title>
 
+<section>
+<p>You are given a grid of dots, marked with yellow lines to indicate which dots you are allowed to connect directly together. Your aim is to use some subset of those yellow lines to draw a single unbroken loop from dot to dot within the grid.</p>
+
+<p>Some of the spaces between the lines contain numbers. These numbers indicate how many of the lines around that space form part of the loop. The loop you draw must correctly satisfy all of these clues to be considered a correct solution.</p>
+
+<p>In the default mode, the dots are arranged in a grid of squares; however, you can also play on triangular or hexagonal grids, or even more exotic ones.</p>
+
+<p>Credit for the basic puzzle idea goes to Nikoli<ref id="loopy-note-1"/>.</p>
+
+<p>Loopy was originally contributed to this collection by Mike Pinna, and subsequently enhanced to handle various types of non-square grid by Lambros Lambrou.</p>
+
+<footnote id="loopy-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/slitherlink/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Loopy controls</title>
+
+<p>Click <mouse>Select</mouse> on a yellow line to turn it black, indicating that you think it is part of the loop. Click again to turn the line yellow again (meaning you aren&rsquo;t sure yet).</p>
+
+<p>If you are sure that a particular line segment is <em>not</em> part of the loop, you can click <mouse>Adjust</mouse> to remove it completely. Again, clicking a second time will turn the line back to yellow.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Loopy parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid, measured in number of regions across and down. For square grids, it&rsquo;s clear how this is counted; for other types of grid you may have to think a bit to see how the dimensions are measured.</p></li>
+
+<li><title><icon>Grid type</icon></title>
+
+<p>Allows you to choose between a selection of types of tiling. Some have all the faces the same but may have multiple different types of vertex (eg. the <menu>Cairo</menu> or <menu>Kites</menu> mode); others have all the vertices the same but may have different types of face (eg. the <menu>Great Hexagonal</menu>). The square, triangular and honeycomb grids are fully regular, and have all their vertices <em>and</em> faces the same; this makes them the least confusing to play.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Loopy user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the following things:</p>
+
+<p><icon>Draw excluded grid lines faintly</icon>. This is on by default: when a line of the grid has been explicitly excluded from the solution by <mouse>Adjust</mouse>-clicking it, the line is still drawn, just in a faint grey colour. If you turn this option off, excluded lines are not drawn at
+all.</p>
+
+<p><icon>Auto-follow unique paths of edges</icon>. This is off by default. When it&rsquo;s on, clicking to change the status of a single grid line will potentially propagate the change along multiple lines, if one or both ends of the line you clicked connect to only one other line. (The idea is that if two lines meet at a vertex and no other lines do at all, then those lines are either both part of the loop or neither, so there&rsquo;s no reason you should have to click separately to toggle each one.)</p>
+
+<p>In the mode <menu>Based on grid only</menu>, the effects of a click will only propagate across vertices that have degree 2 in the underlying grid. For example, in the square grid, the effect will <em>only</em> occur at the four grid corners.</p>
+
+<p>In the mode <menu>Based on grid and game state</menu>, the propagation will
+also take account of edges you&rsquo;ve already excluded from the solution, so that it will do even more work for you.</p>
+</section>
 </chapter>
 
 <!-- Inertia -->
@@ -930,6 +1448,46 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="unruly">
 <title>Unruly</title>
 
+<section>
+<p>You are given a grid of squares, which you must colour either black or white. Some squares are provided as clues; the rest are left for you to fill in. Each row and column must contain the same number of black and white squares, and no row or column may contain three consecutive squares of the same colour.</p>
+
+<p>This puzzle type was invented by Adolfo Zanellati, under the name &lsquo;Tohu wa Vohu&rsquo;<ref id="unruly-note-1"/>.</p>
+
+<p>Unruly was contributed to this collection by Lennard Sprong.</p>
+
+<footnote id="unruly-note-1"><p><link href="http://www.janko.at/Raetsel/Tohu-Wa-Vohu/index.htm" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Unruly controls</title>
+
+<p>To play Unruly, click the mouse in a square to change its colour.
+<mouse>Select</mouse>-clicking an empty square will turn it black, and <mouse>Adjust</mouse>-clicking will turn it white. Keep clicking the same button to cycle through the three possible states for the square. If you <key>Ctrl</key>-<mouse>Select</mouse>-click in a square it will be reset to empty.</p>
+
+<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <key>Backspace</key>> will reset a square to empty.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Unruly parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares. (Note that the rules of the game require both the width and height to be even numbers.)</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle.</p></li>
+
+<li><title><icon>Unique rows and columns</icon></title>
+
+<p>If enabled, no two rows are permitted to have exactly the same pattern, and likewise columns. (A row and a column can match, though.)</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Flood -->
@@ -937,6 +1495,45 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="flood">
 <title>Flood</title>
 
+<section>
+<p>You are given a grid of squares, coloured at random in multiple colours. In each move, you can flood-fill the top left square in a colour of your choice (ie. every square reachable from the starting square by an orthogonally connected path of squares all the same colour will be filled in the new colour). As you do this, more and more of the grid becomes connected to the starting square.</p>
+
+<p>Your aim is to make the whole grid the same colour, in as few moves as possible. The game will set a limit on the number of moves, based on running its own internal solver. You win if you can make the whole grid the same colour in that many moves or fewer.</p>
+
+<p>I saw this game (with a fixed grid size, fixed number of colours, and fixed move limit) at <link href="http://floodit.appspot.com" external="true"/> (no longer accessible).</p>
+</section>
+
+<section>
+<title>Flood controls</title>
+
+<p>To play Flood, click the mouse in a square. The top left corner and everything connected to it will be flood-filled with the colour of the square you clicked. Clicking a square the same colour as the top left corner has no effect, and therefore does not count as a move.</p>
+
+<p>You can also use the cursor keys to move a cursor (outline black square) around the grid. Pressing the <key>Return</key> key will fill the top left corner in the colour of the square under the cursor.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Flood parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of the grid, in squares.</p></li>
+
+<li><title><icon>Colours</icon></title>
+
+<p>Number of colours used to fill the grid. Must be at least 3 (with two colours there would only be one legal move at any stage, hence no choice to make at all), and at most 10.</p></li>
+
+<li><title><icon>Extra moves permitted</icon></title>
+
+<p>Controls the difficulty of the puzzle, by increasing the move limit. In each new grid, Flood will run an internal solver to generate its own solution, and then the value in this field will be added to the length of Flood&rsquo;s solution to generate the game&rsquo;s move limit. So a value of 0 requires you to be just as efficient as Flood&rsquo;s automated solver, and a larger value makes it easier.</p>
+
+<p>(Note that Flood&rsquo;s internal solver will not necessarily find the shortest possible solution, though I believe it&rsquo;s pretty close. For a real challenge, set this value to 0 and then try to solve a grid in <em>strictly fewer</em> moves than the limit you&rsquo;re given!)</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Tracks -->
@@ -944,6 +1541,45 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="tracks">
 <title>Tracks</title>
 
+<section>
+<p>You are given a grid of squares, some of which are filled with train tracks. You need to complete the track from A to B so that the rows and columns contain the same number of track segments as are indicated in the clues to the top and right of the grid.</p>
+
+<p>There are only straight and 90 degree curved rails, and the track may not cross itself.</p>
+
+<p>Tracks was contributed to this collection by James Harvey.</p>
+</section>
+
+<section>
+<title>Tracks controls</title>
+
+<p><mouse>Select</mouse>-clicking on an edge between two squares adds a track segment between the two squares. <mouse>Adjust</mouse>-clicking on an edge adds a cross on the edge, indicating no track is possible there.</p>
+
+<p><mouse>Select</mouse>-clicking in a square adds a colour indicator showing that you know the square must contain a track, even if you don&rsquo;t know which edges it crosses yet. <mouse>Adjust</mouse>-clicking in a square adds a cross indicating it contains no track segment.</p>
+
+<p><mouse>Select</mouse>- or <mouse>Adjust</mouse>-dragging between squares allows you to lay a straight line of is-track or is-not-track indicators, useful for filling in rows or columns to match the clue.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Tracks parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of the grid, in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle: at <menu>Tricky</menu> level, you are required to make more deductions regarding disregarding moves that would lead to impossible crossings later.</p></li>
+
+<li><title><icon>Disallow consecutive 1 clues</icon></title>
+
+<p>Controls whether the Tracks game generation permits two adjacent rows or columns to have a 1 clue, or permits the row or column of the track&rsquo;s endpoint to have a 1 clue. By default this is not permitted, to avoid long straight boring segments of track and make the games more twiddly and interesting. If you want to restore the possibility, turn this option off.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Palisade -->
@@ -951,6 +1587,47 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="palisade">
 <title>Palisade</title>
 
+<section>
+<p>You&rsquo;re given a grid of squares, some of which contain numbers. Your goal is to subdivide the grid into contiguous regions, all of the same (given) size, such that each square containing a number is adjacent to exactly that many edges (including those between the inside and the outside of the grid).</p>
+
+<p>Credit for this puzzle goes to Nikoli, who call it &lsquo;Five Cells&rsquo;<ref id="palisade-note-1"/>.</p>
+
+<p>Palisade was contributed to this collection by Jonas Koelker.</p>
+
+<footnote id="palisade-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/five_cells/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Palisade controls</title>
+
+<p><mouse>Select</mouse>-click to place an edge. <mouse>Adjust</mouse>-click to indicate &lsquo;no edge&rsquo;.</p>
+
+<p>Alternatively, the arrow keys will move a keyboard cursor. Depending on the <icon>Cursor mode</icon> preference (see <ref id="palisade-prefs"/>), the cursor will either navigate among the grid squares, or along their borders. In <menu>Full-grid</menu> mode, hold <key>Ctrl</key> while pressing an arrow key to place an edge, and press <key>Shift</key>-arrowkey to switch off an edge. In <menu>Half-grid</menu> mode, press <key>Enter</key> to place an edge, and <key>Space</key> to switch off an edge. In either mode, you can repeat an action to perform its inverse.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Palisade parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title>Region size</title>
+
+<p>The size of the regions into which the grid must be subdivided.</p></li>
+</dl>
+</section>
+
+<section id="palisade-prefs">
+<title>Palisade user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the behaviour of the cursor keys to either navigate among full grid squares, or along the borders of the grid squares.</p>
+</section>
 </chapter>
 
 <!-- Mosaic -->
@@ -958,6 +1635,43 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <chapter id="mosaic">
 <title>Mosaic</title>
 
+<section>
+<p>You are given a grid of squares, which you must colour either black or white.</p>
+
+<p>Some squares contain clue numbers. Each clue tells you the number of black squares in the 3&times;3 region surrounding the clue &ndash; <em>including</em> the clue square itself.</p>
+
+<p>This game is variously known in other locations as: ArtMosaico, Count and Darken, Cuenta Y Sombrea, Fill-a-Pix, Fill-In, Komsu Karala, Magipic, Majipiku, Mosaico, Mosaik, Mozaiek, Nampre Puzzle, Nurie-Puzzle, Oekaki-Pix, Voisimage.</p>
+
+<p>Mosaic was contributed to this collection by Didi Kohen. Colour design by Michal Shomer. The implementation is loosely based on <link href="github.com/mordechaim/Mosaic"/>.</p>
+</section>
+
+<section>
+<title>Mosaic controls</title>
+
+<p>To play Mosaic, click the mouse in a square to change its colour. <mouse>Select</mouse>-clicking an empty square will turn it black, and <mouse>Adjust</mouse>-clicking will turn it white. Keep clicking the same button to cycle through the three possible states for the square.</p>
+
+<p>If you hold down the mouse button and drag, you can colour multiple cells in a single action.</p>
+
+<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <key>Backspace</key> will reset a square to empty.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Mosaic parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Aggressive generation</icon></title>
+
+<p>With this option set, the game generator will try harder to eliminate unnecessary clues on the board. This slows down generation, so it&rsquo;s not recommended for boards larger than, say, 30&times;30.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Known Issues -->
@@ -976,12 +1690,12 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <li><p>The game windows, toolbars and drawing canvases may not be perfectly aligned in EX0&nbsp;EY0 modes.</p></li>
 <li><p>Font antialiasing is poor.</p></li>
 <li><p>Graphics can sometimes render poorly, with artefacts on corners.</p></li>
-<li><p>The games do not have their own icons in the <window>Game List</window> window.</p></li>
-<li><p>There is no documentation for the games! For now, details of how to play the games, and their controls, can be found on Simon&rsquo;s website (see links above).</p></li>
 <li><p>The game windows can not be resized from their defaults.</p></li>
 <li><p>Games can not be saved or loaded.</p></li>
 <li><p>The printing of games is not supported.</p></li>
 </ul>
+
+<p>Before reporting bugs or suggesting new features, it is a good idea to check <link href="https://github.com/steve-fryatt/puzzles/issues" external="true">the project&rsquo;s issues list on GitHub</link> (this will probably need <cite>Iris</cite> or a non-RISC&nbsp;OS browser to work correctly).</p>
 
 <p>The intention is to address many of these items before a full release takes place. The implementation of features such as printing will depend on the level of interest shown in the RISC&nbsp;OS port.</p>
 </section>
