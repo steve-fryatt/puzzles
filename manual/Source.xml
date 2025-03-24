@@ -48,7 +48,7 @@
 <p>I discovered the collection through the Android port, and have also played the GTK version available from Simon&rsquo;s site. Since it is described as &ldquo;portable&rdquo;, I decided that RISC&nbsp;OS needed its own version &ndash; and so here it is.</p>
 
 <callout type="warning">
-<p>This version of <cite>Puzzles</cite> is an early alpha release, intended to demonstrate the current state of the RISC&nbsp;OS project and invite feedback. Whilst playable, it is known to be incomplete in many areas, may contain bugs and may be unstable. See the <link ref="Issues">Known Issues</link> section below for more details.</p>
+<p>This version of <cite>Puzzles</cite> is an early alpha release, intended to demonstrate the current state of the RISC&nbsp;OS project and invite feedback. Whilst playable, it is known to be incomplete in many areas, may contain bugs and may be unstable. See the <ref id="issues">Known Issues</ref> section for more details.</p>
 </callout>
 
 <p>In the introduction to the original manual, Simon wrote:</p>
@@ -1340,8 +1340,7 @@ all.</p>
 
 <p>In the mode <menu>Based on grid only</menu>, the effects of a click will only propagate across vertices that have degree 2 in the underlying grid. For example, in the square grid, the effect will <em>only</em> occur at the four grid corners.</p>
 
-<p>In the mode <menu>Based on grid and game state</menu>, the propagation will
-also take account of edges you&rsquo;ve already excluded from the solution, so that it will do even more work for you.</p>
+<p>In the mode <menu>Based on grid and game state</menu>, the propagation will also take account of edges you&rsquo;ve already excluded from the solution, so that it will do even more work for you.</p>
 </section>
 </chapter>
 
@@ -1350,6 +1349,39 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="inertia">
 <title>Inertia</title>
 
+<section>
+<p>You are a small green ball sitting in a grid full of obstacles. Your aim is to collect all the gems without running into any mines.</p>
+
+<p>You can move the ball in any orthogonal <em>or diagonal</em> direction. Once the ball starts moving, it will continue until something stops it. A wall directly in its path will stop it (but if it is moving diagonally, it will move through a diagonal gap between two other walls without stopping). Also, some of the squares are &lsquo;stops&rsquo;; when the ball moves on to a stop, it will stop moving no matter what direction it was going in. Gems do <em>not</em> stop the ball; it picks them up and keeps on going.</p>
+
+<p>Running into a mine is fatal. Even if you picked up the last gem in the same move which then hit a mine, the game will count you as dead rather than victorious.</p>
+
+<p>This game was originally implemented for Windows by Ben Olmstead<ref id="inertia-note-1"/>, who was kind enough to release his source code on request so that it could be re-implemented for this collection.</p>
+
+<footnote id="inertia-note-1"><p><link href="http://xn13.com/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Inertia controls</title>
+
+<p>You can move the ball in any of the eight directions using the numeric keypad. Alternatively, if you click <mouse>Select</mouse> on the grid, the ball will begin a move in the general direction of where you clicked.</p>
+
+<p>If you use the <menu>Solve</menu> function on this game, the program will compute a path through the grid which collects all the remaining gems and returns to the current position. A hint arrow will appear on the ball indicating the direction in which you should move to begin on this path. If you then move in that direction, the arrow will update to indicate the next direction on the path. You can also press <key>Space</key> to automatically move in the direction of the hint arrow. If you move in a different direction from the one shown by the arrow, arrows will be shown only if the puzzle is still solvable.</p>
+
+<p>All the actions described in <ref id="common-actions" /> are also available. In particular, if you do run into a mine and die, you can use the <menu>Undo</menu> function and resume playing from before the fatal move. The game will keep track of the number of times you have done this.</p>
+</section>
+
+<section>
+<title>Inertia parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Tents -->
@@ -1357,6 +1389,49 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="tents">
 <title>Tents</title>
 
+<section>
+<p>You have a grid of squares, some of which contain trees. Your aim is to place tents in some of the remaining squares, in such a way that the following conditions are met:</p>
+
+<ul>
+<li><p>There are exactly as many tents as trees.</p></li>
+
+<li><p>The tents and trees can be matched up in such a way that each tent is directly adjacent (horizontally or vertically, but not diagonally) to its own tree. However, a tent may be adjacent to other trees as well as its own.</p></li>
+
+<li><p>No two tents are adjacent horizontally, vertically <em>or diagonally</em>.</p></li>
+
+<li><p>The number of tents in each row, and in each column, matches the numbers given round the sides of the grid.</p></li>
+</ul>
+
+<p>This puzzle can be found in several places on the Internet, and was brought to my attention by e-mail. I don&rsquo;t know who I should credit for inventing it.</p>
+</section>
+
+<section>
+<title>Tents controls</title>
+
+<p><mouse>Select</mouse>-clicking in a blank square will place a tent in it. <mouse>Adjust</mouse>-clicking in a blank square will colour it green, indicating that you are sure it <em>isn&rsquo;t</em> a tent. Clicking either button in an occupied square will clear it.</p>
+
+<p>If you <em>drag</em> with <mouse>Adjust</mouse> along a row or column, every blank square in the region you cover will be turned green, and no other squares will be affected. (This is useful for clearing the remainder of a row once you have placed all its tents.)</p>
+
+<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> key over an empty square will place a tent, and pressing the <key>Space</key> bar over an empty square will colour it green; either key will clear an occupied square. Holding <key>Shift</key> and pressing the cursor keys will colour empty squares green. Holding <key>Ctrl</key> and pressing the cursor keys will colour green both empty squares and squares with tents.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Tents parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. More difficult puzzles require more complex deductions, but at present none of the available difficulty levels requires guesswork or backtracking.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Bridges -->
@@ -1364,6 +1439,104 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="bridges">
 <title>Bridges</title>
 
+<section>
+<p>You have a set of islands distributed across the playing area. Each island contains a number. Your aim is to connect the islands together with bridges, in such a way that:</p>
+
+
+<ul>
+<li><p>Bridges run horizontally or vertically.</p></li>
+
+<li><p>The number of bridges terminating at any island is equal to the number written in that island.</p></li>
+
+<li><p>Two bridges may run in parallel between the same two islands, but no more than two may do so.</p></li>
+
+<li><p>No bridge crosses another bridge.</p></li>
+
+<li><p>All the islands are connected together.</p></li>
+</ul>
+
+<p>There are some configurable alternative modes, which involve changing the parallel-bridge limit to something other than 2, and introducing the additional constraint that no sequence of bridges may form a loop from one island back to the same island. The rules stated above are the default ones.</p>
+
+<p>Credit for this puzzle goes to Nikoli<ref id="bridges-note-1"/>.</p>
+
+<p>Bridges was contributed to this collection by James Harvey.</p>
+
+<footnote id="bridges-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/Hashiwokakero/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Bridges controls</title>
+
+<p>To place a bridge between two islands, click the mouse down on one island and drag it towards the other. You do not need to drag all the way to the other island; you only need to move the mouse far enough for the intended bridge direction to be unambiguous. (So you can keep the mouse near the starting island and conveniently throw bridges out from it in many directions.)</p>
+
+<p>Doing this again when a bridge is already present will add another parallel bridge. If there are already as many bridges between the two islands as permitted by the current game rules (ie. two by default), the same dragging action will remove all of them.</p>
+
+<p>If you want to remind yourself that two islands definitely <em>do not</em> have a bridge between them, you can <mouse>Adjust</mouse>-drag between them in the same way to draw a &lsquo;non-bridge&rsquo; marker.</p>
+
+<p>If you think you have finished with an island (ie. you have placed all its bridges and are confident that they are in the right places), you can mark the island as finished by <mouse>Select</mouse>-clicking on it. This will highlight it and all the bridges connected to it, and you will be prevented from accidentally modifying any of those bridges in future. <mouse>Select</mouse>-clicking again on a highlighted island will unmark it and restore your ability to modify it.</p>
+
+<p>You can also use the cursor keys to move around the grid: if possible the cursor will always move orthogonally, otherwise it will move towards the nearest island to the indicated direction. Holding <key>Ctrl</key> and pressing a cursor key will lay a bridge in that direction (if available); <key>Shift</key> and a cursor key will lay a &lsquo;non-bridge&rsquo; marker. Pressing the <key>Return</key> key followed by a cursor key will also lay a bridge in that direction.</p>
+
+<p>You can mark an island as finished by pressing the <key>Space</key> bar or by pressing the <key>Return</key> key twice.</p>
+
+<p>By pressing a number key, you can jump to the nearest island with that number. Letters <key>A</key> through <key>F</key> count as 10 through 15 and <key>0</key> as 16.</p>
+
+<p>The <key>G</key> key will draw a grey line between each pair of islands that could be connected with a bridge or non-bridge but are currently not.</p>
+
+<p>Violations of the puzzle rules will be marked in red:</p>
+
+<ul>
+<li><p>An island with too many bridges will be highlighted in red.</p></li>
+
+<li><p>An island with too few bridges will be highlighted in red if it is definitely an error (as opposed to merely not being finished yet): if adding enough bridges would involve having to cross another bridge or remove a non-bridge marker, or if the island has been highlighted as complete.</p></li>
+
+<li><p>A group of islands and bridges may be highlighted in red if it is a closed subset of the puzzle with no way to connect it to the rest of the islands. For example, if you directly connect two 1s together with a bridge and they are not the only two islands on the grid, they will light up red to indicate that such a group cannot be contained in any valid solution.</p></li>
+
+<li><p>If you have selected the (non-default) option to disallow loops in the solution, a group of bridges which forms a loop will be highlighted.</p></li>
+</ul>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Bridges parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Difficulty level of puzzle.</p></li>
+
+<li><title><icon>Allow loops</icon></title>
+
+<p>This is set by default. If cleared, puzzles will be generated in such a way that they are always soluble without creating a loop, and solutions which do involve a loop will be disallowed.</p></li>
+
+<li><title><icon>Max. bridges per direction_</icon></title>
+
+<p>Maximum number of bridges in any particular direction. The default is 2, but you can change it to 1, 3 or 4. In general, fewer is easier.</p></li>
+
+<li><title><icon>%age of island squares</icon></title>
+
+<p>Gives a rough percentage of islands the generator will try and lay before finishing the puzzle. Certain layouts will not manage to lay enough islands; this is an upper bound.</p></li>
+
+<li><title><icon>Expansion factor (%age)</icon></title>
+
+<p>The grid generator works by picking an existing island at random (after first creating an initial island somewhere). It then decides on a direction (at random), and then works out how far it could extend before creating another island. This parameter determines how likely it is to extend as far as it can, rather than choosing somewhere closer.</p>
+
+<p>High expansion factors usually mean easier puzzles with fewer possible islands; low expansion factors can create lots of tightly-packed islands.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Bridges user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether possible bridge locations are shown. Unlike the <key>G</key> key, this will persist between games.</p>
+</section>
 </chapter>
 
 <!-- Unequal -->
@@ -1371,6 +1544,75 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="unequal">
 <title>Unequal</title>
 
+<section>
+<p>You have a square grid; each square may contain a digit from 1 to the size of the grid, and some squares have clue signs between them. Your aim is to fully populate the grid with numbers such that:</p>
+
+<ul>
+<li><p>Each row contains only one occurrence of each digit,</p></li>
+
+<li><p>Each column contains only one occurrence of each digit, and</p></li>
+
+<li><p>All the clue signs are satisfied.</p></li>
+</ul>
+
+<p>There are two modes for this game, &lsquo;Unequal&rsquo; and &lsquo;Adjacent&rsquo;.</p>
+
+<p>In &lsquo;Unequal&rsquo; mode, the clue signs are greater-than symbols indicating one square&rsquo;s value is greater than its neighbour&rsquo;s. In this mode not all clues may be visible, particularly at higher difficulty levels.</p>
+
+<p>In &lsquo;Adjacent&rsquo; mode, the clue signs are bars indicating one square&rsquo;s value is numerically adjacent (ie. one higher or one lower) than its neighbour. In this mode all clues are always visible: absence of a bar thus means that a square&rsquo;s value is definitely not numerically adjacent to that neighbour&rsquo;s.</p>
+
+<p>In &lsquo;Trivial&rsquo; difficulty level (available via the <menu>Type</menu> &msep; <menu>Custom</menu> game type selector), there are no greater-than signs in &lsquo;Unequal&rsquo; mode; the puzzle is to solve the Latin square only.</p>
+
+<p>At the time of writing, the &lsquo;Unequal&rsquo; mode of this puzzle is
+appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
+
+<p>Unequal was contributed to this collection by James Harvey.</p>
+</section>
+
+<section>
+<title>Unequal controls</title>
+
+<p>Unequal shares much of its control system with <ref id="solo">Solo</ref>.</p>
+
+<p>To play Unequal, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
+
+<p>The game pays no attention to pencil marks, so exactly what you use them for is up to you: you can use them as reminders that a particular square needs to be re-examined once you know more about a particular number, or you can use them as lists of the possible numbers in a given square, or anything else you feel like.</p>
+
+<p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
+
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key>> will also erase pencil marks.</p>
+
+<p>As for Solo, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. You can also use the <key>M</key> key to auto-fill every numeric hint, ready for removal as required, or the <key>H</key> key to do the same but also to remove all obvious hints.</p>
+
+<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <key>Return</key> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the <key>Space</key> bar will clear a filled square.</p>
+
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <key>Ctrl</key> or <key>Shift</key> and pressing an arrow key likewise marks any clue adjacent to the cursor in the given direction.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Unequal parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+
+<li><title><icon>Mode</icon></title>
+
+<p>Mode of the puzzle (<menu>Unequal</menu> or <menu>Adjacent</menu>)</p></li>
+
+<li><title><icon>Size (s*s)</icon></title>
+
+<p>Size of grid.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. At <menu>Trivial</menu> level, there are no greater-than signs; the puzzle is to solve the Latin square only. At <menu>Recursive</menu> level (only available via the <menu>Type</menu> &msep; <menu>Custom...</menu> game type selector) backtracking will be required, but the solution should still be unique. The levels in between require increasingly complex reasoning to avoid having to backtrack.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Galaxies -->
@@ -1378,6 +1620,45 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="galaxies">
 <title>Galaxies</title>
 
+<section>
+<p>You have a rectangular grid containing a number of dots. Your aim is to partition the rectangle into connected regions of squares, in such a way that every region is 180-degree rotationally symmetric, and contains exactly one dot which is located at its centre of symmetry.</p>
+
+<p>To enter your solution, you draw lines along the grid edges to mark the boundaries of the regions. The puzzle is complete when the marked lines on the grid are precisely those that separate two squares belonging to different regions.</p>
+
+<p>This puzzle was invented by Nikoli<ref id="galaxies-note-1"/>, under the name &lsquo;Tentai Show&rsquo;; its name is commonly translated into English as &lsquo;Spiral Galaxies&rsquo;.</p>
+
+<p>Galaxies was contributed to this collection by James Harvey.</p>
+
+<footnote id="galaxies-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/tentai_show/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Galaxies controls</title>
+
+<p><mouse>Select</mouse>-click on any grid line to draw an edge if there isn&rsquo;t one already, or to remove one if there is. When you create a valid region (one which is closed, contains exactly one dot, is 180-degree symmetric about that dot, and contains no extraneous edges between two of its own squares), it will be highlighted automatically; so your aim is to have the whole grid highlighted in that way.</p>
+
+<p>During solving, you might know that a particular grid square belongs to a specific dot, but not be sure of where the edges go and which other squares are connected to the dot. In order to mark this so you don&rsquo;t forget, you can <mouse>Adjust</mouse>-drag on the dot, which will create an arrow marker pointing at the dot. Drop that in a square of your choice and it will remind you which dot it&rsquo;s associated with. You can also <mouse>Adjust</mouse>-drag existing arrows to pick them up and move them, or destroy them by dropping them off the edge of the grid. (Also, if you&rsquo;re not sure which dot an arrow is pointing at, you can pick it up and move it around to make it clearer. It will swivel constantly as you drag it, to stay pointed at its parent dot.)</p>
+
+<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <key>Return</key> key when over a grid line will draw or clear its edge, as above. Pressing the <key>Return</key> key when over a dot will pick up an arrow, to be dropped the next time the return key is pressed; this can also be used to move existing arrows around, removing them by dropping them on a dot or another arrow.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Galaxies parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. More difficult puzzles require more complex deductions, and the <menu>Unreasonable</menu> difficulty level may require backtracking.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Filling -->
@@ -1385,6 +1666,35 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="filling">
 <title>Filling</title>
 
+<section>
+<p>You have a grid of squares, some of which contain digits, and the rest of which are empty. Your job is to fill in digits in the empty squares, in such a way that each connected region of squares all containing the same digit has an area equal to that digit.</p>
+
+<p>(&lsquo;Connected region&rsquo;, for the purposes of this game, does not count diagonally separated squares as adjacent.)</p>
+
+<p>For example, it follows that no square can contain a zero, and that two adjacent squares can not both contain a one. No region has an area greater than 9 (because then its area would not be a single digit).</p>
+
+<p>Credit for this puzzle goes to Nikoli<ref id="filling-note-1"/>.</p>
+
+<p>Filling was contributed to this collection by Jonas Koelker.</p>
+
+<footnote id="filling-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/fillomino/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Filling controls</title>
+
+<p>To play Filling, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. By dragging the mouse, you can select multiple squares to fill with a single keypress. If you make a mistake, click the mouse in the incorrect square and press <key>0</key>, <key>Space</key>, <key>Backspace</key> or <key>Enter</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+
+<p>You can also move around the grid with the cursor keys; typing a digit will fill the square containing the cursor with that number; typing <key>0</key> will clear it. You can also select multiple squares for numbering or clearing with the <key>Return</key> and arrow keys, before typing a digit to fill or clear the highlighted squares (as above). The <key>Space</key> bar adds and removes single squares to and from the selection. <key>Backspace</key> and <key>Escape</key> remove all squares from the selection.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Filling parameters</title>
+
+<p>Filling allows you to configure the number of rows and columns of the grid, through <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+</section>
 </chapter>
 
 <!-- Keen -->
@@ -1392,6 +1702,76 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="keen">
 <title>Keen</title>
 
+<section>
+<p>You have a square grid; each square may contain a digit from 1 to the size of the grid. The grid is divided into blocks of varying shape and size, with arithmetic clues written in them. Your aim is to fully populate the grid with digits such that:</p>
+
+<ul>
+<li><p>Each row contains only one occurrence of each digit</p></li>
+
+<li><p>Each column contains only one occurrence of each digit</p></li>
+
+<li><p>The digits in each block can be combined to form the number stated in the clue, using the arithmetic operation given in the clue. That is:</p>
+
+<ul>
+<li><p>An addition clue means that the sum of the digits in the block must be the given number. For example, &rsquo;15+&rsquo; means the contents of the block adds up to fifteen.</p></li>
+
+<li><p>A multiplication clue (eg. &lsquo;60*&rsquo;), similarly, means that the product of the digits in the block must be the given number.</p></li>
+
+<li><p>A subtraction clue will always be written in a block of size two, and it means that one of the digits in the block is greater than the other by the given amount. For example, &lsquo;2&minus;&rsquo; means that one of the digits in the block is 2 more than the other, or equivalently that one digit minus the other one is 2. The two digits could be either way round, though.</p></li>
+
+<li><p>A division clue (eg. &lsquo;3/&rsquo;), similarly, is always in a block of size two and means that one digit divided by the other is equal to the given amount.</p></li>
+</ul>
+
+<p>Note that a block may contain the same digit more than once (provided the identical ones are not in the same row and column). This rule is precisely the opposite of the rule in <ref id="solo">Solo</ref>&rsquo;s &lsquo;Killer&rsquo; mode (see <ref id="solo"/>).</p></li>
+</ul>
+
+<p>This puzzle appears in the <cite>Times</cite> under the name &lsquo;KenKen&rsquo;.</p>
+</section>
+
+<section>
+<title>Keen controls</title>
+
+<p>Keen shares much of its control system with <ref id="solo">Solo</ref> (and <ref id="unequal">Unequal</ref>).</p>
+
+<p>To play Keen, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
+
+<p>The game pays no attention to pencil marks, so exactly what you use them for is up to you: you can use them as reminders that a particular square needs to be re-examined once you know more about a particular number, or you can use them as lists of the possible numbers in a given square, or anything else you feel like.</p>
+
+<p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
+
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing space will also erase pencil marks.</p>
+
+<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. Use the cursor keys to move a highlight around the grid, and type a digit to enter it in
+the highlighted square. Pressing <key>Return</key> toggles the highlight into a
+mode in which you can enter or remove pencil marks.</p>
+
+<p>Pressing <key>M</key> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Keen parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Grid size</icon></title>
+
+<p>Specifies the size of the grid. Lower limit is 3; upper limit is 9 (because the user interface would become more difficult with &lsquo;digits&rsquo; bigger than 9!).</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. At <menu>Unreasonable</menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
+
+<li><title><icon>Multiplication only</icon></title>
+
+<p>If this is enabled, all boxes will be multiplication boxes. With
+this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Towers -->
@@ -1399,6 +1779,70 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="towers">
 <title>Towers</title>
 
+<section>
+
+<p>You have a square grid. On each square of the grid you can build a tower, with its height ranging from 1 to the size of the grid. Around the edge of the grid are some numeric clues.</p>
+
+<p>Your task is to build a tower on every square, in such a way that:</p>
+
+<ul>
+<li><p>Each row contains every possible height of tower once</p></li>
+
+<li><p>Each column contains every possible height of tower once</p></li>
+
+<li><p>Each numeric clue describes the number of towers that can be seen if you look into the square from that direction, assuming that shorter towers are hidden behind taller ones. For example, in a 5&times;5 grid, a clue marked &lsquo;5&rsquo; indicates that the five tower heights must appear in increasing order (otherwise you would not be able to see all five towers), whereas a clue marked &lsquo;1&rsquo; indicates that the tallest tower (the one marked 5) must come first.</p></li>
+</ul>
+
+<p>In harder or larger puzzles, some towers will be specified for you as well as the clues round the edge, and some edge clues may be missing.</p>
+
+<p>This puzzle appears on the web under various names, particularly &lsquo;Skyscrapers&rsquo;, but I don&rsquo;t know who first invented it.</p>
+</section>
+
+<section>
+<title>Towers controls</title>
+
+<p>Towers shares much of its control system with <ref id="solo">Solo</ref>, <ref id="unequal">Unequal</ref> and <ref id="keen">Keen</ref>.</p>
+
+<p>To play Towers, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square with a tower of the given height. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. A square containing a tower cannot also contain pencil marks.</p>
+
+<p>The game pays no attention to pencil marks, so exactly what you use them for is up to you: you can use them as reminders that a particular square needs to be re-examined once you know more about a particular number, or you can use them as lists of the possible numbers in a given square, or anything else you feel like.</p>
+
+<p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
+
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+
+<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. Use the cursor keys to move a highlight around the grid, and type a digit to enter it in the highlighted square. Pressing <key>Return</key> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
+
+<p>Pressing <key>M</key> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
+
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <key>Ctrl</key> or <key>Shift</key> and pressing an arrow key likewise marks any clue in the given direction.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Towers parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Grid size</icon></title>
+
+<p>Specifies the size of the grid. Lower limit is 3; upper limit is 9 (because the user interface would become more difficult with &lsquo;digits&rsquo; bigger than 9!).</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. At <menu>Unreasonable</menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Towers user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the game display. If you don&rsquo;t like the three-dimensional mode, selecting <menu>2D</menu> will switch to a simpler display style in which towers are shown by just writing their height in the square.</p>
+</section>
 </chapter>
 
 <!-- Singles -->
@@ -1406,6 +1850,56 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="singles">
 <title>Singles</title>
 
+<section>
+<p>You have a grid of white squares, all of which contain numbers. Your task is to colour some of the squares black (removing the number) so as to satisfy all of the following conditions:</p>
+
+<ul>
+<li><p>No number occurs more than once in any row or column.</p></li>
+
+<li><p>No black square is horizontally or vertically adjacent to any other black square.</p></li>
+
+<li><p>The remaining white squares must all form one contiguous region (connected by edges, not just touching at corners).</p></li>
+</ul>
+
+<p>Credit for this puzzle goes to Nikoli<ref id="singles-note-1"/> who call it Hitori.</p>
+
+<p>Singles was contributed to this collection by James Harvey.</p>
+
+<footnote id="singles-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/hitori/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Singles controls</title>
+
+<p><mouse>Select</mouse>-clicking on an empty square will colour it black; <mouse>Select</mouse>-clicking again will restore the number. <mouse>Adjust</mouse>-clicking will add a circle (useful for indicating that a cell is definitely not black). Clicking outside the grid will toggle whether black squares completely hide the numbers on them, or display them in dark grey.</p>
+
+<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn a square black or add a circle respectively, and pressing the key again will restore the number or
+remove the circle.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Singles parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Singles user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether numbers on black squares are visible. Unlike clicking outside the grid, this will persist between games.</p>
+</section>
 </chapter>
 
 <!-- Magnets -->
@@ -1413,6 +1907,54 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="magnets">
 <title>Magnets</title>
 
+<section>
+
+<p>A rectangular grid has been filled with a mixture of magnets (that is, dominoes with one positive end and one negative end) and blank dominoes (that is, dominoes with two neutral poles). These dominoes are initially only seen in silhouette. Around the grid are placed a number of clues indicating the number of positive and negative poles contained in certain columns and rows.</p>
+
+<p>Your aim is to correctly place the magnets and blank dominoes such that all the clues are satisfied, with the additional constraint that no two similar magnetic poles may be orthogonally adjacent (since they repel). Neutral poles do not repel, and can be adjacent to any other pole.</p>
+
+<p>Credit for this puzzle goes to Janko<ref id="magnets-note-1"/>.</p>
+
+<p>Magnets was contributed to this collection by James Harvey.</p>
+
+<footnote id="magnets-note-1"><p><link href="http://www.janko.at/Raetsel/Magnete/index.htm" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Magnets controls</title>
+
+<p><mouse>Select</mouse>-clicking on an empty square places a magnet at that position with the positive pole on the square and the negative pole on the other half of the magnet; <mouse>Select</mouse>-clicking again reverses the polarity, and a third click removes the magnet.</p>
+
+<p><mouse>Adjust</mouse>-clicking on an empty square places a blank domino there. <mouse>Adjust</mouse>-clicking again places two question marks on the domino, signifying &lsquo;this cannot be blank&rsquo; (which can be useful to note deductions while solving), and <mouse>Adjust</mouse>-clicking again empties the domino.</p>
+
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked.</p>
+
+<p>You can also use the cursor keys to move a cursor around the grid. Pressing the <key>Return</key> key will lay a domino with a positive pole at that position; pressing again reverses the polarity and then removes the domino, as with <mouse>Select</mouse>-clicking. Using the <key>Space</key> bar allows placement of blank dominoes and cannot-be-blank hints, as for <mouse>Adjust</mouse>-clicking.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Magnets parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares. There will be half <icon>Width</icon> &times; <icon>Height</icon> dominoes in the grid: if this number is odd then one square will be blank.</p>
+
+<p>(Grids with at least one odd dimension tend to be easier to solve.)</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle. At <menu>Tricky</menu> level, you are required to make more deductions about empty dominoes and row/column counts.</p></li>
+
+<li><title><icon>Strip clues</icon></title>
+
+<p>If true, some of the clues around the grid are removed at generation time, making the puzzle more difficult.</p></li>
+</dl>
+</section>
 </chapter>
 
 <!-- Signpost -->
@@ -1420,6 +1962,57 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="signpost">
 <title>Signpost</title>
 
+<section>
+<p>You have a grid of squares; each square (except the last one) contains an arrow, and some squares also contain numbers. Your job is to connect the squares to form a continuous list of numbers starting at 1 and linked in the direction of the arrows &ndash; so the arrow inside the square with the number 1 will point to the square containing the number 2, which will point to the square containing the number 3, etc. Each square can be any distance away from the previous one, as long as it is somewhere in the direction of the arrow.</p>
+
+<p>By convention the first and last numbers are shown; one or more interim numbers may also appear at the beginning.</p>
+
+<p>Credit for this puzzle goes to Janko<ref id="signpost-note-1"/>, who call it &lsquo;Pfeilpfad&rsquo; (&lsquo;arrow path&rsquo;).</p>
+
+<p>Signpost was contributed to this collection by James Harvey.</p>
+
+<footnote id="signpost-note-1"><p><link href="http://janko.at/Raetsel/Pfeilpfad/index.htm" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Signpost controls</title>
+
+<p>To play Signpost, you connect squares together by dragging from one square to another, indicating that they are adjacent in the sequence. Drag with <mouse>Select</mouse> from a square to its successor, or with <mouse>Adjust</mouse> from a square to its predecessor.</p>
+
+<p>If you connect together two squares in this way and one of them has a number in it, the appropriate number will appear in the other square. If you connect two non-numbered squares, they will be assigned temporary algebraic labels: on the first occasion, they will be labelled &lsquo;a&rsquo; and &lsquo;a+1&rsquo;, and then &lsquo;b&rsquo; and &lsquo;b+1&rsquo;, and so on. Connecting more squares on to the ends of such a chain will cause them all to be labelled with the same letter.</p>
+
+<p>When you <mouse>Select</mouse>-click or <mouse>Adjust</mouse>-click in a square, the legal squares to connect it to will be shown.</p>
+
+<p>The arrow in each square starts off black, and goes grey once you connect the square to its successor. Also, each square which needs a predecessor has a small dot in the bottom left corner, which vanishes once you link a square to it. So your aim is always to connect a square with a black arrow to a square with a dot.</p>
+
+<p>To remove any links for a particular square (both incoming and outgoing), <mouse>Select</mouse>-drag it off the grid. To remove a whole chain, <mouse>Adjust</mouse>-drag any square in the chain off the grid.</p>
+
+<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <key>Return</key> key when over a square starts a link operation, and pressing the <key>Return</key> key again over a square will finish the link, if allowable. Pressing the <key>Space</key> bar over a square will show the other squares pointing to it, and allow you to form a backward link, and pressing the <key>Space</key> bar again cancels this.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Signpost parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Force start/end to corners</icon></title>
+
+<p>If true, the start and end squares are always placed in opposite corners (the start at the top left, and the end at the bottom right). If false the start and end squares are placed randomly (although always both shown).</p></li>
+</dl>
+</section>
+
+<section>
+<title>Signpost user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the victory effect.</p>
+</section>
 </chapter>
 
 <!-- Range -->
@@ -1427,6 +2020,55 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="range">
 <title>Range</title>
 
+<section>
+<p>You have a grid of squares; some squares contain numbers. Your job is to colour some of the squares black, such that several criteria are satisfied:</p>
+
+<ul>
+<li><p>no square with a number is coloured black.</p></li>
+
+<li><p>no two black squares are adjacent (horizontally or vertically).</p></li>
+
+<li><p>for any two white squares, there is a path between them using only white squares.</p></li>
+
+<li><p>for each square with a number, that number denotes the total number of white squares reachable from that square going in a straight line in any horizontal or vertical direction until hitting a wall or a black square; the square with the number is included in the total (once).</p></li>
+</ul>
+
+<p>For instance, a square containing the number one must have four black squares as its neighbours by the last criterion; but then it&rsquo;s impossible for it to be connected to any outside white square, which violates the second to last criterion. So no square will contain the number one.</p>
+
+<p>Credit for this puzzle goes to Nikoli, who have variously called it &lsquo;Kurodoko&rsquo;, &lsquo;Kuromasu&rsquo; or &lsquo;Where is Black Cells&rsquo;<ref id="range-note-1"/>.</p>
+
+<p>Range was contributed to this collection by Jonas Koelker.</p>
+
+<footnote id="range-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/kurodoko/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Range controls</title>
+
+<p>Click with <mouse>Select</mouse> to paint a square black, or with <mouse>Adjust</mouse> to mark a square with a dot to indicate that you are sure it should <em>not</em> be painted black. Repeated clicking with either button will cycle the square through the three possible states (filled, dotted or empty) in opposite directions.</p>
+
+<p>You can also use the cursor keys to move around the grid squares. Pressing <key>Return</key> does the same as clicking with <mouse>Select</mouse>, while pressing <key>Space</key> does the same as a right button click. Moving with the cursor keys while holding <key>Shift</key> will place dots in all squares that are moved through.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Range parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Range user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
+</section>
 </chapter>
 
 <!-- Pearl -->
@@ -1434,6 +2076,67 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="pearl">
 <title>Pearl</title>
 
+<section>
+<p>You have a grid of squares. Your job is to draw lines between the centres of horizontally or vertically adjacent squares, so that the lines form a single closed loop. In the resulting grid, some of the squares that the loop passes through will contain corners, and some will be straight horizontal or vertical lines. (And some squares can be completely empty &ndash; the loop doesn&rsquo;t have to pass through every square.)</p>
+
+<p>Some of the squares contain black and white circles, which are clues that the loop must satisfy.</p>
+
+<p>A black circle in a square indicates that that square is a corner, but neither of the squares adjacent to it in the loop is also a corner.</p>
+
+<p>A white circle indicates that the square is a straight edge, but <em>at least one</em> of the squares adjacent to it in the loop is a corner.</p>
+
+<p>(In both cases, the clue only constrains the two squares adjacent <em>in the loop</em>, that is, the squares that the loop passes into after leaving the clue square. The squares that are only adjacent <em>in the grid</em> are not constrained.)</p>
+
+<p>Credit for this puzzle goes to Nikoli, who call it &lsquo;Masyu&rsquo;.<ref id="pearl-note-1"/></p>
+
+<p>Thanks to James Harvey for assistance with the implementation.</p>
+
+<footnote id="pearl-note-1"><p><link href="https://www.nikoli.co.jp/en/puzzles/masyu/" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Pearl controls</title>
+
+<p>Click with <mouse>Select</mouse> on a grid edge to draw a segment of the loop through that edge, or to remove a segment once it is drawn.</p>
+
+<p>Drag with <mouse>Select</mouse> through a series of squares to draw more than one segment of the loop in one go. Alternatively, drag over an existing part of the loop to undraw it, or to undraw part of it and then go in a different direction.</p>
+
+<p>Click with <mouse>Adjust</mouse> on a grid edge to mark it with a cross, indicating that you are sure the loop does not go through that edge. (For instance, if you have decided which of the squares adjacent to a white clue has to be a corner, but don&rsquo;t yet know which way the corner turns, you might mark the one way it <em>can&rsquo;t</em> go with a cross.)</p>
+
+<p>Alternatively, use the cursor keys to move the cursor. Use the <key>Enter</key> key to begin and end keyboard &lsquo;drag&rsquo; operations. Use the <key>Space</key>, <key>Escape</key> or <key>Backspace</key> keys to cancel the drag. Or, hold <key>Ctrl</key> while dragging with the cursor keys to toggle segments as you move between squares.</p>
+
+<p>Pressing <key>Ctrl</key>-<key>Shift</key>-arrowkey or <key>Shift</key>-arrowkey simulates a left or <mouse>Adjust</mouse> click, respectively, on the edge in the direction of the key.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Pearl parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle.</p></li>
+
+<li><title><icon>Allow unsoluble_</icon></title>
+
+<p>If this is set, then the game will be generated in the simplest way: every clue square that can possibly be provided will be shown, and the generator will not check whether the puzzle can be uniquely solved.</p>
+
+<p>This speeds up game generation, and allows much larger grids to be played. At least one possible solution will still always exist, but there&rsquo;s no guarantee that it will be unique, or that it will be possible to deduce it step by step.</p></li>
+</dl>
+</section>
+
+<section>
+<title>Pearl user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the game display. <menu>Traditional</menu> is the default mode, in which the loop runs between centres of grid squares, and each clue occupies a square. <menu>Loopy-style</menu> is an alternative mode that looks more like <ref id="loopy">Loopy</ref>, in which the loop runs between grid <em>vertices</em>, and the clues also occupy vertices.</p>
+</section>
 </chapter>
 
 <!-- Undead -->
@@ -1441,6 +2144,65 @@ also take account of edges you&rsquo;ve already excluded from the solution, so t
 <chapter id="undead">
 <title>Undead</title>
 
+<section>
+<p>You are given a grid of squares, some of which contain diagonal mirrors. Every square which is not a mirror must be filled with one of three types of undead monster: a ghost, a vampire, or a zombie.</p>
+
+<p>Vampires can be seen directly, but are invisible when reflected in mirrors. Ghosts are the opposite way round: they can be seen in mirrors, but are invisible when looked at directly. Zombies are visible by any means.</p>
+
+<p>You are also told the total number of each type of monster in the grid. Also around the edge of the grid are written numbers, which indicate how many monsters can be seen if you look into the grid along a row or column starting from that position. (The diagonal mirrors are reflective on both sides. If your reflected line of sight crosses the same monster more than once, the number will count it each time it is visible, not just once.)</p>
+
+<p>This puzzle type was invented by David Millar, under the name &lsquo;Haunted Mirror Maze&rsquo;<ref id="undead-note-1"/> (see the footnote for more details).</p>
+
+<p>Undead was contributed to this collection by Steffen Bauer.</p>
+
+<footnote id="undead-note-1"><p><link href="http://www.janko.at/Raetsel/Spukschloss/index.htm" external="true"/></p></footnote>
+</section>
+
+<section>
+<title>Undead controls</title>
+
+<p>Undead has a similar control system to <ref id="solo">Solo</ref>, <ref id="unequal">Unequal</ref> and <ref id="keen">Keen</ref>.</p>
+
+<p>To play Undead, click the mouse in any empty square and then type a letter or number on the keyboard indicating the type of monster: <key>G</key> or <key>1</key> for a ghost, <key>V</key> or <key>2</key> for a vampire, or <key>Z</key> or <key>3</key> for a zombie. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the Undo feature).</p>
+
+<p>If you <mouse>Adjust</mouse>-click in a square and then type a letter or number, the corresponding monster will be shown in reduced size in that square, as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple monsters in the same square. A square containing a full-size monster cannot also contain pencil marks.</p>
+
+<p>The game pays no attention to pencil marks, so exactly what you use them for is up to you: you can use them as reminders that a particular square needs to be re-examined once you know more about a particular monster, or you can use them as lists of the possible monster in a given square, or anything else you feel like.</p>
+
+<p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same letter or number again.</p>
+
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a monster letter, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+
+<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the letter keys to place monsters or pencil marks. Use the cursor keys to move a highlight around the grid, and type a monster letter or number to enter it in the highlighted square. Pressing <key>Return</key> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
+
+<p>If you prefer plain letters of the alphabet to cute monster pictures, you can press <key>A</key> to toggle between showing the monsters as monsters or showing them as letters.</p>
+
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked.</p>
+
+<p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
+</section>
+
+<section>
+<title>Undead parameters</title>
+
+<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+
+<dl>
+<li><title><icon>Width</icon>, <icon>Height</icon></title>
+
+<p>Size of grid in squares.</p></li>
+
+<li><title><icon>Difficulty</icon></title>
+
+<p>Controls the difficulty of the generated puzzle</p></li>
+</dl>
+</section>
+
+<section>
+<title>Undead user preferences</title>
+
+<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether Undead uses letters or pictures to represent monsters.</p>
+</section>
 </chapter>
 
 <!-- Unruly -->
