@@ -51,16 +51,18 @@
 <p>This version of <cite>Puzzles</cite> is an early alpha release, intended to demonstrate the current state of the RISC&nbsp;OS project and invite feedback. Whilst playable, it is known to be incomplete in many areas, may contain bugs and may be unstable. See the <ref id="issues">Known Issues</ref> section for more details.</p>
 </callout>
 
-<p>In the introduction to the original manual, Simon wrote:</p>
+<p>In his introduction to the manual, Simon wrote:</p>
 
+<blockquote>
 <p>&ldquo;I wrote this collection because I thought there should be more small desktop toys available: little games you can pop up in a window and play for two or three minutes while you take a break from whatever else you were doing. And I was also annoyed that every time I found a good game on (say) Unix, it wasn&rsquo;t available the next time I was sitting at a Windows machine, or vice versa; so I arranged that everything in my personal puzzle collection will happily run on both, and have more recently done a port to Mac&nbsp;OS&nbsp;X as well. When I find (or perhaps invent) further puzzle games that I like, they&rsquo;ll be added to this collection and will immediately be available on
 both platforms. And if anyone feels like writing any other front ends &ndash; PocketPC, Mac&nbsp;OS pre-10, or whatever it might be &ndash; then all the games in this framework will immediately become available on another platform as well.</p>
 
 <p>&ldquo;The actual games in this collection were mostly not my invention; they are re-implementations of existing game concepts within my portable puzzle framework. I do not claim credit, in general, for inventing the rules of any of these puzzles. (I don&rsquo;t even claim authorship of all the code; some of the puzzles have been submitted by other authors.)</p>
 
 <p>&ldquo;This collection is distributed under the MIT licence. This means that you can do pretty much anything you like with the game binaries or the code, except pretending you wrote them yourself, or suing me if anything goes wrong.&rdquo;</p>
+</blockquote>
 
-<p>The rest of this manual is based very heavily on the original by Simon and his contributors, with small tweaks where necessary to make the content match the RISC&nbsp;OS experience. And while the licence of the RISC&nbsp;OS port is different (due to the libraries used to port it), the spirit of the puzzles is the same.</p>
+<p>The rest of this RISC&nbsp;OS manual is based very heavily on the original by Simon and his contributors, with small tweaks where necessary to make the content match the RISC&nbsp;OS experience. And while the licence of the RISC&nbsp;OS port is different (due to the libraries used to port it), the spirit of the puzzles is the same.</p>
 </section>
 
 <section>
@@ -1021,7 +1023,7 @@ emerge. This includes beams that meet a ball on the first rank of the arena.</p>
 
 <p>Here is a diagram showing how the positions of balls can create each of the beam behaviours shown above:</p>
 
-<code> 1RHR---- 
+<code> 1RHR----
 |..O.O...|
 2........3
 |........|
@@ -1036,7 +1038,7 @@ H........|
 
 <p>Note that any layout with more than 4 balls may have a non-unique solution. The following diagram illustrates this; if you know the board contains 5 balls, it is impossible to determine where the fifth ball is (possible positions marked with an x):</p>
 
-<code> -------- 
+<code> --------
 |........|
 |........|
 |..O..O..|
