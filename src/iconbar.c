@@ -49,6 +49,7 @@
 #include "iconbar.h"
 
 #include "frontend.h"
+#include "help.h"
 #include "index_window.h"
 #include "main.h"
 
@@ -158,7 +159,7 @@ static void iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *se
 
 	switch(selection->items[0]) {
 	case ICONBAR_MENU_HELP:
-		os_cli("%Filer_Run <Puzzles$Dir>.!Help");
+		help_launch(NULL);
 		break;
 
 	case ICONBAR_MENU_QUIT:

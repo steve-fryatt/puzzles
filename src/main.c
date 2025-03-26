@@ -60,6 +60,7 @@
 #include "main.h"
 
 #include "frontend.h"
+#include "help.h"
 #include "index_window.h"
 #include "game_window.h"
 #include "game_window_backend_menu.h"
@@ -220,6 +221,7 @@ static void main_initialise(void)
 
 	/* Initialise the individual modules. */
 
+	help_initialise(resources);
 	ihelp_initialise();
 	dataxfer_initialise(main_task_handle, NULL);
 	iconbar_initialise();

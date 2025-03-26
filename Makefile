@@ -49,6 +49,7 @@ OBJS =  blitter.o			\
 	game_config.o			\
 	game_window.o			\
 	game_window_backend_menu.o	\
+	help.o				\
 	iconbar.o			\
 	index_window.o			\
 	main.o				\
