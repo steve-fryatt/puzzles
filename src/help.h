@@ -45,7 +45,7 @@ void help_initialise(char *resources);
  *			top of the document.
  */
 
-void help_launch(char *tag);
+void help_launch(const char *tag);
 
 #endif
 

@@ -50,6 +50,7 @@ BadResource:Failed to locate suitable %0 file.
 BadTemplate:Window template '%0' not found.
 MissingIcon:Icon definition not found in template '%0'.
 NoSprites:The application sprites file could not be opened.
+NoHelp:Unable to find a suitable Help file to display.
 
 SpriteBadArea:We can only work with sprite areas containing single sprites.
 SpriteNoSpaceForPalette:There isn't enough space for the palette.
@@ -134,9 +135,10 @@ Help.GameMenu.02:\Sstart a new game.
 Help.GameMenu.03:\Sread or supply the games specific unique ID.
 Help.GameMenu.04:\Sread or supply the game's random seed.
 Help.GameMenu.05:\Sshow the solution to the current game.
-Help.GameMenu.06:\Sundo the most recent move in the current game.
-Help.GameMenu.07:\Sredo the most recent move to have been undone in the current game.
-Help.GameMenu.08:\Sconfigure the game options.
+Help.GameMenu.06:\Sread the online manual for the game.
+Help.GameMenu.07:\Sundo the most recent move in the current game.
+Help.GameMenu.08:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.09:\Sconfigure the game options.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.

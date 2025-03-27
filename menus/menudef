@@ -61,7 +61,8 @@ menu(GameWindowMenu, "")
 	item("Random seed...") {
 		dotted;
 	}
-	item("Solve") {
+	item("Solve");
+	item("Help...") {
 		dotted;
 	}
 	item("Undo    F8");

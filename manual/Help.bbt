@@ -1,6 +1,6 @@
 REM >!Help
 REM
-REM Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+REM Copyright 2024-2025, Stephen Fryatt (info@stevefryatt.org.uk)
 REM
 REM This file is part of Puzzles:
 REM
@@ -29,6 +29,7 @@ ON ERROR PRINT REPORT$ + " at line " + STR$(ERL) : END
 REM Change this direcrtory and the names of the target files and variables as required.
 
 StrongHelp$ = ""
+HtmlHelp$ = "HelpHTML"
 TextHelp$ = "HelpText"
 ResourceDir$ = "<Puzzles$Dir>.Resources"
 HelpTextVar$ = "Puzzles$HelpText"
@@ -77,9 +78,10 @@ REM Add in the fallback.
 
 IF FallbackDir$ <> "" THEN folders$ += FallbackDir$ ELSE folders$ += "UK"
 
-REM Scan through the folders until we've found the two files that we need.
+REM Scan through the folders until we've found the three files that we need.
 
 text_file$ = ""
+html_file$ = ""
 strong_file$ = ""
 
 WHILE LEN(folders$) > 0 AND ((TextHelp$ <> "" AND text_file$ = "") OR (StrongHelp$ <> "" AND strong_file$ = ""))
@@ -102,6 +104,11 @@ WHILE LEN(folders$) > 0 AND ((TextHelp$ <> "" AND text_file$ = "") OR (StrongHel
 				IF (flags% AND 1) = 0 AND object_type% <> 0 THEN strong_file$ = dir$ + "." + StrongHelp$
 			ENDIF
 
+			IF HtmlHelp$ <>"" AND html_file$ = "" THEN
+				SYS "XOS_File", 17, dir$ + "." + HtmlHelp$ TO object_type% ;flags%
+				IF (flags% AND 1) = 0 AND object_type% <> 0 THEN html_file$ = dir$ + "." + HtmlHelp$
+			ENDIF
+
 			IF TextHelp$ <> "" AND text_file$ = "" THEN
 				SYS "XOS_File", 17, dir$ + "." + TextHelp$ TO object_type% ;flags%
 				IF (flags% AND 1) = 0 AND object_type% <> 0 THEN text_file$ = dir$ + "." + TextHelp$
@@ -121,6 +128,11 @@ file$ = ""
 IF strong_file$ <> "" THEN
 	SYS "XOS_ReadVarVal", "Alias$@RunType_3d6", b%, 256, 0, 0 TO ;flags%
 	IF ((flags% AND 1) = 0) THEN file$ = strong_file$
+ENDIF
+
+IF html_file$ <> "" THEN
+	SYS "XOS_ReadVarVal", "Alias$@RunType_faf", b%, 256, 0, 0 TO ;flags%
+	IF ((flags% AND 1) = 0) THEN file$ = html_file$
 ENDIF
 
 IF file$ = "" THEN file$ = text_file$

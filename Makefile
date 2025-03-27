@@ -38,7 +38,7 @@ GAMESRC := games-list.txt
 
 MANSRC := Source.xml
 
-HTMLHELP := Manual,faf
+HTHELP := HelpHTML,faf
 
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
 

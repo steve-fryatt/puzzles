@@ -56,6 +56,7 @@
 #include "core/puzzles.h"
 
 #include "game_window.h"
+#include "help.h"
 
 /* The game collection data structure. */
 
@@ -298,6 +299,7 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 	const char *error;
 	enum frontend_event_outcome outcome = FRONTEND_EVENT_UNKNOWN;
 	fenv_t fpexcepts;
+	const game *game;
 
 	if (fe == NULL || fe->me == NULL)
 		return FRONTEND_EVENT_REJECTED;
@@ -322,6 +324,10 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 			error_report_error((char *) error);
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
+	case FRONTEND_ACTION_HELP:
+		game = midend_which_game(fe->me);
+		if (game != NULL)
+			help_launch(game->htmlhelp_topic);
 	default:
 		outcome = FRONTEND_EVENT_REJECTED;
 		break;

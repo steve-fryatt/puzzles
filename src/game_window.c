@@ -80,9 +80,10 @@
 #define GAME_WINDOW_MENU_SPECIFIC 3
 #define GAME_WINDOW_MENU_RANDOM_SEED 4
 #define GAME_WINDOW_MENU_SOLVE 5
-#define GAME_WINDOW_MENU_UNDO 6
-#define GAME_WINDOW_MENU_REDO 7
-#define GAME_WINDOW_MENU_PREFERENCES 8
+#define GAME_WINDOW_MENU_HELP 6
+#define GAME_WINDOW_MENU_UNDO 7
+#define GAME_WINDOW_MENU_REDO 8
+#define GAME_WINDOW_MENU_PREFERENCES 9
 
 /* The height of the status bar. */
 
@@ -962,6 +963,9 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 		break;
 	case GAME_WINDOW_MENU_SOLVE:
 		frontend_perform_action(instance->fe, FRONTEND_ACTION_SOLVE);
+		break;
+	case GAME_WINDOW_MENU_HELP:
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_HELP);
 		break;
 	case GAME_WINDOW_MENU_UNDO:
 		frontend_handle_key_event(instance->fe, 0, 0, UI_UNDO);
