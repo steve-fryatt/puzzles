@@ -42,7 +42,6 @@
 /* SF-Lib header files. */
 
 #include "sflib/dataxfer.h"
-#include "sflib/debug.h"
 #include "sflib/errors.h"
 #include "sflib/msgs.h"
 #include "sflib/resources.h"
@@ -128,9 +127,6 @@ void help_initialise(char *resources)
 	} else {
 		*help_file_html = '\0';
 	}
-
-	debug_printf("Text Help: %s", help_file_text);
-	debug_printf("HTML Help: %s", help_file_html);
 }
 
 /**
