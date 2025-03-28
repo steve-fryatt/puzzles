@@ -371,13 +371,14 @@ void index_window_open(void)
 	wimp_get_window_state(&state);
 
 	if ((state.flags & wimp_WINDOW_OPEN) == 0) {
-		// debug_printf("Resetting window size...");
-
 		state.visible.x1 = state.visible.x0 + (2 * LIST_WINDOW_MARGIN) - INDEX_WINDOW_ICON_GUTTER +
 				(INDEX_WINDOW_INITIAL_MAX_COLUMNS * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER));
 
 		state.visible.y0 = state.visible.y1 - (2 * LIST_WINDOW_MARGIN) + INDEX_WINDOW_ICON_GUTTER -
 				(INDEX_WINDOW_INITIAL_MAX_ROWS * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER));
+
+		state.xscroll = 0;
+		state.yscroll = 0;
 
 		index_window_recalculate_rows_and_columns((wimp_open *) &state);
 	}
@@ -774,6 +775,9 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 	int columns, rows, max_columns, screen_width, visible_height, new_height;
 	os_box extent;
 
+	// debug_printf("Visible area = x0,y0=%d,%d, x1,y1=%d,%d",
+	//		open->visible.x0, open->visible.y0,
+	//		open->visible.x1, open->visible.y1);
 
 	if (open == NULL || open->w == NULL)
 		return FALSE;
@@ -819,13 +823,15 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 
 	/* Work out and set the new extent of the window. */
 
-	new_height = (rows * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER)) -
-			INDEX_WINDOW_ICON_GUTTER + (2 * LIST_WINDOW_MARGIN);
+	new_height = (-rows * (index_window_icon_height + INDEX_WINDOW_ICON_GUTTER)) +
+			INDEX_WINDOW_ICON_GUTTER - (2 * LIST_WINDOW_MARGIN);
 
 	visible_height = open->yscroll + (open->visible.y0 - open->visible.y1);
 
+	// debug_printf("New rows = %d, new_height=%d, visible_height=%d", rows, new_height, visible_height);
+
 	if (new_height > visible_height) {
-		int new_scroll = new_height - (open->visible.y0 - open->visible.y1);
+		int new_scroll = new_height + (open->visible.y1 - open->visible.y0);
 
 		if (new_scroll > 0) {
 			open->visible.y0 += new_scroll;
@@ -841,7 +847,7 @@ static osbool index_window_recalculate_rows_and_columns(wimp_open *open)
 	extent.x1 = extent.x0 + (2 * LIST_WINDOW_MARGIN) - INDEX_WINDOW_ICON_GUTTER +
 			(max_columns * (index_window_icon_width + INDEX_WINDOW_ICON_GUTTER));
 
-	extent.y0 = -new_height;
+	extent.y0 = new_height;
 	extent.y1 = 0;
 
 	wimp_set_extent(open->w, &extent);
