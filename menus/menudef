@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+/* Copyright 2024-2025, Stephen Fryatt (info@stevefryatt.org.uk)
  *
  * This file is part of Puzzles:
  *
@@ -41,7 +41,19 @@ menu(IconBarMenu, "Puzzles")
 menu(IndexWindowMenu, "Puzzles")
 {
 	item("Large icons");
-	item("Small icons");
+	item("Small icons") {
+		dotted;
+	}
+	item("Puzzle") {
+		submenu(IndexWindowPuzzleMenu);
+	}
+}
+
+/* Puzzle submenu. */
+
+menu(IndexWindowPuzzleMenu, "Puzzle")
+{
+	item("Help...");
 }
 
 /**

@@ -57,12 +57,16 @@
 
 #include "core/puzzles.h"
 #include "frontend.h"
+#include "help.h"
 #include "sprites.h"
 
 /* Index Window menu */
 
 #define INDEX_WINDOW_MENU_LARGE_ICONS 0
 #define INDEX_WINDOW_MENU_SMALL_ICONS 1
+#define INDEX_WINDOW_MENU_GAME_SUBMENU 2
+
+#define INDEX_GAME_SUBMENU_HELP 0
 
 /**
  * The margin around the edge of the window, in OS units.
@@ -142,8 +146,9 @@ static void index_window_redraw_handler(wimp_draw *redraw);
 static void index_window_scroll_event_handler(wimp_scroll *scroll);
 static void index_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static void index_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
-static void index_window_set_display_icon_size(wimp_i icon);
+static void index_window_menu_close_handler(wimp_w w, wimp_menu *menu);
 static void index_window_decode_help(char *buffer, wimp_w w, wimp_i i, os_coord pos, wimp_mouse_state buttons);
+static void index_window_set_display_icon_size(wimp_i icon);
 static void index_window_recalculate_icon_dimensions(void);
 static osbool index_window_recalculate_rows_and_columns(wimp_open *open);
 static int index_window_find_game_from_pointer(wimp_w w, os_coord pos);
@@ -201,6 +206,12 @@ static wimp_i		index_window_active_icon = INDEX_WINDOW_ICON_LARGE;
  */
 
 static int		index_window_starting_icon_width[INDEX_WINDOW_ICON_COUNT];
+
+/**
+ * The game under the pointer when the index window menu opened.
+ */
+
+static int		index_window_menu_game = INDEX_WINDOW_NO_GAME;
 
 /* Line position calculations.
  *
@@ -314,6 +325,7 @@ void index_window_initialise(void)
 	event_add_window_menu(index_window_handle, index_window_menu);
 	event_add_window_menu_prepare(index_window_handle, index_window_menu_prepare_handler);
 	event_add_window_menu_selection(index_window_handle, index_window_menu_selection_handler);
+	event_add_window_menu_close(index_window_handle, index_window_menu_close_handler);
 
 	event_add_window_redraw_event(index_window_handle, index_window_redraw_handler);
 	event_add_window_open_event(index_window_handle, index_window_open_handler);
@@ -597,6 +609,14 @@ static void index_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_
 	case INDEX_WINDOW_MENU_SMALL_ICONS:
 		index_window_set_display_icon_size(INDEX_WINDOW_ICON_SMALL);
 		break;
+	case INDEX_WINDOW_MENU_GAME_SUBMENU:
+		switch (selection->items[1]) {
+		case INDEX_GAME_SUBMENU_HELP:
+			if (index_window_menu_game != INDEX_WINDOW_NO_GAME)
+				help_launch(gamelist[index_window_menu_game]->htmlhelp_topic);
+			break;
+		}
+		break;
 	}
 }
 
@@ -613,10 +633,29 @@ static void index_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_po
 	if (menu != index_window_menu)
 		return;
 
+	index_window_menu_game = index_window_find_game_from_pointer(pointer->w, pointer->pos);
+
 	/* Update the menu state. */
 
 	menus_tick_entry(menu, INDEX_WINDOW_MENU_LARGE_ICONS, index_window_active_icon == INDEX_WINDOW_ICON_LARGE);
 	menus_tick_entry(menu, INDEX_WINDOW_MENU_SMALL_ICONS, index_window_active_icon == INDEX_WINDOW_ICON_SMALL);
+
+	menus_shade_entry(menu, INDEX_WINDOW_MENU_GAME_SUBMENU, index_window_menu_game == INDEX_WINDOW_NO_GAME);
+}
+
+/**
+ * Handle Menu Close events from the index window
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ */
+
+static void index_window_menu_close_handler(wimp_w w, wimp_menu *menu)
+{
+	if (menu != index_window_menu)
+		return;
+
+	index_window_menu_game = INDEX_WINDOW_NO_GAME;
 }
 
 /**

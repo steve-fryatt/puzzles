@@ -84,7 +84,7 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <section>
 <p>To play the puzzles, double-click on the <file>!Puzzles</file> application to load it on to the iconbar. Once loaded, a <mouse>Select</mouse> click on its iconbar icon will open the <window>Puzzles list</window> window, showing all of the available games. To play a game, click <mouse>Select</mouse> on its icon (or <mouse>Adjust</mouse> to open the game and close the <window>Puzzles list</window> window).</p>
 
-<p>The window supports interactive help, to provide a few more details about the individual games. The layout can be changed from large to small icons using the window menu.</p>
+<p>The window supports interactive help, to provide a few more details about the individual games. The layout can be changed from large to small icons using the window menu. If the menu is opened over a puzzle, selecting <menu>Puzzle</menu> &msep; <menu>Help...</menu> will open this manual at that puzzle&rsquo;s entry (this only works for the HTML format documentation).</p>
 
 <p>As part of a suite, there are many features which are common to all of the games in <cite>Puzzles</cite>, and these are described here. Details of the individual games are in the following chapters.</p>
 </section>
@@ -124,6 +124,11 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>Some games (such as <ref id="solo">Solo</ref>) are capable of solving a game ID you have typed in from elsewhere. Other games (such as <ref id="rectangles">Rectangles</ref>) cannot solve a game ID they didn&rsquo;t invent themself, but when they did invent the game ID they know what the solution is already. Still other games (<ref id="pattern">Pattern</ref>) can solve <em>some</em> external game IDs, but only if they aren&rsquo;t too difficult.</p>
 
 <p>The <menu>Solve</menu> command adds the solved state to the end of the undo chain for the puzzle. In other words, if you want to go back to solving it yourself after seeing the answer, you can just press <menu>Undo</menu>.</p></li>
+
+
+<li><title><menu>Help...</menu></title>
+
+<p>Open this manual at the section for the puzzle (if the HTML manual is in use).</p></li>
 
 
 <li><title><menu>Preferences...</menu></title>

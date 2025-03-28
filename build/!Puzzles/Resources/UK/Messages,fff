@@ -1,4 +1,4 @@
-# Copyright 2024, Stephen Fryatt (info@stevefryatt.org.uk)
+# Copyright 2024-2025, Stephen Fryatt (info@stevefryatt.org.uk)
 #
 # This file is part of Puzzles:
 #
@@ -128,6 +128,8 @@ Help.ProgInfo.Porter:This \w displays information about Puzzles.|MSteve created 
 
 Help.IndexMenu.00:\Sdisplay the games using large icons.
 Help.IndexMenu.01:\Sdisplay the games using small icons.
+Help.IndexMenu.02:\Rsee options relating to the game under the pointer.
+Help.IndexMenu.0200:\Sread the online manual for the game under the pointer.
 
 Help.GameMenu.00:\Rselect a new game configuration.
 Help.GameMenu.01:\Sre-start the current game.
