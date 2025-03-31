@@ -1222,6 +1222,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 		extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
 		extent.y1 = 0;
 		wimp_set_extent(instance->status_bar, &extent);
+		windows_redraw(instance->status_bar);
 	}
 
 	/* Update the visible area. */
