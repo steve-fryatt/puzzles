@@ -121,33 +121,33 @@ enum game_window_drag_type {
 /* The game window data structure. */
 
 struct game_window_block {
-	struct frontend *fe;			/**< The parent frontend instance.		*/
+	struct frontend *fe;					/**< The parent frontend instance.		*/
 
-	const char *title;			/**< The title of the game.			*/
+	const char *title;					/**< The title of the game.			*/
 
-	wimp_w handle;				/**< The handle of the game window.		*/
-	wimp_w status_bar;			/**< The handle of the status bar.		*/
-	wimp_i status_icon;			/**< The handle of the status bar icon.		*/
+	wimp_w handle;						/**< The handle of the game window.		*/
+	wimp_w status_bar;					/**< The handle of the status bar.		*/
+	wimp_i status_icon;					/**< The handle of the status bar icon.		*/
 
-	struct blitter_set_block *blitters;	/**< The list of associated blitters.		*/
+	struct blitter_set_block *blitters;			/**< The list of associated blitters.		*/
 
-	struct canvas_block *canvas;		/**< The details for the window canvas.		*/
+	struct canvas_block *canvas;				/**< The details for the window canvas.		*/
 
-	struct game_config_block *specific;	/**< The config window for the specific code.	*/
-	struct game_config_block *random_seed;	/**< The config window for the random seed.	*/
-	struct game_config_block *preferences;	/**< The config window for the preferences.	*/
-	struct game_config_block *custom;	/**< The config window for the custom game.	*/
+	struct game_config_block *specific;			/**< The config window for the specific code.	*/
+	struct game_config_block *random_seed;			/**< The config window for the random seed.	*/
+	struct game_config_block *preferences;			/**< The config window for the preferences.	*/
+	struct game_config_block *custom;			/**< The config window for the custom game.	*/
 
-	char *status_text;			/**< The status bar text.			*/
+	char status_text[GAME_WINDOW_STATUS_BAR_LENGTH];	/**< The status bar text.			*/
 
-	os_coord window_size;			/**< The size of the window, in pixels.		*/
+	os_coord window_size;					/**< The size of the window, in pixels.		*/
 
-	int number_of_colours;			/**< The number of colours defined.		*/
+	int number_of_colours;					/**< The number of colours defined.		*/
 
-	osbool callback_timer_active;		/**< Is the callback timer currently active?	*/
-	os_t last_callback;			/**< The time of the last frontend callback.	*/
+	osbool callback_timer_active;				/**< Is the callback timer currently active?	*/
+	os_t last_callback;					/**< The time of the last frontend callback.	*/
 
-	enum game_window_drag_type drag_type;	/**< The current drag type.			*/
+	enum game_window_drag_type drag_type;			/**< The current drag type.			*/
 };
 
 /* The Game Window menu. */
@@ -219,7 +219,8 @@ struct game_window_block *game_window_create_instance(struct frontend *fe, const
 
 	new->handle = NULL;
 	new->status_bar = NULL;
-	new->status_text = NULL;
+
+	*(new->status_text) = '\0';
 
 	new->window_size.x = 0;
 	new->window_size.y = 0;
@@ -273,9 +274,6 @@ void game_window_delete_instance(struct game_window_block *instance)
 	}
 
 	/* Deallocate the instance block. */
-
-	if (instance->status_text != NULL)
-		free(instance->status_text);
 
 	if (instance->canvas != NULL)
 		canvas_delete_instance(instance->canvas);
@@ -411,15 +409,6 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 			error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
 			return;
 		}
-
-		instance->status_text = malloc(GAME_WINDOW_STATUS_BAR_LENGTH);
-		if (instance->status_text == NULL) {
-			game_window_delete_instance(instance);
-			error_msgs_report_error("NoMemNewGame");
-			return;
-		}
-
-		*(instance->status_text) = '\0';
 
 		icon.w = instance->status_bar;
 		icon.icon.extent.x0 = window_definition.extent.x0;
@@ -1268,11 +1257,13 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 osbool game_window_set_status_text(struct game_window_block *instance, const char *text)
 {
-	if (instance == NULL || instance->status_bar == NULL)
+	if (instance == NULL)
 		return false;
 
-	icons_strncpy(instance->status_bar, instance->status_icon, (char *) text);
-	wimp_set_icon_state(instance->status_bar, instance->status_icon, 0, 0);
+	string_copy(instance->status_text, (char *) text, GAME_WINDOW_STATUS_BAR_LENGTH);
+
+	if (instance->status_bar != NULL)
+		wimp_set_icon_state(instance->status_bar, instance->status_icon, 0, 0);
 
 	return TRUE;
 }
