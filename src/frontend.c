@@ -540,7 +540,7 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 
 	game_window_create_canvas(fe->window, fe->x_size, fe->y_size, colours, number_of_colours);
 
-	midend_redraw(fe->me);
+	midend_force_redraw(fe->me);
 }
 
 /* Below this point are the draing API calls. */

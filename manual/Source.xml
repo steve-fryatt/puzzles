@@ -2454,7 +2454,6 @@ remove the circle.</p>
 <p>The following is a non-exhaustive list of things which are known to need attention.</p>
 
 <ul>
-<li><p>The canvas redraw can fail when a game canvas changes size: such as when starting a new game with different parameters. Selecting <menu>New game</menu> from the menu to start another new game with the same parameters will resolve this.</p></li>
 <li><p>The game windows, toolbars and drawing canvases may not be perfectly aligned in EX0&nbsp;EY0 modes.</p></li>
 <li><p>Font antialiasing is poor.</p></li>
 <li><p>Graphics can sometimes render poorly, with artefacts on corners.</p></li>
