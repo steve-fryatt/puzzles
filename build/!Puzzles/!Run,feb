@@ -36,6 +36,10 @@ RMEnsure WindowManager 3.98 Error Puzzles requires the Nested Window Manager.
 
 | Ensure that the Castle Shared C Library is present, with C99 support.
 
+RMEnsure UtilityModule 5.00 RMEnsure CallASWI 0.03 RMLoad System:Modules.CallASWI
+RMEnsure UtilityModule 5.00 RMEnsure CallASWI 0.03 Error This app requires CallASWI 0.03 or later
+RMEnsure FPEmulator 4.03 RMLoad System:Modules.FPEmulator
+RMEnsure FPEmulator 4.03 Error This application requires FPEmulator 4.03 or later
 RMEnsure SharedCLibrary 5.17 RMLoad System:Modules.CLib
 RMEnsure SharedCLibrary 5.43 Error Puzzles requires version 5.43 or later of the Shared C Library.
 
