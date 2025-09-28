@@ -298,7 +298,7 @@ void game_window_delete_instance(struct game_window_block *instance)
 
 /**
  * Create and open the game window at the specified location.
- * 
+ *
  * \param *instance	The instance to open the window on.
  * \param status_bar	TRUE if the window should have a status bar.
  * \param *pointer	The pointer at which to open the window.
@@ -390,7 +390,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 	if (status_bar == TRUE) {
 		window_definition.flags =
 				wimp_WINDOW_NEW_FORMAT |
-				wimp_WINDOW_AUTO_REDRAW | 
+				wimp_WINDOW_AUTO_REDRAW |
 				wimp_WINDOW_MOVEABLE |
 				wimp_WINDOW_BOUNDED_ONCE;
 		window_definition.extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
@@ -415,7 +415,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 		icon.icon.extent.y0 = window_definition.extent.y0;
 		icon.icon.extent.x1 = window_definition.extent.x1;
 		icon.icon.extent.y1 = window_definition.extent.y1;
-		icon.icon.flags = 
+		icon.icon.flags =
 				wimp_ICON_TEXT |
 				wimp_ICON_INDIRECTED |
 				wimp_ICON_VCENTRED |
@@ -528,7 +528,7 @@ static void game_window_click_handler(wimp_pointer *pointer)
 	}
 
 	/* If the event outcome was "Quit", just exit now. Otherwise, set focus to our window */
-	
+
 	if (outcome == FRONTEND_EVENT_EXIT)
 		frontend_delete_instance(instance->fe);
 	else
@@ -537,7 +537,7 @@ static void game_window_click_handler(wimp_pointer *pointer)
 
 /**
  * Handle a simple mouse click (and release) event.
- * 
+ *
  * \param *instance	The instance from which the event originates.
  * \param *pointer	The pointer details.
  * \param *state	The window state for the window.
@@ -583,7 +583,7 @@ static int game_window_click_and_release(struct game_window_block *instance, wim
 
 /**
  * Handle the start of a drag event.
- * 
+ *
  * \param *instance	The instance from which the event originates.
  * \param *pointer	The pointer details.
  * \param *state	The window state for the window.
@@ -656,7 +656,7 @@ static int game_window_start_drag(struct game_window_block *instance, wimp_point
 
 /**
  * Handle Null Events from the Wimp during a drag operation.
- * 
+ *
  * \param *data		Pointer to the instance from which the event originates.
  * \return		TRUE if the event was handled.
  */
@@ -704,7 +704,7 @@ static osbool game_window_drag_in_progress(void *data)
 
 /**
  * Handle the Drag End event from the Wimp at the end of a drag operation.
- * 
+ *
  * \param *drag		The Wimp event data block.
  * \param *data		Pointer to the instance from which the event originates.
  */
@@ -994,7 +994,7 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 
 /**
  * Handle user updates from the Game Config boxes.
- * 
+ *
  * \param type			The type of data being returned.
  * \param *config_data		Pointer to the config data structure.
  * \param outcome		The outcome from the dialogue box.
@@ -1151,11 +1151,11 @@ static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu)
 /**
  * Create or update the drawing canvas associated with a window
  * instance.
- * 
+ *
  * After an update, the canvas will be cleared and it will be
  * necessary to request that the client redraws any graphics which
  * had previously been present.
- * 
+ *
  * \param *instance		The instance to update.
  * \param x			The required horizontal dimension.
  * \param y			The required vertical dimension.
@@ -1250,7 +1250,7 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 
 /**
  * Update the text in the status bar.
- * 
+ *
  * \param *instance		The instance to update.
  * \param *text			The new status bar text.
  * \return			TRUE if successful; otherwise FALSE.
@@ -1308,7 +1308,7 @@ void game_window_stop_timer(struct game_window_block *instance)
 
 /**
  * The callback routine for the 20ms tick events.
- * 
+ *
  * \param time			The time that the callback occurred.
  * \param *data			The game window instance owning the callback.
  * \return			TRUE if the callback is to be claimed.
@@ -1333,7 +1333,7 @@ static osbool game_window_timer_callback(os_t time, void *data)
 /**
  * Start a drawing operation on the game window canvas, redirecting
  * VDU output to the canvas sprite.
- * 
+ *
  * \param *instance	The instance to start drawing in.
  * \return		TRUE if successful; else FALSE.
  */
@@ -1349,7 +1349,7 @@ osbool game_window_start_draw(struct game_window_block *instance)
 /**
  * End a drawing operation on the game window canvas, restoring
  * VDU output back to the previous context.
- * 
+ *
  * \param *instance	The instance to finish drawing in.
  * \return		TRUE if successful; else FALSE.
  */
@@ -1369,7 +1369,7 @@ osbool game_window_end_draw(struct game_window_block *instance)
 /**
  * Request a forced redraw of part of the canvas as the next available
  * opportunity.
- * 
+ *
  * \param *instance	The instance to plot to.
  * \param x0		The X coordinate of the top left corner of
  *			the area to be redrawn (inclusive).
@@ -1445,7 +1445,7 @@ osbool game_window_set_colour(struct game_window_block *instance, int colour)
 /**
  * Set a graphics clipping window, to affect all future
  * operations on the canvas.
- * 
+ *
  * \param *instance	The instance to plot to.
  * \param x0		The X coordinate of the top left corner of
  *			the window (inclusive).
@@ -1513,7 +1513,7 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 
 /**
  * Clear the clipping window set by set_clip()
- * 
+ *
  * \param *instance	The instance to plot to.
  * \return		TRUE if successful; else FALSE.
  */
@@ -1575,7 +1575,7 @@ osbool game_window_plot(struct game_window_block *instance, os_plot_code plot_co
 
 /**
  * Start a polygon path in a game window.
- * 
+ *
  * \param *instance	The instance to plot to.
  * \param x		The X coordinate of the start.
  * \param y		The Y coordinate of the start.
@@ -1604,7 +1604,7 @@ osbool game_window_start_path(struct game_window_block *instance, int x, int y)
 
 /**
  * Add a segment to a polygon path in a game window.
- * 
+ *
  * \param *instance	The instance to plot to.
  * \param x		The X coordinate of the end of the segment.
  * \param y		The Y coordinate of the end of the segment.
@@ -1632,7 +1632,7 @@ osbool game_window_add_segment(struct game_window_block *instance, int x, int y)
 /**
  * End a polygon path in a game window, drawing either an outline, filled
  * shape, or both
- * 
+ *
  * \param *instance	The instance to plot to.
  * \param closed	TRUE if the path should be closed; else FALSE
  * \param width		The width of the path outline.
@@ -1681,7 +1681,7 @@ osbool game_window_end_path(struct game_window_block *instance, osbool closed, i
 
 /**
  * Write a line of text in a game window.
- * 
+ *
  * \param *instance	The instance to write to.
  * \param x		The X coordinate at which to write the text.
  * \param y		The Y coordinate at which to write the text.
@@ -1795,7 +1795,7 @@ osbool game_window_write_text(struct game_window_block *instance, int x, int y, 
 
 /**
  * Create a new blitter within a game window.
- * 
+ *
  * \param *instance	The instance to take the blitter.
  * \param width		The width of the blitter, in pixels.
  * \param height	The height of the blitter, in pixels.
@@ -1814,7 +1814,7 @@ blitter *game_window_create_blitter(struct game_window_block *instance, int widt
 
 /**
  * Delete a blitter from within a game window.
- * 
+ *
  * \param *instance	The instance containing the blitter.
  * \param *blitter	The blitter to be deleted.
  * \return		TRUE if successful; else FALSE.
@@ -1862,7 +1862,7 @@ osbool game_window_save_blitter(struct game_window_block *instance, blitter *bli
 
 /**
  * Update a section of the game window with the contents of a blitter.
- * 
+ *
  * If the coordinates are supplied as BLITTER_FROMSAVED, the content
  * will be written back to the location from which it was saved.
  *
@@ -1887,8 +1887,8 @@ osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *bl
 
 	/* Transform the location coordinates. */
 
-	x = (x == BLITTER_FROMSAVED) ? -1 : game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
-	y = (y == BLITTER_FROMSAVED) ? -1 : game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
+	x = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x);
+	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	return blitter_paint_to_canvas((struct blitter_block *) blitter, x, y);
 }
