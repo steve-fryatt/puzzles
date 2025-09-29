@@ -26,6 +26,14 @@
 
 Set Puzzles$Dir <Obey$Dir>
 
+| Set the filetype information.
+
+Set File$Type_05F Puzzle
+
+| Claim Puzzle files.
+
+Set Alias$@RunType_05F Run <Puzzles$Dir>.!Run -file %%*0
+
 | Set the application sprites.
 
 IconSprites <Puzzles$Dir>.!Sprites

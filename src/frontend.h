@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt
+/* Copyright 2024-2025, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
@@ -25,7 +25,7 @@
  * \file: frontend.h
  *
  * Frontend collection external (to the RISC OS code) interface.
- * 
+ *
  * This header defines the interface exposed to the rest of the
  * RISC OS application. The interface facing the midend is defined
  * in core/puzzles.h
@@ -73,7 +73,7 @@ void frontend_initialise(void);
 
 /**
  * Initialise a new game and open its window.
- * 
+ *
  * \param game_index	The index into gamelist[] of the required game.
  * \param *pointer	The pointer at which to open the game.
  */
@@ -90,7 +90,7 @@ void frontend_delete_instance(struct frontend *fe);
 
 /**
  * Perform an action through the frontend.
- * 
+ *
  * \param *fe		The instance to which the action relates.
  * \param action	The action to carry out.
  * \return		The outcome of the action.
@@ -100,7 +100,7 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 
 /**
  * Start a new game from the supplied parameters.
- * 
+ *
  * \param *fe		The instance to which the action relates.
  * \param *params	The parameters to use for the new game.
  */
@@ -123,7 +123,7 @@ enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x
 /**
  * Process a periodic callback from the game window, passing it on
  * to the midend.
- * 
+ *
  * \param *fe			The frontend handle.
  * \param tplus			The time in seconds since the last
  *				callback event.
@@ -178,5 +178,15 @@ void frontend_get_config_info(struct frontend *fe, int type, config_item **confi
  */
 
 osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data);
+
+/**
+ * Save a game to disc as a Puzzle file.
+ *
+ * \param *fe			The frontend handle.
+ * \param *filename		The filename of the target file.
+ * \return			TRUE if successful; FALSE on failure.
+ */
+
+osbool frontend_save_game_file(struct frontend *fe, char *filename);
 
 #endif

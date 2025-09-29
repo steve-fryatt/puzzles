@@ -67,6 +67,12 @@ menu(GameWindowMenu, "")
 	item("Type") {
 		dotted;
 	}
+	item("Save game") {
+		d_box(SaveAs) {
+			warning;
+		}
+		dotted;
+	}
 	item("Restart");
 	item("New game");
 	item("Specific game...");

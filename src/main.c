@@ -53,6 +53,7 @@
 #include "sflib/errors.h"
 #include "sflib/string.h"
 #include "sflib/event.h"
+#include "sflib/saveas.h"
 #include "sflib/templates.h"
 
 /* Application header files */
@@ -221,6 +222,7 @@ static void main_initialise(void)
 
 	/* Initialise the individual modules. */
 
+	saveas_initialise("SaveAs", NULL);
 	help_initialise(resources);
 	ihelp_initialise();
 	dataxfer_initialise(main_task_handle, NULL);

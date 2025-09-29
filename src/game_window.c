@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt
+/* Copyright 2024-2025, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
@@ -55,6 +55,7 @@
 #include "sflib/ihelp.h"
 #include "sflib/menus.h"
 //#include "sflib/msgs.h"
+#include "sflib/saveas.h"
 #include "sflib/templates.h"
 //#include "sflib/url.h"
 #include "sflib/windows.h"
@@ -75,15 +76,16 @@
 /* Game Window menu */
 
 #define GAME_WINDOW_MENU_PRESETS 0
-#define GAME_WINDOW_MENU_RESTART 1
-#define GAME_WINDOW_MENU_NEW 2
-#define GAME_WINDOW_MENU_SPECIFIC 3
-#define GAME_WINDOW_MENU_RANDOM_SEED 4
-#define GAME_WINDOW_MENU_SOLVE 5
-#define GAME_WINDOW_MENU_HELP 6
-#define GAME_WINDOW_MENU_UNDO 7
-#define GAME_WINDOW_MENU_REDO 8
-#define GAME_WINDOW_MENU_PREFERENCES 9
+#define GAME_WINDOW_MENU_SAVE_GAME 1
+#define GAME_WINDOW_MENU_RESTART 2
+#define GAME_WINDOW_MENU_NEW 3
+#define GAME_WINDOW_MENU_SPECIFIC 4
+#define GAME_WINDOW_MENU_RANDOM_SEED 5
+#define GAME_WINDOW_MENU_SOLVE 6
+#define GAME_WINDOW_MENU_HELP 7
+#define GAME_WINDOW_MENU_UNDO 8
+#define GAME_WINDOW_MENU_REDO 9
+#define GAME_WINDOW_MENU_PREFERENCES 10
 
 /* The height of the status bar. */
 
@@ -150,6 +152,10 @@ struct game_window_block {
 	enum game_window_drag_type drag_type;			/**< The current drag type.			*/
 };
 
+/* The handle of the game save dialogue. */
+
+static struct saveas_block *game_window_saveas_game = NULL;
+
 /* The Game Window menu. */
 
 static wimp_menu *game_window_menu = NULL;
@@ -167,8 +173,10 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 static osbool game_window_config_complete(int type, config_item *config_data, enum game_config_outcome outcome, void *data);
 static void game_window_redraw_handler(wimp_draw *redraw);
 static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
+static void game_window_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_message_menu_warning *warning);
 static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu);
 static osbool game_window_timer_callback(os_t time, void *data);
+static osbool game_window_save_game(char *filename, osbool selection, void *data);
 
 /**
  * Initialise the game windows and their associated menus and dialogues.
@@ -185,6 +193,10 @@ void game_window_initialise(void)
 	game_window_fonts_scan_block.letter.y = 0;
 
 	game_window_fonts_scan_block.split_char = -1;
+
+	/* The SaveAs windows. */
+
+	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_05f", game_window_save_game);
 
 	/* The window menu. */
 
@@ -376,6 +388,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 	ihelp_add_window(instance->handle, "Game", NULL);
 	event_add_window_menu(instance->handle, game_window_menu);
 	event_add_window_menu_prepare(instance->handle, game_window_menu_prepare_handler);
+	event_add_window_menu_warning(instance->handle, game_window_menu_warning_handler);
 	event_add_window_menu_close(instance->handle, game_window_menu_close_handler);
 	event_add_window_menu_selection(instance->handle, game_window_menu_selection_handler);
 
@@ -437,6 +450,7 @@ void game_window_open(struct game_window_block *instance, osbool status_bar, wim
 
 		event_add_window_menu(instance->status_bar, game_window_menu);
 		event_add_window_menu_prepare(instance->status_bar, game_window_menu_prepare_handler);
+		event_add_window_menu_warning(instance->status_bar, game_window_menu_warning_handler);
 		event_add_window_menu_close(instance->status_bar, game_window_menu_close_handler);
 		event_add_window_menu_selection(instance->status_bar, game_window_menu_selection_handler);
 	}
@@ -1108,6 +1122,10 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 
 	if (pointer != NULL) {
 
+		/* Initialise the SaveAs dialogues. */
+
+		saveas_initialise_dialogue(game_window_saveas_game, NULL, "DefGameFile", NULL, FALSE, FALSE, instance);
+
 		/* Set the menu title. */
 
 		menu->title_data.indirected_text.text = (char *) instance->title;
@@ -1132,6 +1150,28 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	menus_shade_entry(menu, GAME_WINDOW_MENU_RANDOM_SEED, (instance->random_seed == NULL) ? FALSE : TRUE);
 	menus_shade_entry(menu, GAME_WINDOW_MENU_PREFERENCES, (instance->preferences == NULL) ? FALSE : TRUE);
 }
+
+/**
+ * Process submenu warning events from game windows.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *warning	The submenu warning message data.
+ */
+
+static void game_window_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_message_menu_warning *warning)
+{
+	if (menu != game_window_menu)
+		return;
+
+	switch (warning->selection.items[0]) {
+	case GAME_WINDOW_MENU_SAVE_GAME:
+		saveas_prepare_dialogue(game_window_saveas_game);
+		wimp_create_sub_menu(warning->sub_menu, warning->pos.x, warning->pos.y);
+		break;
+	}
+}
+
 
 /**
  * Handle Menu Close events from game windows
@@ -1891,4 +1931,26 @@ osbool game_windoow_load_blitter(struct game_window_block *instance, blitter *bl
 	y = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y);
 
 	return blitter_paint_to_canvas((struct blitter_block *) blitter, x, y);
+}
+
+
+/**
+ * Callback handler for saving a game file.
+ *
+ * \param *filename		Pointer to the filename to save to.
+ * \param selection		FALSE, as no selections are supported.
+ * \param *data			Pointer to the game window instance to be saved.
+ * \return			TRUE if successful; else FALSE on error.
+ */
+
+static osbool game_window_save_game(char *filename, osbool selection, void *data)
+{
+	struct game_window_block *instance = data;
+
+	if (instance == NULL || filename == NULL)
+		return FALSE;
+
+	frontend_save_game_file(instance->fe, filename);
+
+	return TRUE;
 }

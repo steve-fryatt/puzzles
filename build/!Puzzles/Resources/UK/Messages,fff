@@ -36,6 +36,10 @@ TypeTitle:Type
 TypeCustom:Custom...
 OptionTitle:Options
 
+# Default filenames
+
+DefGameFile:Puzzle
+
 # Messages and errors
 
 LookupFailedGMenu:Failed to look up the menu entry tokens for the game menu.
@@ -57,6 +61,10 @@ SpriteNoSpaceForPalette:There isn't enough space for the palette.
 SpriteBadDims:Invalid canvas dimensions supplied.
 
 BadBlitterSet:The blitter to be deleted was not found in the set.
+
+FileSaveFail:The file could not be saved.
+FileLoadFail:The file could not be loaded.
+DragSave:To save, enter a full pathname or drag the file to a directory viewer.
 
 # Interactive Help for windows and icons.
 #
@@ -132,16 +140,23 @@ Help.IndexMenu.02:\Rsee options relating to the game under the pointer.
 Help.IndexMenu.0200:\Sread the online manual for the game under the pointer.
 
 Help.GameMenu.00:\Rselect a new game configuration.
-Help.GameMenu.01:\Sre-start the current game.
-Help.GameMenu.02:\Sstart a new game.
-Help.GameMenu.03:\Sread or supply the games specific unique ID.
-Help.GameMenu.04:\Sread or supply the game's random seed.
-Help.GameMenu.05:\Sshow the solution to the current game.
-Help.GameMenu.06:\Sread the online manual for the game.
-Help.GameMenu.07:\Sundo the most recent move in the current game.
-Help.GameMenu.08:\Sredo the most recent move to have been undone in the current game.
-Help.GameMenu.09:\Sconfigure the game options.
+Help.GameMenu.01:\Rsave the current game state to a file.
+Help.GameMenu.02:\Sre-start the current game.
+Help.GameMenu.03:\Sstart a new game.
+Help.GameMenu.04:\Sread or supply the games specific unique ID.
+Help.GameMenu.05:\Sread or supply the game's random seed.
+Help.GameMenu.06:\Sshow the solution to the current game.
+Help.GameMenu.07:\Sread the online manual for the game.
+Help.GameMenu.08:\Sundo the most recent move in the current game.
+Help.GameMenu.09:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.10:\Sconfigure the game options.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.
 Help.IconBarMenu.02:\Squit Puzzles.
+
+Help.SaveAs:\Tfile save \w.
+Help.SaveAs.Icon3:Drag this icon to the directory display where the file is to be saved, or direct to another application.
+Help.SaveAs.Name:Enter a new filename, or full pathname, for the file here.
+Help.SaveAs.Save:\Ssave the file if there is a full pathname above.
+Help.SaveAs.Cancel:\Scancel the save.

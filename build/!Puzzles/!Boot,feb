@@ -1,6 +1,6 @@
 | >!Boot
 |
-| Copyright 2024, Stephen Fryatt
+| Copyright 2024-2025, Stephen Fryatt
 |
 | This file is part of Puzzles:
 |
@@ -22,6 +22,18 @@
 | See the Licence for the specific language governing
 | permissions and limitations under the Licence.
 
+| Set the application path.
+
 If "<Puzzles$Dir>"="" Then Set Puzzles$Dir <Obey$Dir>
+
+| Set the filetype information.
+
+Set File$Type_05F Puzzle
+
+| Claim Puzzle files if these have not been claimed already.
+
+If "<Alias$@RunType_05F>" = "" Then Set Alias$@RunType_05F Run <Puzzles$Dir>.!Run -file %%*0
+
+| Set the application sprites.
 
 IconSprites <Puzzles$Dir>.!Sprites

@@ -40,11 +40,13 @@
 #include "oslib/types.h"
 #include "oslib/hourglass.h"
 #include "oslib/os.h"
+#include "oslib/osfile.h"
 #include "oslib/osword.h"
 #include "oslib/wimp.h"
 
 /* SF-Lib header files. */
 
+#include "sflib/dataxfer.h"
 #include "sflib/debug.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
@@ -91,6 +93,8 @@ static struct frontend *frontend_list = NULL;
 
 static osbool frontend_message_mode_change(wimp_message *message);
 static void frontend_negotiate_game_size(struct frontend *fe);
+static void frontend_write(void *ctx, const void *buf, int len);
+static bool frontend_read(void *ctx, const void *buf, int len);
 static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
 static void riscos_draw_rect(drawing *dr, int x, int y, int w, int h, int colour);
 static void riscos_draw_line(drawing *dr, int x1, int y1, int x2, int y2, int colour);
@@ -164,7 +168,7 @@ void frontend_initialise(void)
 
 /**
  * Initialise a new game and open its window.
- * 
+ *
  * \param game_index	The index into gamelist[] of the required game.
  * \param *pointer	The pointer at which to open the game.
  */
@@ -288,7 +292,7 @@ void frontend_delete_instance(struct frontend *fe)
 
 /**
  * Perform an action through the frontend.
- * 
+ *
  * \param *fe		The instance to which the action relates.
  * \param action	The action to carry out.
  * \return		The outcome of the action.
@@ -341,7 +345,7 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 
 /**
  * Start a new game from the supplied parameters.
- * 
+ *
  * \param *fe		The instance to which the action relates.
  * \param *params	The parameters to use for the new game.
  */
@@ -384,7 +388,7 @@ enum frontend_event_outcome frontend_handle_key_event(struct frontend *fe, int x
 /**
  * Process a periodic callback from the game window, passing it on
  * to the midend.
- * 
+ *
  * \param *fe			The frontend handle.
  * \param tplus			The time in seconds since the last
  *				callback event.
@@ -512,7 +516,7 @@ static osbool frontend_message_mode_change(wimp_message *message)
 
 /**
  * Struct re-negotiate the size of the game canvas with the midend.
- * 
+ *
  * \param *fe			The frontend handle.
  */
 
@@ -543,11 +547,61 @@ static void frontend_negotiate_game_size(struct frontend *fe)
 	midend_force_redraw(fe->me);
 }
 
+/**
+ * Save a game to disc as a Puzzle file.
+ *
+ * \param *fe			The frontend handle.
+ * \param *filename		The filename of the target file.
+ * \return			TRUE if successful; FALSE on failure.
+ */
+
+osbool frontend_save_game_file(struct frontend *fe, char *filename)
+{
+	FILE *file;
+
+	if (fe == NULL || fe->me == NULL || filename == NULL)
+		return FALSE;
+
+	/* Open the file */
+
+	file = fopen(filename, "w");
+	if (file == NULL) {
+		error_msgs_report_error("FileSaveFail");
+		return FALSE;
+	}
+
+	hourglass_on();
+
+	midend_serialise(fe->me, frontend_write, file);
+
+	/* Close the file and set the filetype. */
+
+	fclose(file);
+	osfile_set_type(filename, (bits) dataxfer_TYPE_PUZZLE);
+
+	hourglass_off();
+
+	return TRUE;
+}
+
+static void frontend_write(void *ctx, const void *buf, int len)
+{
+	FILE *file = ctx;
+
+	if (ctx != NULL && buf != NULL)
+		fwrite(buf, sizeof(char), len, file);
+}
+
+static bool frontend_read(void *ctx, const void *buf, int len)
+{
+	return FALSE;
+}
+
 /* Below this point are the draing API calls. */
 
 /**
  * Write a line of text in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate at which to write the text.
  * \param y		The Y coordinate at which to write the text.
@@ -568,7 +622,7 @@ static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsi
 
 /**
  * Draw a filled rectangle in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate of the top-left of the rectangle (inclusive).
  * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
@@ -590,7 +644,7 @@ static void riscos_draw_rect(drawing *dr, int x, int y, int w, int h, int colour
 
 /**
  * Draw a straight line in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param x1		The X coordinate of the start of the line (inclusive).
  * \param y1		The Y coordinate of the start of the line (inclusive).
@@ -612,7 +666,7 @@ static void riscos_draw_line(drawing *dr, int x1, int y1, int x2, int y2, int co
 
 /**
  * Draw a closed polygon in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param *coords	An array of pairs of X, Y coordinates of the points on
  *			the outline (inclusive).
@@ -642,7 +696,7 @@ static void riscos_draw_polygon(drawing *dr, const int *coords, int npoints, int
 
 /**
  * Draw a circle in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param cx		The X coordinate of the centre of the circle.
  * \param cy		The Y coordinate of the centre of the circle.
@@ -694,7 +748,7 @@ static void riscos_draw_update(drawing *dr, int x, int y, int w, int h)
 
 /**
  * Set a graphics clipping rectangle in a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param x		The X coordinate of the top-left of the rectangle (inclusive).
  * \param y		The Y coordinate of the top-left of the rectangle (inclusive).
@@ -713,7 +767,7 @@ static void riscos_clip(drawing *dr, int x, int y, int w, int h)
 
 /**
  * Clear a graphics clipping rectangle from a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  */
 
@@ -728,7 +782,7 @@ static void riscos_unclip(drawing *dr)
 
 /**
  * Start the drawing process within a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  */
 
@@ -743,7 +797,7 @@ static void riscos_start_draw(drawing *dr)
 
 /**
  * End the drawing process within a puzzle window.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  */
 
@@ -758,7 +812,7 @@ static void riscos_end_draw(drawing *dr)
 
 /**
  * Update the text in the status bar.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param *text		The new text to display in the bar.
  */
@@ -772,7 +826,7 @@ static void riscos_status_bar(drawing *dr, const char *text)
 
 /**
  * Create a new blitter
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param w		The required width of the blitter.
  * \param h		The required height of the blitter.
@@ -788,7 +842,7 @@ static blitter *riscos_blitter_new(drawing *dr, int w, int h)
 
 /**
  * Free the resources related to a blitter.
- * 
+ *
  * \param *dr		The drawing structure referencing the target Game Window.
  * \param *bl		The blitter to be freed.
  */
@@ -843,7 +897,7 @@ static void riscos_blitter_load(drawing *dr, blitter *bl, int x, int y)
  * Obtain a random seed for the midend to use. In line with the suggestion
  * in the documentation, we do this by requesting a five byte RTC value
  * from the OS.
- * 
+ *
  * \param **randseed		Pointer to a variable to hold a pointer to the
  *				random seed data.
  * \param *randseedsize		Pointer to variable to hold the size of the
@@ -877,7 +931,7 @@ void get_random_seed(void **randseed, int *randseedsize)
 
 /**
  * Activate periodic callbacks to the midend.
- * 
+ *
  * \param *fe			The frontend handle.
  */
 
@@ -891,7 +945,7 @@ void activate_timer(frontend *fe)
 
 /**
  * Deactivate periodic callbacks to the midend.
- * 
+ *
  * \param *fe			The frontend handle.
  */
 
@@ -907,7 +961,7 @@ void deactivate_timer(frontend *fe)
  * Report a fatal error to the user, using the standard printf() syntax
  * and functionality. Expanded text is limited to 256 characters including
  * a null terminator.
- * 
+ *
  * This function does not return.
  *
  * \param *fmt			A standard printf() formatting string.
@@ -930,7 +984,7 @@ void fatal(const char *fmt, ...)
 /**
  * Return details of the preferred default colour, which will be
  * "Wimp Light Grey".
- * 
+ *
  * \param *fe			The frontend handle.
  * \param *output		An array to hold the colour values.
  */
