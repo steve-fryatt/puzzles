@@ -85,6 +85,7 @@
 
 static void	main_poll_loop(void);
 static void	main_initialise(void);
+static void	main_parse_command_line(int argc, char *argv[]);
 static osbool	main_message_quit(wimp_message *message);
 
 
@@ -103,6 +104,7 @@ int			main_quit_flag = FALSE;
 int main(int argc, char *argv[])
 {
 	main_initialise();
+	main_parse_command_line(argc, argv);
 
 	main_poll_loop();
 
@@ -239,6 +241,24 @@ static void main_initialise(void)
 	hourglass_off();
 }
 
+/**
+ * Take the command line and parse it for useful arguments.
+ *
+ * \param argc			The number of parameters passed.
+ * \param *argv[]		Pointer to the parameter array.
+ */
+
+static void main_parse_command_line(int argc, char *argv[])
+{
+	int	i;
+
+	if (argc > 1) {
+		for (i=1; i<argc; i++) {
+			if (strcmp(argv[i], "-file") == 0 && i+1 < argc)
+				frontend_load_game_file(argv[i+1]);
+		}
+	}
+}
 
 /**
  * Handle incoming Message_Quit.

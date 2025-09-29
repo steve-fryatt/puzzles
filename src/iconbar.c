@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt
+/* Copyright 2024-2025, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
@@ -37,6 +37,7 @@
 
 /* SF-Lib header files. */
 
+#include "sflib/dataxfer.h"
 #include "sflib/event.h"
 #include "sflib/icons.h"
 #include "sflib/ihelp.h"
@@ -72,6 +73,7 @@
 static void	iconbar_click_handler(wimp_pointer *pointer);
 static void	iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *selection);
 static osbool	iconbar_proginfo_web_click(wimp_pointer *pointer);
+static osbool	iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, char *filename, void *data);
 
 /* Global variables. */
 
@@ -121,6 +123,9 @@ void iconbar_initialise(void)
 	event_add_window_mouse_event(wimp_ICON_BAR, iconbar_click_handler);
 	event_add_window_menu(wimp_ICON_BAR, iconbar_menu);
 	event_add_window_menu_selection(wimp_ICON_BAR, iconbar_menu_selection);
+
+	dataxfer_set_drop_target(dataxfer_TYPE_PUZZLE, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
+	dataxfer_set_load_type(dataxfer_TYPE_PUZZLE, iconbar_load_puzzle_file, NULL);
 }
 
 
@@ -189,3 +194,23 @@ static osbool iconbar_proginfo_web_click(wimp_pointer *pointer)
 	return TRUE;
 }
 
+/**
+ * Handle attempts to load Puzzle files to the iconbar.
+ *
+ * \param w			The target window handle.
+ * \param i			The target icon handle.
+ * \param filetype		The filetype being loaded.
+ * \param *filename		The name of the file being loaded.
+ * \param *data			Unused NULL pointer.
+ * \return			TRUE on loading; FALSE on passing up.
+ */
+
+static osbool iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, char *filename, void *data)
+{
+	if (filetype != dataxfer_TYPE_PUZZLE)
+		return FALSE;
+
+	frontend_load_game_file(filename);
+
+	return TRUE;
+}

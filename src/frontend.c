@@ -94,7 +94,7 @@ static struct frontend *frontend_list = NULL;
 static osbool frontend_message_mode_change(wimp_message *message);
 static void frontend_negotiate_game_size(struct frontend *fe);
 static void frontend_write(void *ctx, const void *buf, int len);
-static bool frontend_read(void *ctx, const void *buf, int len);
+static bool frontend_read(void *ctx, void *buf, int len);
 static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
 static void riscos_draw_rect(drawing *dr, int x, int y, int w, int h, int colour);
 static void riscos_draw_line(drawing *dr, int x1, int y1, int x2, int y2, int colour);
@@ -164,6 +164,48 @@ static const struct drawing_api riscos_drawing = {
 void frontend_initialise(void)
 {
 	event_add_message_handler(message_MODE_CHANGE, EVENT_MESSAGE_INCOMING, frontend_message_mode_change);
+}
+
+/**
+ * Load a game file into a new game instance, and open its window.
+ *
+ * \param *filename	The filename of the game to be loaded.
+ */
+void frontend_load_game_file(char *filename)
+{
+	char *gamename = NULL;
+	const char *error = NULL;
+	FILE *file = NULL;
+
+	if (filename == NULL)
+		return;
+
+	/* Open the file */
+
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		error_msgs_report_error("FileLoadFail");
+		return;
+	}
+
+	hourglass_on();
+
+	error = identify_game(&gamename, frontend_read, file);
+	if (error != NULL) {
+		fclose(file);
+		hourglass_off();
+		error_msgs_report_error("FileLoadFail");
+		return;
+	}
+
+	debug_printf("Load %s from %s", gamename, filename);
+
+	/* Close the file and set the filetype. */
+
+	fclose(file);
+	free(gamename);
+
+	hourglass_off();
 }
 
 /**
@@ -584,6 +626,16 @@ osbool frontend_save_game_file(struct frontend *fe, char *filename)
 	return TRUE;
 }
 
+/**
+ * An frwite() wrapper for use by midend serialisation routines.
+ *
+ * \param *ctx			The context pointer, which is the FILE struct
+ *				in use for IO.
+ * \param *buf			Pointer to the buffer containing text to be
+ *				written.
+ * \param len			The number of characters to be written.
+ */
+
 static void frontend_write(void *ctx, const void *buf, int len)
 {
 	FILE *file = ctx;
@@ -592,12 +644,30 @@ static void frontend_write(void *ctx, const void *buf, int len)
 		fwrite(buf, sizeof(char), len, file);
 }
 
-static bool frontend_read(void *ctx, const void *buf, int len)
+/**
+ * An fread() wrapped for use by midend serialisation routines.
+ *
+ * \param *ctx			The context pointer, which is the FILE struct
+ *				in use for IO.
+ * \param *buf			Pointer to the buffer to hold the text read in.
+ * \param len			The number of characters to be read.
+ * \return			TRUE on success; FALSE on failure.
+ */
+
+static bool frontend_read(void *ctx, void *buf, int len)
 {
-	return FALSE;
+	FILE *file = ctx;
+
+	if (ctx == NULL || buf == NULL)
+		return FALSE;
+
+	if (fread(buf, sizeof(char), len, file) < len)
+		return FALSE;
+
+	return TRUE;
 }
 
-/* Below this point are the draing API calls. */
+/* Below this point are the drawing API calls. */
 
 /**
  * Write a line of text in a puzzle window.

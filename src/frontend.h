@@ -72,6 +72,13 @@ struct frontend;
 void frontend_initialise(void);
 
 /**
+ * Load a game file into a new game instance, and open its window.
+ *
+ * \param *filename	The filename of the game to be loaded.
+ */
+void frontend_load_game_file(char *filename);
+
+/**
  * Initialise a new game and open its window.
  *
  * \param game_index	The index into gamelist[] of the required game.
