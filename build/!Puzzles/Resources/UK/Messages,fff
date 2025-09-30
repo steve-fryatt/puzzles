@@ -64,13 +64,14 @@ BadBlitterSet:The blitter to be deleted was not found in the set.
 
 FileSaveFail:The file could not be saved.
 FileLoadFail:The file could not be loaded.
+FileLoadErr:An error occurred loading the file: %0.
 DragSave:To save, enter a full pathname or drag the file to a directory viewer.
 
 # Interactive Help for windows and icons.
 #
 # Window icon data (particularly toolbar items) may be in menu data when duplicates exist.
 
-Help.IconBar:\TPuzzles application: a version of Simon Tatham's Portable Puzzles.|M\Schoose a new puzzle to play.
+Help.IconBar:\TPuzzles application: a version of Simon Tatham's Portable Puzzles.|M\Schoose a new puzzle to play.|MDrop a saved game file on the icon to load it.
 
 Help.Index:\Tindex of puzzles included in Simon Tatham's Portable Puzzles.|MClick \s over a puzzle to open a copy in a new window.|M\Aopen a copy of the puzzle and close the index window.
 Help.Index.blackbox:\Sto play Black Box.|MLocate the balls inside the box by firing lasers and observing how they are deflected or absorbed.

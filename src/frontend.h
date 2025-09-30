@@ -83,9 +83,11 @@ void frontend_load_game_file(char *filename);
  *
  * \param game_index	The index into gamelist[] of the required game.
  * \param *pointer	The pointer at which to open the game.
+ * \param *file		A file from which to load the game state, or NULL
+ *			to create a new game from scratch.
  */
 
-void frontend_create_instance(int game_index, wimp_pointer *pointer);
+void frontend_create_instance(int game_index, wimp_pointer *pointer, FILE *file);
 
 /**
  * Delete a frontend instance.

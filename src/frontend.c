@@ -31,6 +31,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <fenv.h>
 
 /* Acorn C header files */
@@ -175,7 +176,9 @@ void frontend_load_game_file(char *filename)
 {
 	char *gamename = NULL;
 	const char *error = NULL;
+	int game_index = -1;
 	FILE *file = NULL;
+	wimp_pointer pointer;
 
 	if (filename == NULL)
 		return;
@@ -190,20 +193,36 @@ void frontend_load_game_file(char *filename)
 
 	hourglass_on();
 
+	/* Find the game that the file relates to. */
+
 	error = identify_game(&gamename, frontend_read, file);
 	if (error != NULL) {
 		fclose(file);
 		hourglass_off();
-		error_msgs_report_error("FileLoadFail");
+		error_msgs_param_report_error("FileLoadErr", (char *) error, NULL, NULL, NULL);
 		return;
 	}
 
-	debug_printf("Load %s from %s", gamename, filename);
+	for (int i = 0; i < gamecount; i++) {
+		if (strcmp(gamename, gamelist[i]->name) == 0) {
+			game_index = i;
+			break;
+		}
+	}
+
+	free(gamename);
+
+	/* If we found a game, load the file. */
+
+	if (game_index >= 0 && game_index < gamecount) {
+		rewind(file);
+		wimp_get_pointer_info(&pointer);
+		frontend_create_instance(game_index, &pointer, file);
+	}
 
 	/* Close the file and set the filetype. */
 
 	fclose(file);
-	free(gamename);
 
 	hourglass_off();
 }
@@ -213,14 +232,17 @@ void frontend_load_game_file(char *filename)
  *
  * \param game_index	The index into gamelist[] of the required game.
  * \param *pointer	The pointer at which to open the game.
+ * \param *file		A file from which to load the game state, or NULL
+ *			to create a new game from scratch.
  */
 
-void frontend_create_instance(int game_index, wimp_pointer *pointer)
+void frontend_create_instance(int game_index, wimp_pointer *pointer, FILE *file)
 {
 	struct frontend *new;
 	osbool status_bar = FALSE;
 	const game *game = NULL;
 	fenv_t fpexcepts;
+	const char *error = NULL;
 
 	/* Sanity check the game index that we're to use. */
 
@@ -275,6 +297,16 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer)
 	feholdexcept(&fpexcepts);
 
 	midend_new_game(new->me);
+
+	if (file != NULL) {
+		error = midend_deserialise(new->me, frontend_read, file);
+		if (error != NULL) {
+			hourglass_off();
+			frontend_delete_instance(new);
+			error_msgs_param_report_error("FileLoadErr", (char *) error, NULL, NULL, NULL);
+			return;
+		}
+	}
 
 	frontend_negotiate_game_size(new);
 
@@ -661,7 +693,7 @@ static bool frontend_read(void *ctx, void *buf, int len)
 	if (ctx == NULL || buf == NULL)
 		return FALSE;
 
-	if (fread(buf, sizeof(char), len, file) < len)
+	if (fread(buf, sizeof(char), len, file) != len)
 		return FALSE;
 
 	return TRUE;
