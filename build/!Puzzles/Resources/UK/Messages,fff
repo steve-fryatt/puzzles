@@ -62,6 +62,9 @@ SpriteBadDims:Invalid canvas dimensions supplied.
 
 BadBlitterSet:The blitter to be deleted was not found in the set.
 
+SolveErr:An error occurred solving the game: %0.
+SetConfigErr:An error occurred setting the game configuration: %0.
+
 FileSaveFail:The file could not be saved.
 FileLoadFail:The file could not be loaded.
 FileLoadErr:An error occurred loading the file: %0.

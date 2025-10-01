@@ -399,7 +399,7 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 	case FRONTEND_ACTION_SOLVE:
 		error = midend_solve(fe->me);
 		if (error != NULL)
-			error_report_error((char *) error);
+			error_msgs_param_report_error("SolveErr", (char *) error, NULL, NULL, NULL);
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
 	case FRONTEND_ACTION_HELP:
@@ -563,7 +563,7 @@ osbool frontend_set_config_info(struct frontend *fe, int type, config_item *conf
 
 	error = midend_set_config(fe->me, type, config_data);
 	if (error != NULL)
-		error_report_error((char *) error);
+		error_msgs_param_report_error("SetConfigErr", (char *) error, NULL, NULL, NULL);
 
 	return (error == NULL) ? TRUE : FALSE;
 }
