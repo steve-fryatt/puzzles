@@ -220,7 +220,7 @@ void frontend_load_game_file(char *filename)
 		frontend_create_instance(game_index, &pointer, file);
 	}
 
-	/* Close the file and set the filetype. */
+	/* Close the file. */
 
 	fclose(file);
 
