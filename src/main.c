@@ -49,7 +49,6 @@
 #include "sflib/ihelp.h"
 #include "sflib/url.h"
 #include "sflib/msgs.h"
-#include "sflib/config.h"
 #include "sflib/errors.h"
 #include "sflib/string.h"
 #include "sflib/event.h"

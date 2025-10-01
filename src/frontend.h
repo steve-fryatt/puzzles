@@ -183,10 +183,11 @@ void frontend_get_config_info(struct frontend *fe, int type, config_item **confi
  * \param *fe			The frontend handle.
  * \param type			The configuration type being supplied.
  * \param *config_data		Pointer to the updated configuration data.
+ * \param save			Should the new config be saved, if applicable?
  * \return			TRUE if successful; FALSE on failure.
  */
 
-osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data);
+osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data, osbool save);
 
 /**
  * Save a game to disc as a Puzzle file.
@@ -197,5 +198,14 @@ osbool frontend_set_config_info(struct frontend *fe, int type, config_item *conf
  */
 
 osbool frontend_save_game_file(struct frontend *fe, char *filename);
+
+/**
+ * Save a frontend's preferences to disc as a config file.
+ *
+ * \param *fe			The frontend handle.
+ * \return			TRUE if successful; else FALSE.
+ */
+
+osbool frontend_save_game_preferences(struct frontend *fe);
 
 #endif

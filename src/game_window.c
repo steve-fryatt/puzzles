@@ -1028,7 +1028,8 @@ static osbool game_window_config_complete(int type, config_item *config_data, en
 	/* If the choices were set, update the configuration. */
 
 	if (outcome & GAME_CONFIG_SET)
-		midend_response = frontend_set_config_info(instance->fe, type, config_data);
+		midend_response = frontend_set_config_info(instance->fe, type, config_data,
+				(outcome & GAME_CONFIG_SAVE) ? TRUE : FALSE);
 
 	/* Delete our reference to the dialogue unless Hold Open is requested. */
 

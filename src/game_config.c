@@ -1,4 +1,4 @@
-/* Copyright 2024, Stephen Fryatt
+/* Copyright 2024-2025, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
@@ -196,7 +196,7 @@ struct game_config_block {
 	 * Callback to the front-end instance which called us, when we have user actions to report.
 	 */
 
-	void *client_data;		
+	void *client_data;
 	osbool (*callback)(int type, config_item *config, enum game_config_outcome, void *data);
 };
 
@@ -247,7 +247,7 @@ void game_config_initialise(void)
 	entry = msgs_lookup("OptionTitle:Options", buffer, GAME_CONFIG_MENU_TITLE_LEN);
 	if (entry == NULL)
 		error_msgs_report_fatal("LookupFailedCMenu");
-	
+
 	game_config_popup_menu_title = strdup(entry);
 
 	if (game_config_popup_menu_title == NULL)
@@ -498,6 +498,11 @@ static void game_config_click_handler(wimp_pointer *pointer)
 			game_config_process_user_action(instance, GAME_CONFIG_SET);
 		else if (pointer->buttons == wimp_CLICK_ADJUST)
 			game_config_process_user_action(instance, GAME_CONFIG_SET | GAME_CONFIG_HOLD_OPEN);
+	} else if (pointer->i == instance->action_save) {
+		if (pointer->buttons == wimp_CLICK_SELECT)
+			game_config_process_user_action(instance, GAME_CONFIG_SET | GAME_CONFIG_SAVE);
+		else if (pointer->buttons == wimp_CLICK_ADJUST)
+			game_config_process_user_action(instance, GAME_CONFIG_SET | GAME_CONFIG_SAVE | GAME_CONFIG_HOLD_OPEN);
 	} else if (pointer->i == instance->action_cancel) {
 		if (pointer->buttons == wimp_CLICK_SELECT)
 			game_config_process_user_action(instance, GAME_CONFIG_CANCEL);
@@ -543,7 +548,7 @@ static osbool game_config_keypress_handler(wimp_key *key)
 
 /**
  * Process a user action in a Game Config dialogue box.
- * 
+ *
  * \param *instance	The dialogue box instance.
  * \param outcome	The outcome to be presented to the client.
  */
@@ -636,7 +641,7 @@ static osbool game_config_build_window(struct game_config_block *instance)
  *
  * Whilst the vertical dimension does include the window border areas in
  * its calculation, the horizontal dimensions DO NOT.
- * 
+ *
  * \param *instance	The Game Config instance to be sized.
  * \param *left		Pointer to a variable in which to return the
  *			horizontal work area position of the left
@@ -725,7 +730,7 @@ static osbool game_config_size_window(struct game_config_block *instance, int *l
 /**
  * Calculate the space required for a text widget in a Game Config
  * dialogue.
- * 
+ *
  * \param *item		Pointer to the item definition for the widget.
  * \param *left		Pointer to a variable holding the horizontal
  *			position of the left alignment line, to be updated
@@ -762,7 +767,7 @@ static void game_config_size_text_field(config_item *item, int *left, int *right
 /**
  * Calculate the space required for a combo widget in a Game Config
  * dialogue.
- * 
+ *
  * \param *item		Pointer to the item definition for the widget.
  * \param *left		Pointer to a variable holding the horizontal
  *			position of the left alignment line, to be updated
@@ -839,7 +844,7 @@ static void game_config_size_combo_field(config_item *item, int *left, int *righ
 /**
  * Calculate the space required for an option widget in a Game Config
  * dialogue.
- * 
+ *
  * \param *item		Pointer to the item definition for the widget.
  * \param *left		Pointer to a variable holding the horizontal
  *			position of the left alignment line, to be updated
@@ -869,7 +874,7 @@ static void game_config_size_option_field(config_item *item, int *left, int *rig
 /**
  * Calculate the space required for the action buttons in a Game Config
  * dialogue.
- * 
+ *
  * \param *item		Pointer to the item definition for the widget.
  * \param *left		Pointer to a variable holding the horizontal
  *			position of the left alignment line, to be updated
@@ -898,7 +903,7 @@ static void game_config_size_action_buttons(int *width, int *height, osbool incl
 
 /**
  * Create the icons in a Game Config dialogue instance.
- * 
+ *
  * \param *instance	The instance in which to create the icons.
  * \param left		The left horizontal alignment line, between the
  *			labels and the field, in OS units.
@@ -935,7 +940,7 @@ static osbool game_config_create_icons(struct game_config_block *instance, int l
 
 /**
  * Create an text widget in a Game Config dialogue box.
- * 
+ *
  * \param *instance	The Game Config instance to use.
  * \param left		The horizontal coordinate of the left alignment line.
  * \param right		The horizontal coordinate of the right alignment line.
@@ -977,7 +982,7 @@ static void game_config_create_text_widget(struct game_config_block *instance, i
 
 /**
  * Create a combo widget in a Game Config dialogue box.
- * 
+ *
  * \param *instance	The Game Config instance to use.
  * \param left		The horizontal coordinate of the left alignment line.
  * \param right		The horizontal coordinate of the right alignment line.
@@ -1076,7 +1081,7 @@ static void game_config_create_combo_widget(struct game_config_block *instance, 
 
 /**
  * Create an option widget in a Game Config dialogue box.
- * 
+ *
  * \param *instance	The Game Config instance to use.
  * \param left		The horizontal coordinate of the left alignment line.
  * \param right		The horizontal coordinate of the right alignment line.
@@ -1109,7 +1114,7 @@ static void game_config_create_option_widget(struct game_config_block *instance,
 
 /**
  * Create the action widgets in a Game Config dialogue box.
- * 
+ *
  * \param *instance	The Game Config instance to use.
  * \param left		The horizontal coordinate of the left alignment line.
  * \param right		The horizontal coordinate of the right alignment line.
@@ -1127,16 +1132,20 @@ static void game_config_create_action_widget(struct game_config_block *instance,
 
 	*baseline -= game_config_action_widget.bounding_box.y1 - game_config_action_widget.bounding_box.y0;
 
-	/* Create the icons in the window. */
+	/* Create the icons in the window. Only preferences support saving. */
 
 	instance->action_ok = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_OK, -1, -1, right, *baseline, NULL, 0);
+	if (instance->config_type == CFG_PREFS)
+		instance->action_save = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_SAVE, -1, -1, right, *baseline, NULL, 0);
+	else
+		instance->action_save = wimp_ICON_WINDOW;
 	instance->action_cancel = game_config_create_icon(instance->handle, GAME_WINDOW_TEMPLATE_ICON_CANCEL, -1, -1, right, *baseline, NULL, 0);
 }
 
 /**
  * Set the caret in the first writable field of a Game Config
  * window or, failing that, into the window work area.
- * 
+ *
  * \param *instance	The Game Config instance to take the
  *			caret.
  */
@@ -1162,7 +1171,7 @@ static void game_config_set_caret(struct game_config_block *instance)
 /**
  * Update the fields in a Game Config window to reflect the stored
  * data in the underlying config_item list.
- * 
+ *
  * \param *instance	The Game Config instance to refresh.
  * \return		TRUE if successful; FALSE on failure.
  */
@@ -1209,7 +1218,7 @@ static osbool game_config_copy_to_dialogue(struct game_config_block *instance)
 /**
  * Update the data in the undelying config_item list to reflect the
  * contents of the fields in the associated Game Config window.
- * 
+ *
  * \param *instance	The Game Config instance to refresh.
  * \return		TRUE if successful; FALSE on failure.
  */
@@ -1249,7 +1258,7 @@ static osbool game_config_copy_from_dialogue(struct game_config_block *instance)
 }
 /**
  * Create an icon within a config window.
- * 
+ *
  * On the Y axis, icons will always be plotted relative to the baseline.
  * On the X axis, one of both of their edges may be plotted relative to
  * the supplied centreline, or they may be plotted at updated work area
@@ -1391,7 +1400,7 @@ static void game_config_get_bounding_box(struct game_config_widget *widget, int 
 /**
  * Adjust the coordinates for the icon template so that they are
  * relative to the origin for the widget sat that it belongs to.
- * 
+ *
  * \param *widget	Pointer to the widget set containing the icon.
  * \param x		The X work area coordinate of the widget origin.
  * \param y		The Y work area coordinate of the widget origin.

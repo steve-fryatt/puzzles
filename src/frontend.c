@@ -47,6 +47,7 @@
 
 /* SF-Lib header files. */
 
+#include "sflib/config.h"
 #include "sflib/dataxfer.h"
 #include "sflib/debug.h"
 #include "sflib/errors.h"
@@ -81,6 +82,12 @@ struct frontend {
  */
 
 #define FRONTEND_MAX_FATAL_MESSAGE 256
+
+/**
+ * The maximum length of filename for configuration files.
+ */
+
+#define FRONTEND_MAX_CONFIG_FILENAME 256
 
 /* Global variables. */
 
@@ -551,10 +558,11 @@ void frontend_get_config_info(struct frontend *fe, int type, config_item **confi
  * \param *fe			The frontend handle.
  * \param type			The configuration type being supplied.
  * \param *config_data		Pointer to the updated configuration data.
+ * \param save			Should the new config be saved, if applicable?
  * \return			TRUE if successful; FALSE on failure.
  */
 
-osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data)
+osbool frontend_set_config_info(struct frontend *fe, int type, config_item *config_data, osbool save)
 {
 	const char *error;
 
@@ -564,6 +572,9 @@ osbool frontend_set_config_info(struct frontend *fe, int type, config_item *conf
 	error = midend_set_config(fe->me, type, config_data);
 	if (error != NULL)
 		error_msgs_param_report_error("SetConfigErr", (char *) error, NULL, NULL, NULL);
+
+	if (type == CFG_PREFS && save == TRUE)
+		frontend_save_game_preferences(fe);
 
 	return (error == NULL) ? TRUE : FALSE;
 }
@@ -652,6 +663,51 @@ osbool frontend_save_game_file(struct frontend *fe, char *filename)
 
 	fclose(file);
 	osfile_set_type(filename, (bits) dataxfer_TYPE_PUZZLE);
+
+	hourglass_off();
+
+	return TRUE;
+}
+
+/**
+ * Save a frontend's preferences to disc as a config file.
+ *
+ * \param *fe			The frontend handle.
+ * \return			TRUE if successful; else FALSE.
+ */
+
+osbool frontend_save_game_preferences(struct frontend *fe)
+{
+	char filename[FRONTEND_MAX_CONFIG_FILENAME];
+	const game *game = NULL;
+	FILE *file;
+
+	/* Get a filename for the config file. */
+
+	game = midend_which_game(fe->me);
+	if (game == NULL)
+		return FALSE;
+
+	config_find_save_file(filename, FRONTEND_MAX_CONFIG_FILENAME, (char *) game->htmlhelp_topic);
+
+	debug_printf("Attempt to save to %s", filename);
+
+	/* Open the file */
+
+	file = fopen(filename, "w");
+	if (file == NULL) {
+		error_msgs_report_error("FileSaveFail");
+		return FALSE;
+	}
+
+	hourglass_on();
+
+	midend_save_prefs(fe->me, frontend_write, file);
+
+	/* Close the file and set the filetype. */
+
+	fclose(file);
+	osfile_set_type(filename, (bits) osfile_TYPE_TEXT);
 
 	hourglass_off();
 
