@@ -195,7 +195,7 @@ static void main_initialise(void)
 
 	/* Initialise the configuration. */
 
-	config_initialise(task_name, "Puzzles", "<Puzzles$Dir>");
+	config_initialise(task_name, "Puzzles", "<Puzzles$Dir>", "Choices");
 
 	config_load();
 
