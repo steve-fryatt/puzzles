@@ -144,6 +144,8 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 
 <p>Where supported, brings up a dialog allowing you to configure personal preferences about a particular game. Some of these preferences will be specific to a particular game; others will be common to all games.</p>
 
+<p>Within the <window>Preferences</window> dialogue, click <icon>Set</icon> to store the options and apply them to the associated <window>Game</window> window &ndash; this will cause a new game to be generated. The <icon>Save</icon> button will save the preferences for future instances of the puzzle as well. Preferences are saved separately for each of the puzzles in the collection.</p>
+
 <p>One option common to all games allows you to turn off the one-key shortcuts like <key>N</key> for new game or <key>Q</key> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <key>Ctrl</key> key.</p></li>
 </dl>
 </section>

@@ -199,13 +199,4 @@ osbool frontend_set_config_info(struct frontend *fe, int type, config_item *conf
 
 osbool frontend_save_game_file(struct frontend *fe, char *filename);
 
-/**
- * Save a frontend's preferences to disc as a config file.
- *
- * \param *fe			The frontend handle.
- * \return			TRUE if successful; else FALSE.
- */
-
-osbool frontend_save_game_preferences(struct frontend *fe);
-
 #endif

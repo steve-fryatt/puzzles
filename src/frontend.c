@@ -101,6 +101,8 @@ static struct frontend *frontend_list = NULL;
 
 static osbool frontend_message_mode_change(wimp_message *message);
 static void frontend_negotiate_game_size(struct frontend *fe);
+static osbool frontend_save_game_preferences(struct frontend *fe);
+static osbool frontend_load_game_preferences(struct frontend *fe);
 static void frontend_write(void *ctx, const void *buf, int len);
 static bool frontend_read(void *ctx, void *buf, int len);
 static void riscos_draw_text(drawing *dr, int x, int y, int fonttype, int fontsize, int align, int colour, const char *text);
@@ -300,6 +302,8 @@ void frontend_create_instance(int game_index, wimp_pointer *pointer, FILE *file)
 		frontend_delete_instance(new);
 		return;
 	}
+
+	frontend_load_game_preferences(new);
 
 	feholdexcept(&fpexcepts);
 
@@ -676,7 +680,7 @@ osbool frontend_save_game_file(struct frontend *fe, char *filename)
  * \return			TRUE if successful; else FALSE.
  */
 
-osbool frontend_save_game_preferences(struct frontend *fe)
+static osbool frontend_save_game_preferences(struct frontend *fe)
 {
 	char filename[FRONTEND_MAX_CONFIG_FILENAME];
 	const game *game = NULL;
@@ -689,8 +693,6 @@ osbool frontend_save_game_preferences(struct frontend *fe)
 		return FALSE;
 
 	config_find_save_file(filename, FRONTEND_MAX_CONFIG_FILENAME, (char *) game->htmlhelp_topic);
-
-	debug_printf("Attempt to save to %s", filename);
 
 	/* Open the file */
 
@@ -708,6 +710,46 @@ osbool frontend_save_game_preferences(struct frontend *fe)
 
 	fclose(file);
 	osfile_set_type(filename, (bits) osfile_TYPE_TEXT);
+
+	hourglass_off();
+
+	return TRUE;
+}
+
+/**
+ * Load a frontend's preferences from a config file on disc.
+ *
+ * \param *fe			The frontend handle.
+ * \return			TRUE if successful; else FALSE.
+ */
+
+static osbool frontend_load_game_preferences(struct frontend *fe)
+{
+	char filename[FRONTEND_MAX_CONFIG_FILENAME];
+	const game *game = NULL;
+	FILE *file;
+
+	/* Get a filename for the config file. */
+
+	game = midend_which_game(fe->me);
+	if (game == NULL)
+		return FALSE;
+
+	config_find_load_file(filename, FRONTEND_MAX_CONFIG_FILENAME, (char *) game->htmlhelp_topic);
+
+	/* Open the file */
+
+	file = fopen(filename, "r");
+	if (file == NULL)
+		return FALSE;
+
+	hourglass_on();
+
+	midend_load_prefs(fe->me, frontend_read, file);
+
+	/* Close the file and set the filetype. */
+
+	fclose(file);
 
 	hourglass_off();
 
