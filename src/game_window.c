@@ -196,7 +196,7 @@ void game_window_initialise(void)
 
 	/* The SaveAs windows. */
 
-	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_05f", game_window_save_game);
+	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_1f2", game_window_save_game);
 
 	/* The window menu. */
 

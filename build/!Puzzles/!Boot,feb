@@ -28,11 +28,11 @@ If "<Puzzles$Dir>"="" Then Set Puzzles$Dir <Obey$Dir>
 
 | Set the filetype information.
 
-Set File$Type_05F Puzzle
+Set File$Type_1F2 Puzzle
 
 | Claim Puzzle files if these have not been claimed already.
 
-If "<Alias$@RunType_05F>" = "" Then Set Alias$@RunType_05F Run <Puzzles$Dir>.!Run -file %%*0
+If "<Alias$@RunType_1F2>" = "" Then Set Alias$@RunType_1F2 Run <Puzzles$Dir>.!Run -file %%*0
 
 | Set the application sprites.
 
