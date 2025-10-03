@@ -121,6 +121,8 @@ OBJS =  blitter.o			\
 
 CCFLAGS = -DCOMBINED -DNO_TGMATH_H
 
+BUILDINFO := $(shell cd src/core; git rev-parse --short=7 HEAD)
+
 include $(SFTOOLS_MAKE)/CApp
 
 # Copy the games list into the appropriate place.

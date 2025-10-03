@@ -25,7 +25,7 @@
 # General application details
 
 TaskName:Puzzles
-Version:%0 (%1)
+Version:%0 (%1) [Upstream %2]
 
 TaskSpr:!puzzles
 SupportURL:http://www.stevefryatt.org.uk/risc-os/games
