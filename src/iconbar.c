@@ -33,6 +33,7 @@
 
 /* OSLib header files */
 
+#include "oslib/osfile.h"
 #include "oslib/wimp.h"
 
 /* SF-Lib header files. */
@@ -125,6 +126,8 @@ void iconbar_initialise(void)
 	event_add_window_menu_selection(wimp_ICON_BAR, iconbar_menu_selection);
 
 	dataxfer_set_drop_target(dataxfer_TYPE_PUZZLE, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
+	dataxfer_set_drop_target(osfile_TYPE_DATA, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
+	dataxfer_set_drop_target(osfile_TYPE_TEXT, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
 	dataxfer_set_load_type(dataxfer_TYPE_PUZZLE, iconbar_load_puzzle_file, NULL);
 }
 
@@ -207,7 +210,7 @@ static osbool iconbar_proginfo_web_click(wimp_pointer *pointer)
 
 static osbool iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, char *filename, void *data)
 {
-	if (filetype != dataxfer_TYPE_PUZZLE)
+	if (filetype != dataxfer_TYPE_PUZZLE && filetype != osfile_TYPE_DATA && filetype != osfile_TYPE_TEXT)
 		return FALSE;
 
 	frontend_load_game_file(filename);
