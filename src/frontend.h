@@ -54,6 +54,7 @@ enum frontend_event_outcome {
 enum frontend_action {
 	FRONTEND_ACTION_NONE,
 	FRONTEND_ACTION_SIMPLE_NEW,
+	FRONTEND_ACTION_COPY_AS_TEXT,
 	FRONTEND_ACTION_SOLVE,
 	FRONTEND_ACTION_RESTART,
 	FRONTEND_ACTION_HELP
@@ -153,6 +154,8 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
  *				the currently-active preset.
  * \param *can_configure	Pointer to variable in which to return
  *				the configure state of the midend.
+ * \param *can_copy		Pointer to variable in which to return
+ *				the copy text state of the midend.
  * \param *can_undo		Pointer to variable in which to return
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
@@ -162,7 +165,8 @@ void frontend_timer_callback(struct frontend *fe, float tplus);
  */
 
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
-		int *current_preset, osbool *can_configure, osbool *can_undo, osbool *can_redo, osbool *can_solve);
+		int *current_preset, osbool *can_configure, osbool *can_copy,
+		osbool *can_undo, osbool *can_redo, osbool *can_solve);
 
 /**
  * Return details of a configuration set from the midend.

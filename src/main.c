@@ -59,6 +59,7 @@
 
 #include "main.h"
 
+#include "clipboard.h"
 #include "frontend.h"
 #include "help.h"
 #include "index_window.h"
@@ -87,13 +88,18 @@ static void	main_initialise(void);
 static void	main_parse_command_line(int argc, char *argv[]);
 static osbool	main_message_quit(wimp_message *message);
 
+/**
+ * Memory handlers for the library modules.
+ */
+
+static struct dataxfer_memory main_memory_handlers;
 
 /*
  * Cross file global variables
  */
 
-wimp_t			main_task_handle;
-int			main_quit_flag = FALSE;
+wimp_t main_task_handle;
+int main_quit_flag = FALSE;
 
 
 /**
@@ -199,6 +205,12 @@ static void main_initialise(void)
 
 	config_load();
 
+	/* Set up the dataxfer module's memory handlers, to use malloc() and friends. */
+
+	main_memory_handlers.alloc = malloc;
+	main_memory_handlers.realloc = realloc;
+	main_memory_handlers.free = free;
+
 	/* Load the menu structure. */
 
 	if (!resources_find_file(resources, res_temp, MAIN_FILENAME_BUFFER_LEN, "Menus", osfile_TYPE_DATA))
@@ -226,7 +238,8 @@ static void main_initialise(void)
 	saveas_initialise("SaveAs", NULL);
 	help_initialise(resources);
 	ihelp_initialise();
-	dataxfer_initialise(main_task_handle, NULL);
+	dataxfer_initialise(main_task_handle, &main_memory_handlers);
+	clipboard_initialise();
 	iconbar_initialise();
 	index_window_initialise();
 	game_window_initialise();

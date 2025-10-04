@@ -71,6 +71,8 @@ menu(GameWindowMenu, "")
 		d_box(SaveAs) {
 			warning;
 		}
+	}
+	item("Copy as text") {
 		dotted;
 	}
 	item("Restart");

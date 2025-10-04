@@ -69,6 +69,9 @@ FileSaveFail:The file could not be saved.
 FileLoadFail:The file could not be loaded.
 FileLoadErr:An error occurred loading the file: %0.
 DragSave:To save, enter a full pathname or drag the file to a directory viewer.
+RAMXferFail:The data was not received correctly by the other application.
+ClipAllocFail:Could not allocate memory to create the clipboard.
+NoRAMforXFer:There was not enough memory to paste the data.
 
 # Interactive Help for windows and icons.
 #
@@ -145,15 +148,16 @@ Help.IndexMenu.0200:\Sread the online manual for the game under the pointer.
 
 Help.GameMenu.00:\Rselect a new game configuration.
 Help.GameMenu.01:\Rsave the current game state to a file.
-Help.GameMenu.02:\Sre-start the current game.
-Help.GameMenu.03:\Sstart a new game.
-Help.GameMenu.04:\Sread or supply the games specific unique ID.
-Help.GameMenu.05:\Sread or supply the game's random seed.
-Help.GameMenu.06:\Sshow the solution to the current game.
-Help.GameMenu.07:\Sread the online manual for the game.
-Help.GameMenu.08:\Sundo the most recent move in the current game.
-Help.GameMenu.09:\Sredo the most recent move to have been undone in the current game.
-Help.GameMenu.10:\Sconfigure the game options.
+Help.GameMenu.02:\Scopy the game to the clipboard in text format.
+Help.GameMenu.03:\Sre-start the current game.
+Help.GameMenu.04:\Sstart a new game.
+Help.GameMenu.05:\Sread or supply the games specific unique ID.
+Help.GameMenu.06:\Sread or supply the game's random seed.
+Help.GameMenu.07:\Sshow the solution to the current game.
+Help.GameMenu.08:\Sread the online manual for the game.
+Help.GameMenu.09:\Sundo the most recent move in the current game.
+Help.GameMenu.10:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.11:\Sconfigure the game options.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.

@@ -44,6 +44,7 @@ EXTRASRCPREREQ := $(CORE)/$(GAMES)
 
 OBJS =  blitter.o			\
 	canvas.o			\
+	clipboard.o			\
 	frontend.o			\
 	game_draw.o			\
 	game_config.o			\

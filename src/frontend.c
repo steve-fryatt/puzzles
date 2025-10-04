@@ -59,6 +59,7 @@
 
 #include "core/puzzles.h"
 
+#include "clipboard.h"
 #include "game_window.h"
 #include "help.h"
 
@@ -385,7 +386,7 @@ void frontend_delete_instance(struct frontend *fe)
 
 enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum frontend_action action)
 {
-	const char *error;
+	const char *clipboard, *error;
 	enum frontend_event_outcome outcome = FRONTEND_EVENT_UNKNOWN;
 	fenv_t fpexcepts;
 	const game *game;
@@ -403,6 +404,11 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 		hourglass_off();
 		outcome = FRONTEND_EVENT_ACCEPTED;
 		break;
+	case FRONTEND_ACTION_COPY_AS_TEXT:
+		clipboard = midend_text_format(fe->me);
+		clipboard_copy_text((char *) clipboard);
+		outcome = FRONTEND_EVENT_ACCEPTED;
+		break;
 	case FRONTEND_ACTION_RESTART:
 		midend_restart_game(fe->me);
 		outcome = FRONTEND_EVENT_ACCEPTED;
@@ -417,6 +423,7 @@ enum frontend_event_outcome frontend_perform_action(struct frontend *fe, enum fr
 		game = midend_which_game(fe->me);
 		if (game != NULL)
 			help_launch(game->htmlhelp_topic);
+		outcome = FRONTEND_EVENT_ACCEPTED;
 	default:
 		outcome = FRONTEND_EVENT_REJECTED;
 		break;
@@ -500,6 +507,8 @@ void frontend_timer_callback(frontend *fe, float tplus)
  *				the currently-active preset.
  * \param *can_configure	Pointer to variable in which to return
  *				the configure state of the midend.
+ * \param *can_copy		Pointer to variable in which to return
+ *				the copy text state of the midend.
  * \param *can_undo		Pointer to variable in which to return
  *				the undo state of the midend.
  * \param *can_redo		Pointer to variable in which to return
@@ -509,7 +518,8 @@ void frontend_timer_callback(frontend *fe, float tplus)
  */
 
 void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, int *limit,
-		int *current_preset, osbool *can_configure, osbool *can_undo, osbool *can_redo, osbool *can_solve)
+		int *current_preset, osbool *can_configure, osbool *can_copy,
+		osbool *can_undo, osbool *can_redo, osbool *can_solve)
 {
 	const game *game;
 
@@ -523,6 +533,9 @@ void frontend_get_menu_info(struct frontend *fe, struct preset_menu **presets, i
 
 	if (can_redo != NULL)
 		*can_redo = midend_can_redo(fe->me) ? TRUE : FALSE;
+
+	if (can_copy != NULL)
+		*can_copy = midend_can_format_as_text_now(fe->me);
 
 	if (presets != NULL)
 		*presets = midend_get_presets(fe->me, limit);

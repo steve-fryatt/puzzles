@@ -77,15 +77,16 @@
 
 #define GAME_WINDOW_MENU_PRESETS 0
 #define GAME_WINDOW_MENU_SAVE_GAME 1
-#define GAME_WINDOW_MENU_RESTART 2
-#define GAME_WINDOW_MENU_NEW 3
-#define GAME_WINDOW_MENU_SPECIFIC 4
-#define GAME_WINDOW_MENU_RANDOM_SEED 5
-#define GAME_WINDOW_MENU_SOLVE 6
-#define GAME_WINDOW_MENU_HELP 7
-#define GAME_WINDOW_MENU_UNDO 8
-#define GAME_WINDOW_MENU_REDO 9
-#define GAME_WINDOW_MENU_PREFERENCES 10
+#define GAME_WINDOW_MENU_COPY_AS_TEXT 2
+#define GAME_WINDOW_MENU_RESTART 3
+#define GAME_WINDOW_MENU_NEW 4
+#define GAME_WINDOW_MENU_SPECIFIC 5
+#define GAME_WINDOW_MENU_RANDOM_SEED 6
+#define GAME_WINDOW_MENU_SOLVE 7
+#define GAME_WINDOW_MENU_HELP 8
+#define GAME_WINDOW_MENU_UNDO 9
+#define GAME_WINDOW_MENU_REDO 10
+#define GAME_WINDOW_MENU_PREFERENCES 11
 
 /* The height of the status bar. */
 
@@ -961,6 +962,9 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 	case GAME_WINDOW_MENU_NEW:
 		frontend_perform_action(instance->fe, FRONTEND_ACTION_SIMPLE_NEW);
 		break;
+	case GAME_WINDOW_MENU_COPY_AS_TEXT:
+		frontend_perform_action(instance->fe, FRONTEND_ACTION_COPY_AS_TEXT);
+		break;
 	case GAME_WINDOW_MENU_RESTART:
 		frontend_perform_action(instance->fe, FRONTEND_ACTION_RESTART);
 		break;
@@ -1107,7 +1111,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	struct preset_menu *presets = NULL;
 	wimp_menu *presets_submenu = NULL;
 	int presets_limit = 0, current_preset = 0;
-	osbool can_configure = FALSE, can_undo = FALSE, can_redo = FALSE, can_solve = FALSE;
+	osbool can_configure = FALSE, can_copy = FALSE, can_undo = FALSE, can_redo = FALSE, can_solve = FALSE;
 
 	if (menu != game_window_menu)
 		return;
@@ -1117,7 +1121,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 		return;
 
 	frontend_get_menu_info(instance->fe, &presets, &presets_limit,
-			&current_preset, &can_configure, &can_undo, &can_redo, &can_solve);
+			&current_preset, &can_configure, &can_copy, &can_undo, &can_redo, &can_solve);
 
 	/* The menu is being newly opened, so set up the one-off data. */
 
