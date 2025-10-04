@@ -67,7 +67,7 @@ The corresponding source files for the backends should also be added to the `OBJ
 
 The RISC OS post uses its own manual, defined in `manual/Source.xml`. This is based on the upstream manual supplied in Halibut format in `core/puzzles.but`, but contains modifications to reflect the RISC OS interface.
 
-The `manual/Source.xml` file contains a comment near the top which should ke kept up to date with the commit hash of the last upstream manual to be merged in from upstream. When new changes are brought in from the upstream repository, a diff of `core/puzzles.but` can be done between this revision and HEAD, to show the changes which must be manually edited in to the RISC OS manual source.
+The `manual/Source.xml` file contains a comment near the top which should ke kept up to date with the commit hash of the last upstream manual to be merged in to the RISC OS version. When new changes are brought in from the upstream repository, a diff of `core/puzzles.but` can be done between this revision and HEAD, to show the changes which must be manually edited in to the RISC OS manual source.
 
 ### Game Descriptions
 
