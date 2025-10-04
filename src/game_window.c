@@ -85,10 +85,11 @@
 #define GAME_WINDOW_MENU_HELP 7
 
 #define GAME_WINDOW_GAME_SUBMENU_SAVE_GAME 0
-#define GAME_WINDOW_GAME_SUBMENU_COPY_AS_TEXT 1
-#define GAME_WINDOW_GAME_SUBMENU_NEW 2
-#define GAME_WINDOW_GAME_SUBMENU_RESTART 3
-#define GAME_WINDOW_GAME_SUBMENU_SOLVE 4
+#define GAME_WINDOW_GAME_SUBMENU_SAVE_SPRITE 1
+#define GAME_WINDOW_GAME_SUBMENU_COPY_AS_TEXT 2
+#define GAME_WINDOW_GAME_SUBMENU_NEW 3
+#define GAME_WINDOW_GAME_SUBMENU_RESTART 4
+#define GAME_WINDOW_GAME_SUBMENU_SOLVE 5
 
 /* The height of the status bar. */
 
@@ -159,6 +160,10 @@ struct game_window_block {
 
 static struct saveas_block *game_window_saveas_game = NULL;
 
+/* The handle of the sprite save dialogue. */
+
+static struct saveas_block *game_window_saveas_sprite = NULL;
+
 /* The Game Window menu. */
 
 static wimp_menu *game_window_menu = NULL;
@@ -181,6 +186,7 @@ static void game_window_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_mes
 static void game_window_menu_close_handler(wimp_w w, wimp_menu *menu);
 static osbool game_window_timer_callback(os_t time, void *data);
 static osbool game_window_save_game(char *filename, osbool selection, void *data);
+static osbool game_window_save_sprite(char *filename, osbool selection, void *data);
 
 /**
  * Initialise the game windows and their associated menus and dialogues.
@@ -201,6 +207,7 @@ void game_window_initialise(void)
 	/* The SaveAs windows. */
 
 	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_1f2", game_window_save_game);
+	game_window_saveas_sprite = saveas_create_dialogue(FALSE, "file_ff9", game_window_save_sprite);
 
 	/* The window menu. */
 
@@ -1131,6 +1138,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 		/* Initialise the SaveAs dialogues. */
 
 		saveas_initialise_dialogue(game_window_saveas_game, NULL, "DefGameFile", NULL, FALSE, FALSE, instance);
+		saveas_initialise_dialogue(game_window_saveas_sprite, NULL, "DefSpriteFile", NULL, FALSE, FALSE, instance);
 
 		/* Set the menu title. */
 
@@ -1176,6 +1184,10 @@ static void game_window_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_mes
 		switch (warning->selection.items[1]) {
 		case GAME_WINDOW_GAME_SUBMENU_SAVE_GAME:
 			saveas_prepare_dialogue(game_window_saveas_game);
+			wimp_create_sub_menu(warning->sub_menu, warning->pos.x, warning->pos.y);
+			break;
+		case GAME_WINDOW_GAME_SUBMENU_SAVE_SPRITE:
+			saveas_prepare_dialogue(game_window_saveas_sprite);
 			wimp_create_sub_menu(warning->sub_menu, warning->pos.x, warning->pos.y);
 			break;
 		}
@@ -1962,6 +1974,28 @@ static osbool game_window_save_game(char *filename, osbool selection, void *data
 		return FALSE;
 
 	frontend_save_game_file(instance->fe, filename);
+
+	return TRUE;
+}
+
+
+/**
+ * Callback handler for saving a game canvas sprite.
+ *
+ * \param *filename		Pointer to the filename to save to.
+ * \param selection		FALSE, as no selections are supported.
+ * \param *data			Pointer to the game window instance to be saved.
+ * \return			TRUE if successful; else FALSE on error.
+ */
+
+static osbool game_window_save_sprite(char *filename, osbool selection, void *data)
+{
+	struct game_window_block *instance = data;
+
+	if (instance == NULL || filename == NULL)
+		return FALSE;
+
+	canvas_save_sprite(instance->canvas, filename);
 
 	return TRUE;
 }

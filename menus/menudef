@@ -88,6 +88,11 @@ menu(GameWindowGameSubmenu, "Game") {
 			warning;
 		}
 	}
+	item("Save sprite") {
+		d_box(SaveAs) {
+			warning;
+		}
+	}
 	item("Copy as text") {
 		dotted;
 	}

@@ -39,6 +39,7 @@ OptionTitle:Options
 # Default filenames
 
 DefGameFile:Puzzle
+DefSpriteFile:GameBoard
 
 # Messages and errors
 
@@ -59,6 +60,7 @@ NoHelp:Unable to find a suitable Help file to display.
 SpriteBadArea:We can only work with sprite areas containing single sprites.
 SpriteNoSpaceForPalette:There isn't enough space for the palette.
 SpriteBadDims:Invalid canvas dimensions supplied.
+SpriteSaveFailed:The sprite could not be saved: %0.
 
 BadBlitterSet:The blitter to be deleted was not found in the set.
 
@@ -155,10 +157,11 @@ Help.GameMenu.05:\Sredo the most recent move to have been undone in the current 
 Help.GameMenu.06:\Sconfigure the game options.
 Help.GameMenu.07:\Sread the online manual for the game.
 Help.GameMenu.0000:\Rsave the current game state to a file.
-Help.GameMenu.0001:\Scopy the game to the clipboard in text format.
-Help.GameMenu.0002:\Sstart a new game.
-Help.GameMenu.0003:\Sre-start the current game.
-Help.GameMenu.0004:\Sshow the solution to the current game.
+Help.GameMenu.0001:\Rsave the current game board as a sprite.
+Help.GameMenu.0002:\Scopy the game to the clipboard in text format.
+Help.GameMenu.0003:\Sstart a new game.
+Help.GameMenu.0004:\Sre-start the current game.
+Help.GameMenu.0005:\Sshow the solution to the current game.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.

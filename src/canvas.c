@@ -891,9 +891,8 @@ void canvas_save_sprite(struct canvas_block *instance, char *filename)
 		return;
 
 	error = xosspriteop_save_sprite_file(osspriteop_USER_AREA, instance->sprite_area, filename);
-	debug_printf("Saved sprites: outcome=0x%x", error);
 	if (error != NULL)
-		debug_printf("\\RFailed to save: %s", error->errmess);
+		error_msgs_param_report_error("SpriteSaveFailed", error->errmess, NULL, NULL, NULL);
 }
 
 /**
