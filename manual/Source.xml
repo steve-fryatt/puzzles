@@ -93,12 +93,54 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>The <window>Game</window> window menu offers a number of options for interacting with the game, which are common to most of the games. If the window has input focus, some standard keyboard shortcuts can also be used. The available actions are described in the list here, and in the following sections.</p>
 
 <dl>
-<li><title><menu>New game</menu> (<key>N</key> or <key>Ctrl-N</key>)</title>
+<li><title><menu>Game</menu></title>
 
-<p>Starts a new game, with a random initial state.</p></li>
+<p>Leads to a sub-menu containing a number of actions relating to the current game.</p></li>
 
 
-<li><title><menu>Save game</menu></title>
+<li><title><menu>Type</menu></title>
+
+<p>Leads to a sub-menu containing a number of preset game configurations and an option to create custom configurations.</p></li>
+
+
+<li><title><menu>Specific game...</menu></title>
+
+<p>Open a dialogue box allowing the <ref id="playing-game-id">specific game ID</ref> for the current game to be copied out or a new game to be created from another ID.</p></li>
+
+
+<li><title><menu>Random seed...</menu></title>
+
+<p>Open a dialogue box allowing the <ref id="playing-game-id">random seed</ref> for the current game to be copied out or a new game to be created from another seed.</p></li>
+
+
+<li><title><menu>Undo</menu> (<key>U</key>, <key>Ctrl-Z</key>, <key>Ctrl-_</key>, or <key>*</key>)</title>
+
+<p>Undoes a single move. (You can undo moves back to the start of the session.)</p></li>
+
+
+<li><title><menu>Redo</menu> (<key>R</key>, <key>Ctrl-R</key> or <key>#</key>)</title>
+
+<p>Redoes a previously undone move.</p></li>
+
+
+<li><title><menu>Preferences...</menu></title>
+
+<p>Where supported, brings up a dialog allowing you to configure personal preferences about a particular game. Some of these preferences will be specific to a particular game; others will be common to all games.</p>
+
+<p>Within the <window>Preferences</window> dialogue, click <icon>Set</icon> to store the options and apply them to the associated <window>Game</window> window &ndash; this will cause a new game to be generated. The <icon>Save</icon> button will save the preferences for future instances of the puzzle as well. Preferences are saved separately for each of the puzzles in the collection.</p>
+
+<p>One option common to all games allows you to turn off the one-key shortcuts like <key>N</key> for new game or <key>Q</key> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <key>Ctrl</key> key.</p></li>
+
+
+<li><title><menu>Help...</menu></title>
+
+<p>Open this manual at the section for the puzzle (if the HTML manual is in use).</p></li>
+</dl>
+
+<p>The <menu>Game</menu> entry leads to a submenu containing the following additional options.</p>
+
+<dl>
+<li><title><menu>Save</menu></title>
 
 <p>Saves the current state of your game to a file on disk. A saved game can be re-loaded by double-clicking on the file in a Filer window, or dropping it on to the <cite>Puzzles</cite> iconbar icon.</p>
 
@@ -112,19 +154,14 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>Copies the current state of your game to the clipboard in text format, so that you can paste it into (say) an e-mail client or a web message board if you're discussing the game with someone else. (Not all games support this feature.)</p></li>
 
 
+<li><title><menu>New</menu> (<key>N</key> or <key>Ctrl-N</key>)</title>
+
+<p>Starts a new game, with a random initial state.</p></li>
+
+
 <li><title><menu>Restart</menu></title>
 
 <p>Resets the current game to its initial state. (This can be undone.)</p></li>
-
-
-<li><title><menu>Undo</menu> (<key>U</key>, <key>Ctrl-Z</key>, <key>Ctrl-_</key>, or <key>*</key>)</title>
-
-<p>Undoes a single move. (You can undo moves back to the start of the session.)</p></li>
-
-
-<li><title><menu>Redo</menu> (<key>R</key>, <key>Ctrl-R</key> or <key>#</key>)</title>
-
-<p>Redoes a previously undone move.</p></li>
 
 
 <li><title><menu>Solve</menu></title>
@@ -134,20 +171,6 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>Some games (such as <ref id="solo">Solo</ref>) are capable of solving a game ID you have typed in from elsewhere. Other games (such as <ref id="rectangles">Rectangles</ref>) cannot solve a game ID they didn&rsquo;t invent themself, but when they did invent the game ID they know what the solution is already. Still other games (<ref id="pattern">Pattern</ref>) can solve <em>some</em> external game IDs, but only if they aren&rsquo;t too difficult.</p>
 
 <p>The <menu>Solve</menu> command adds the solved state to the end of the undo chain for the puzzle. In other words, if you want to go back to solving it yourself after seeing the answer, you can just press <menu>Undo</menu>.</p></li>
-
-
-<li><title><menu>Help...</menu></title>
-
-<p>Open this manual at the section for the puzzle (if the HTML manual is in use).</p></li>
-
-
-<li><title><menu>Preferences...</menu></title>
-
-<p>Where supported, brings up a dialog allowing you to configure personal preferences about a particular game. Some of these preferences will be specific to a particular game; others will be common to all games.</p>
-
-<p>Within the <window>Preferences</window> dialogue, click <icon>Set</icon> to store the options and apply them to the associated <window>Game</window> window &ndash; this will cause a new game to be generated. The <icon>Save</icon> button will save the preferences for future instances of the puzzle as well. Preferences are saved separately for each of the puzzles in the collection.</p>
-
-<p>One option common to all games allows you to turn off the one-key shortcuts like <key>N</key> for new game or <key>Q</key> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <key>Ctrl</key> key.</p></li>
 </dl>
 </section>
 

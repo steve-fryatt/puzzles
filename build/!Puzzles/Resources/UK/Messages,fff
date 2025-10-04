@@ -146,18 +146,19 @@ Help.IndexMenu.01:\Sdisplay the games using small icons.
 Help.IndexMenu.02:\Rsee options relating to the game under the pointer.
 Help.IndexMenu.0200:\Sread the online manual for the game under the pointer.
 
-Help.GameMenu.00:\Rselect a new game configuration.
-Help.GameMenu.01:\Rsave the current game state to a file.
-Help.GameMenu.02:\Scopy the game to the clipboard in text format.
-Help.GameMenu.03:\Sre-start the current game.
-Help.GameMenu.04:\Sstart a new game.
-Help.GameMenu.05:\Sread or supply the games specific unique ID.
-Help.GameMenu.06:\Sread or supply the game's random seed.
-Help.GameMenu.07:\Sshow the solution to the current game.
-Help.GameMenu.08:\Sread the online manual for the game.
-Help.GameMenu.09:\Sundo the most recent move in the current game.
-Help.GameMenu.10:\Sredo the most recent move to have been undone in the current game.
-Help.GameMenu.11:\Sconfigure the game options.
+Help.GameMenu.00:\Rcarry out operations on the current game.
+Help.GameMenu.01:\Rselect a new game configuration.
+Help.GameMenu.02:\Sread or supply the game's specific unique ID.
+Help.GameMenu.03:\Sread or supply the game's random seed.
+Help.GameMenu.04:\Sundo the most recent move in the current game.
+Help.GameMenu.05:\Sredo the most recent move to have been undone in the current game.
+Help.GameMenu.06:\Sconfigure the game options.
+Help.GameMenu.07:\Sread the online manual for the game.
+Help.GameMenu.0000:\Rsave the current game state to a file.
+Help.GameMenu.0001:\Scopy the game to the clipboard in text format.
+Help.GameMenu.0002:\Sstart a new game.
+Help.GameMenu.0003:\Sre-start the current game.
+Help.GameMenu.0004:\Sshow the solution to the current game.
 
 Help.IconBarMenu.00:\Rsee information about Puzzles.
 Help.IconBarMenu.01:\Sread the online manual.

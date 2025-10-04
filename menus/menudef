@@ -64,10 +64,26 @@ menu(GameWindowMenu, "")
 {
 	indirected(1);
 
-	item("Type") {
+	item("Game") {
+		submenu(GameWindowGameSubmenu);
 		dotted;
 	}
-	item("Save game") {
+
+	item("Type");
+	item("Specific game...");
+	item("Random seed...") {
+		dotted;
+	}
+	item("Undo            F8");
+	item("Redo            F9") {
+		dotted;
+	}
+	item("Preferences...");
+	item("Help...");
+}
+
+menu(GameWindowGameSubmenu, "Game") {
+	item("Save") {
 		d_box(SaveAs) {
 			warning;
 		}
@@ -75,19 +91,7 @@ menu(GameWindowMenu, "")
 	item("Copy as text") {
 		dotted;
 	}
+	item("New");
 	item("Restart");
-	item("New game");
-	item("Specific game...");
-	item("Random seed...") {
-		dotted;
-	}
 	item("Solve");
-	item("Help...") {
-		dotted;
-	}
-	item("Undo    F8");
-	item("Redo    F9") {
-		dotted;
-	}
-	item("Preferences...");
 }

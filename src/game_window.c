@@ -75,18 +75,20 @@
 
 /* Game Window menu */
 
-#define GAME_WINDOW_MENU_PRESETS 0
-#define GAME_WINDOW_MENU_SAVE_GAME 1
-#define GAME_WINDOW_MENU_COPY_AS_TEXT 2
-#define GAME_WINDOW_MENU_RESTART 3
-#define GAME_WINDOW_MENU_NEW 4
-#define GAME_WINDOW_MENU_SPECIFIC 5
-#define GAME_WINDOW_MENU_RANDOM_SEED 6
-#define GAME_WINDOW_MENU_SOLVE 7
-#define GAME_WINDOW_MENU_HELP 8
-#define GAME_WINDOW_MENU_UNDO 9
-#define GAME_WINDOW_MENU_REDO 10
-#define GAME_WINDOW_MENU_PREFERENCES 11
+#define GAME_WINDOW_MENU_GAME_SUBMENU 0
+#define GAME_WINDOW_MENU_PRESETS 1
+#define GAME_WINDOW_MENU_SPECIFIC 2
+#define GAME_WINDOW_MENU_RANDOM_SEED 3
+#define GAME_WINDOW_MENU_UNDO 4
+#define GAME_WINDOW_MENU_REDO 5
+#define GAME_WINDOW_MENU_PREFERENCES 6
+#define GAME_WINDOW_MENU_HELP 7
+
+#define GAME_WINDOW_GAME_SUBMENU_SAVE_GAME 0
+#define GAME_WINDOW_GAME_SUBMENU_COPY_AS_TEXT 1
+#define GAME_WINDOW_GAME_SUBMENU_NEW 2
+#define GAME_WINDOW_GAME_SUBMENU_RESTART 3
+#define GAME_WINDOW_GAME_SUBMENU_SOLVE 4
 
 /* The height of the status bar. */
 
@@ -160,6 +162,7 @@ static struct saveas_block *game_window_saveas_game = NULL;
 /* The Game Window menu. */
 
 static wimp_menu *game_window_menu = NULL;
+static wimp_menu *game_window_game_submenu = NULL;
 
 /* Static function prototypes. */
 
@@ -202,6 +205,7 @@ void game_window_initialise(void)
 	/* The window menu. */
 
 	game_window_menu = templates_get_menu("GameWindowMenu");
+	game_window_game_submenu = templates_get_menu("GameWindowGameSubmenu");
 	ihelp_add_menu(game_window_menu, "GameMenu");
 }
 
@@ -959,17 +963,21 @@ static void game_window_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_s
 	wimp_get_pointer_info(&pointer);
 
 	switch (selection->items[0]) {
-	case GAME_WINDOW_MENU_NEW:
-		frontend_perform_action(instance->fe, FRONTEND_ACTION_SIMPLE_NEW);
-		break;
-	case GAME_WINDOW_MENU_COPY_AS_TEXT:
-		frontend_perform_action(instance->fe, FRONTEND_ACTION_COPY_AS_TEXT);
-		break;
-	case GAME_WINDOW_MENU_RESTART:
-		frontend_perform_action(instance->fe, FRONTEND_ACTION_RESTART);
-		break;
-	case GAME_WINDOW_MENU_SOLVE:
-		frontend_perform_action(instance->fe, FRONTEND_ACTION_SOLVE);
+	case GAME_WINDOW_MENU_GAME_SUBMENU:
+		switch (selection->items[1]) {
+		case GAME_WINDOW_GAME_SUBMENU_NEW:
+			frontend_perform_action(instance->fe, FRONTEND_ACTION_SIMPLE_NEW);
+			break;
+		case GAME_WINDOW_GAME_SUBMENU_COPY_AS_TEXT:
+			frontend_perform_action(instance->fe, FRONTEND_ACTION_COPY_AS_TEXT);
+			break;
+		case GAME_WINDOW_GAME_SUBMENU_RESTART:
+			frontend_perform_action(instance->fe, FRONTEND_ACTION_RESTART);
+			break;
+		case GAME_WINDOW_GAME_SUBMENU_SOLVE:
+			frontend_perform_action(instance->fe, FRONTEND_ACTION_SOLVE);
+			break;
+		}
 		break;
 	case GAME_WINDOW_MENU_HELP:
 		frontend_perform_action(instance->fe, FRONTEND_ACTION_HELP);
@@ -1147,13 +1155,13 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 
 	game_window_backend_menu_update_state(current_preset, (instance->custom == NULL) ? TRUE : FALSE);
 
-	menus_shade_entry(menu, GAME_WINDOW_MENU_UNDO, !can_undo);
-	menus_shade_entry(menu, GAME_WINDOW_MENU_REDO, !can_redo);
-	menus_shade_entry(menu, GAME_WINDOW_MENU_SOLVE, !can_solve);
+	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_UNDO, !can_undo);
+	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_REDO, !can_redo);
+	menus_shade_entry(game_window_game_submenu, GAME_WINDOW_GAME_SUBMENU_SOLVE, !can_solve);
 
-	menus_shade_entry(menu, GAME_WINDOW_MENU_SPECIFIC, (instance->specific == NULL) ? FALSE : TRUE);
-	menus_shade_entry(menu, GAME_WINDOW_MENU_RANDOM_SEED, (instance->random_seed == NULL) ? FALSE : TRUE);
-	menus_shade_entry(menu, GAME_WINDOW_MENU_PREFERENCES, (instance->preferences == NULL) ? FALSE : TRUE);
+	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_SPECIFIC, (instance->specific == NULL) ? FALSE : TRUE);
+	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_RANDOM_SEED, (instance->random_seed == NULL) ? FALSE : TRUE);
+	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_PREFERENCES, (instance->preferences == NULL) ? FALSE : TRUE);
 }
 
 /**
@@ -1170,9 +1178,13 @@ static void game_window_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_mes
 		return;
 
 	switch (warning->selection.items[0]) {
-	case GAME_WINDOW_MENU_SAVE_GAME:
-		saveas_prepare_dialogue(game_window_saveas_game);
-		wimp_create_sub_menu(warning->sub_menu, warning->pos.x, warning->pos.y);
+	case GAME_WINDOW_MENU_GAME_SUBMENU:
+		switch (warning->selection.items[1]) {
+		case GAME_WINDOW_GAME_SUBMENU_SAVE_GAME:
+			saveas_prepare_dialogue(game_window_saveas_game);
+			wimp_create_sub_menu(warning->sub_menu, warning->pos.x, warning->pos.y);
+			break;
+		}
 		break;
 	}
 }
