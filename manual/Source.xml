@@ -2490,7 +2490,6 @@ remove the circle.</p>
 
 <ul>
 <li><p>The game windows, toolbars and drawing canvases may not be perfectly aligned in EX0&nbsp;EY0 modes.</p></li>
-<li><p>Font antialiasing is poor.</p></li>
 <li><p>Graphics can sometimes render poorly, with artefacts on corners.</p></li>
 <li><p>The game windows can not be resized from their defaults.</p></li>
 <li><p>The printing of games is not supported.</p></li>

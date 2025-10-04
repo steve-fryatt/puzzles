@@ -494,13 +494,6 @@ static void game_window_close_handler(wimp_close *close)
 	if (pointer.buttons == wimp_CLICK_ADJUST)
 		index_window_open();
 
-	/* Save the sprite for analysis.
-	 *
-	 * TODO -- Remove!
-	 */
-
-//	canvas_save_sprite(instance->canvas, "RAM::RamDisc0.$.Sprites");
-
 	/* Delete the parent game instance. */
 
 	frontend_delete_instance(instance->fe);

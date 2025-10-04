@@ -75,8 +75,21 @@
 #define CANVAS_MAX_PALETTE_ENTRIES 256
 
 /**
+ * The maximum error allowable between a colour and an existing palette
+ * entry before the colour will be added.
+ */
+
+#define CANVAS_MAX_PALETTE_ERROR 5
+
+/**
+ * The number of intermediate colours to include in colour gradients.
+ */
+
+#define CANVAS_GRADIENT_LENGTH 5
+
+/**
  * The size of a palette in bytes.
- * 
+ *
  * There are 4 bytes per colour entry, and two colour entries
  * (flash 1 and flash 2) in each palette entry.
  */
@@ -108,6 +121,31 @@
 #define canvas_does_palette_exist(sprite) (((sprite)->image == CANVAS_SPRITE_HEADER_SIZE) ? FALSE : TRUE)
 
 /**
+ * Assemble a set of RGB values in the range 0 to 255 into an OS Colour value.
+ */
+
+#define canvas_make_os_colour(r, g, b) (((r) << 8) | ((g) << 16) | ((b) << 24))
+
+/**
+ * Split the red component out of an OS COlour value, as a value in the range 0 to 255.
+ */
+
+#define canvas_get_os_colour_red(colour) (((colour) >> 8) & 0xff)
+
+/**
+ * Split the green component out of an OS COlour value, as a value in the range 0 to 255.
+ */
+
+ #define canvas_get_os_colour_green(colour) (((colour) >> 16) & 0xff)
+
+/**
+ * Split the blue component out of an OS COlour value, as a value in the range 0 to 255.
+ */
+
+ #define canvas_get_os_colour_blue(colour) (((colour) >> 24) & 0xff)
+
+
+/**
  * A Canvas instance block.
  */
 
@@ -128,7 +166,10 @@ struct canvas_block {
 /* Static function prototypes. */
 
 static osbool canvas_insert_265_palette(osspriteop_area *area);
-static osbool canvas_set_palette_game_colours(os_sprite_palette *palette, float *colours, int number_of_colours);
+static int canvas_set_palette_game_colours(os_sprite_palette *palette, int palette_entries, float *colours, int number_of_colours);
+static int canvas_set_pallete_build_gradient(os_sprite_palette *palette, int palette_entries, os_colour start, os_colour end, int points);
+static int canvas_set_palette_fill_unused(os_sprite_palette *palette, int palette_entries);
+static void canvas_set_palette_entry(os_sprite_palette *palette, int entry, os_colour colour);
 
 /**
  * Initialise a new canvas instance.
@@ -159,7 +200,7 @@ struct canvas_block *canvas_create_instance(void)
 
 /**
  * Delete a canvas instance.
- * 
+ *
  * \param *instance		Pointer to the instance to delete.
  */
 
@@ -179,7 +220,7 @@ void canvas_delete_instance(struct canvas_block *instance)
 
 /**
  * Configure a canvas to a given dimension, and set up its sprite
- * 
+ *
  * \param *instance		The canvas instance to be updated.
  * \param width			The required canvas width.
  * \param height		The required canvas height.
@@ -212,7 +253,7 @@ osbool canvas_configure_area(struct canvas_block *instance, int width, int heigh
 	 * extra three bytes added on for copying to blitters at non-aligned addresses
 	 * at the start of the row (+3). If there's to be a palette, we add in space
 	 * for that, too.
-	 * 
+	 *
 	 * We're assuming that we will only work in 256 colour sprites, so one pixel
 	 * is one byte.
 	 */
@@ -277,7 +318,7 @@ osbool canvas_configure_area(struct canvas_block *instance, int width, int heigh
 /**
  * Configure the save area for a canvas to suit the
  * current sprite.
- * 
+ *
  * \param *instance		The canvas instance to be updated.
  * \return			TRUE if successful; otherwise FALSE.
  */
@@ -319,10 +360,10 @@ osbool canvas_configure_save_area(struct canvas_block *instance)
 
 /**
  * Add a 256 colour sprite to the first sprite in a sprite area.
- * 
+ *
  * This is done by hand, using the details provided on page 1-833
  * of the PRM. This should be a compatible with RISC OS 3.1 onwards!
- * 
+ *
  * The sprite is assumed to be unused at this point: no attempt is
  * made to shift the bitmap data up to allow space for the palette
  * to be inserted.
@@ -377,7 +418,7 @@ static osbool canvas_insert_265_palette(osspriteop_area *area)
 /**
  * Set the palette for the sprite within a canvas to the colours requested
  * by a game.
- * 
+ *
  * \param *instance		The canvas instance to be updated.
  * \param *colours		An array of colours as supplied by the midend.
  * \param number_of_colours	The number of colours defined in the aray.
@@ -388,8 +429,9 @@ osbool canvas_set_game_colours(struct canvas_block *instance, float *colours, in
 {
 	osspriteop_header *sprite = NULL;
 	os_sprite_palette *palette = NULL;
+	int palette_entries = 0;
 
-	if (instance == NULL || instance->sprite_area == NULL)
+	if (instance == NULL || instance->sprite_area == NULL || colours == NULL)
 		return FALSE;
 
 	if (canvas_does_sprite_exist(instance->sprite_area) == FALSE)
@@ -401,52 +443,192 @@ osbool canvas_set_game_colours(struct canvas_block *instance, float *colours, in
 		return FALSE;
 
 	palette = canvas_get_palette(sprite);
+	if (palette == NULL)
+		return FALSE;
 
-	return canvas_set_palette_game_colours(palette, colours, number_of_colours);
+	/* Add the backend	 game colours. */
+
+	palette_entries = canvas_set_palette_game_colours(palette, palette_entries, colours, number_of_colours);
+
+	/* Generate some intermediate colours for antialiasing. */
+
+	palette_entries = canvas_set_pallete_build_gradient(palette, palette_entries, os_COLOUR_BLACK, os_COLOUR_WHITE, 10);
+
+	for (int start = 0; start < (number_of_colours - 1); start++) {
+		for (int end = start + 1; end < number_of_colours; end++) {
+			palette_entries = canvas_set_pallete_build_gradient(palette, palette_entries,
+					palette->entries[start].on, palette->entries[end].on, CANVAS_GRADIENT_LENGTH);
+		}
+	}
+
+	/* Fill any unused space. */
+
+	palette_entries = canvas_set_palette_fill_unused(palette, palette_entries);
+
+	/* There should be no space left in the palette. */
+
+	return (palette_entries == CANVAS_MAX_PALETTE_ENTRIES) ? TRUE : FALSE;
 }
 
 /**
  * Set a palette to the colours required by a game.
- * 
- * \param &palette		Pointer to the palette to be updated.
+ *
+ * \param *palette		The palette to be updated.
+ * \param palette_entries	The number of defined colours currently in the
+ *				palette before the operation.
  * \param *colours		An array of colours as supplied by the midend.
  * \param number_of_colours	The number of colours defined in the aray.
- * \return			TRUE if successful; FALSE on failure.
+ * \return			The number of defined colours in the palette
+ *				after the update has completed.
  */
 
-static osbool canvas_set_palette_game_colours(os_sprite_palette *palette, float *colours, int number_of_colours)
+static int canvas_set_palette_game_colours(os_sprite_palette *palette, int palette_entries, float *colours, int number_of_colours)
 {
-	int entry;
-
 	if (palette == NULL || colours == NULL)
-		return FALSE;
+		return palette_entries;
 
 	/* There must be a valid number of colours. */
 
-	if (number_of_colours < 0 || number_of_colours >= CANVAS_MAX_PALETTE_ENTRIES)
-		return FALSE;
+	if (palette_entries >= CANVAS_MAX_PALETTE_ENTRIES)
+		return palette_entries;
 
-	for (entry = 0; entry < CANVAS_MAX_PALETTE_ENTRIES; entry++) {
-		if (entry < number_of_colours) {
-			palette->entries[entry].on = ((int) (colours[entry * 3] * 0xff) << 8) |
-					((int) (colours[entry * 3 + 1] * 0xff) << 16) |
-					((int) (colours[entry * 3 + 2] * 0xff) << 24);
-		} else {
-			palette->entries[entry].on = os_COLOUR_WHITE;
-		}
+	if (number_of_colours < 0 || number_of_colours >= (CANVAS_MAX_PALETTE_ENTRIES - palette_entries))
+		return palette_entries;
 
-		palette->entries[entry].off = palette->entries[entry].on;
+	/* Copy each of the game colours into the palette. */
 
-		// debug_printf"Created palette entry %d at 0x%x as 0x%8x", entry, &(palette->entries[entry]), palette->entries[entry].off);
+	for (int entry = 0; entry < number_of_colours; entry++) {
+		canvas_set_palette_entry(palette, palette_entries++, canvas_make_os_colour(
+				(int) (colours[entry * 3] * 0xff),
+				(int) (colours[entry * 3 + 1] * 0xff),
+				(int) (colours[entry * 3 + 2] * 0xff)));
 	}
 
-	return TRUE;
+	return palette_entries;
+}
+/**
+ * Add a gradient of colours to a palette. The gradient is defined to run from
+ * start to end, but does *not* include the start and end colours. This is
+ * because it is assumed that it will be used to generate colour gradients
+ * between defined game colours.
+ *
+ * \param *palette		The palette to be updated.
+ * \param palette_entries	The number of defined colours currently in the
+ *				palette before the operation.
+ * \param start			The colour for the start of the gradient.
+ * \param end			The colour for the end of the gradient.
+ * \param points		The number of points to include in the gradient,
+ *				not including the start and finish.
+ * \return			The number of defined colours in the palette
+ *				after the update has completed.
+ */
+
+static int canvas_set_pallete_build_gradient(os_sprite_palette *palette, int palette_entries, os_colour start, os_colour end, int points)
+{
+	int r_start, g_start, b_start, r_end, g_end, b_end;
+
+	if (palette == NULL)
+		return palette_entries;
+
+	/* There must be a valid number of colours. */
+
+	if (palette_entries >= CANVAS_MAX_PALETTE_ENTRIES)
+		return palette_entries;
+
+	if (points < 1 || points >= (CANVAS_MAX_PALETTE_ENTRIES - palette_entries))
+		return palette_entries;
+
+	/* Calculate the starting colour of the gradient. */
+
+	r_start = canvas_get_os_colour_red(start);
+	g_start = canvas_get_os_colour_green(start);
+	b_start = canvas_get_os_colour_blue(start);
+
+	/* Calculate the finishing colour of the gradient. */
+
+	r_end = canvas_get_os_colour_red(end);
+	g_end = canvas_get_os_colour_green(end);
+	b_end = canvas_get_os_colour_blue(end);
+
+	/* Build the colour gradients. */
+
+	for (int step = 1; step <= points; step++) {
+		int r, g, b;
+		osbool include = TRUE;
+
+		/* Calculate the step colour. */
+
+		r = (((r_end - r_start) * step / points) + r_start) & 0xff;
+		g = (((g_end - g_start) * step / points) + g_start) & 0xff;
+		b = (((b_end - b_start) * step / points) + b_start) & 0xff;
+
+		/* Search the rest of the palette for a similar entry. */
+
+		for (int search = 0; search < palette_entries; search++) {
+			int r1, g1, b1, er, eg, eb;
+
+			r1 = canvas_get_os_colour_red(palette->entries[search].on);
+			g1 = canvas_get_os_colour_green(palette->entries[search].on);
+			b1 = canvas_get_os_colour_blue(palette->entries[search].on);
+
+			/* If the existing entry is close enough to the new colour
+			 * on red, green and blue, don't bother including the new one.
+			 */
+
+			er = 100 * abs(r - r1) / r;
+			eg = 100 * abs(g - g1) / g;
+			eb = 100 * abs(b - b1) / b;
+
+			if (er < CANVAS_MAX_PALETTE_ERROR &&
+					eg < CANVAS_MAX_PALETTE_ERROR &&
+					eb < CANVAS_MAX_PALETTE_ERROR) {
+				include = FALSE;
+				break;
+			}
+		}
+
+		/* Include the palette entry if a close enough match wasn't found. */
+
+		if (include == TRUE)
+			canvas_set_palette_entry(palette, palette_entries++, canvas_make_os_colour(r, g, b));
+	}
+
+	return palette_entries;
+}
+
+/**
+ * Fill unused entries in a palette with white. On exit, the function should
+ * return CANVAS_MAX_PALETTE_ENTRIES.
+ *
+ * \param *palette		The palette to be updated.
+ * \param palette_entries	The number of defined colours currently in the
+ *				palette before the operation.
+ * \return			The number of defined colours in the palette
+ *				after the update has completed.
+ */
+
+static int canvas_set_palette_fill_unused(os_sprite_palette *palette, int palette_entries)
+{
+	if (palette == NULL)
+		return palette_entries;
+
+	/* There must be a valid number of colours. */
+
+	if (palette_entries >= CANVAS_MAX_PALETTE_ENTRIES)
+		return palette_entries;
+
+	/* Fill the rest of the palette entries with white. */
+
+	for (; palette_entries < CANVAS_MAX_PALETTE_ENTRIES; palette_entries++)
+		canvas_set_palette_entry(palette, palette_entries, os_COLOUR_WHITE);
+
+	return palette_entries;
 }
 
 /**
  * Find an entry from the canvas palette. If the request isn't
  * valid, the colour black is returned.
- * 
+ *
  * \param *instance	The canvas instance to query.
  * \param entry		The palette entry to be returned.
  * \return		The requested colour, or black.
@@ -478,7 +660,7 @@ os_colour canvas_get_palette_entry(struct canvas_block *instance, int entry)
 
 /**
  * Request details of the size of a canvas sprite.
- * 
+ *
  * \param *instance	The canvas instance to query.
  * \param *size		Pointer to an os_coord object to take the size.
  * \return		TRUE if successful; otherwise FALSE.
@@ -488,7 +670,7 @@ osbool canvas_get_size(struct canvas_block *instance, os_coord *size)
 {
 	if (instance == NULL)
 		return FALSE;
-		
+
 	if (size != NULL) {
 		size->x = instance->size.x;
 		size->y = instance->size.y;
@@ -499,7 +681,7 @@ osbool canvas_get_size(struct canvas_block *instance, os_coord *size)
 
 /**
  * Start VDU redirection to a canvas sprite.
- * 
+ *
  * \param *instance	The canvas instance to update.
  * \return		TRUE if successful; otherwise FALSE.
  */
@@ -538,7 +720,7 @@ osbool canvas_start_redirection(struct canvas_block *instance)
 
 /**
  * Stop VDU redirection to a canvas sprite.
- * 
+ *
  * \param *instance	The canvas instance to update.
  * \return		TRUE if successful; otherwise FALSE.
  */
@@ -577,7 +759,7 @@ osbool canvas_stop_redirection(struct canvas_block *instance)
 
 /**
  * Test to see if VDU redirection is active for a canvas.
- * 
+ *
  * \param *instance	The canvas instance to test.
  * \return		TRUE if redirection is active; else FALSE.
  */
@@ -621,7 +803,7 @@ osbool canvas_prepare_redraw(struct canvas_block *instance, os_factors *factors,
 /**
  * Plot the canvas sprite to the screen for a redraw operation,
  * using the palette and all of the necessary translation tables.
- * 
+ *
  * Any errors which occur will be quietly dropped.
  *
  * \param *instance		The canvas instance to be plotted.
@@ -714,9 +896,15 @@ void canvas_save_sprite(struct canvas_block *instance, char *filename)
 		debug_printf("\\RFailed to save: %s", error->errmess);
 }
 
+/**
+ * Set an entry in the palette.
+ *
+ * \param *palette	Pointer to the palette to be updated.
+ * \param entry		The index of the entry to be updated in the palette.
+ * \param colour	The new value to apply to that index.
+ */
 
-
-void canvas_set_palette_entry(os_sprite_palette *palette, int entry, os_colour colour)
+static void canvas_set_palette_entry(os_sprite_palette *palette, int entry, os_colour colour)
 {
 	if (palette != NULL && entry >= 0 && entry < CANVAS_MAX_PALETTE_ENTRIES) {
 		palette->entries[entry].on = colour;
