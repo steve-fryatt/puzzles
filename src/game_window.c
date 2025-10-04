@@ -1121,8 +1121,8 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	if (instance == NULL)
 		return;
 
-	frontend_get_menu_info(instance->fe, &presets, &presets_limit,
-			&current_preset, &can_configure, &can_copy, &can_undo, &can_redo, &can_solve);
+	frontend_get_menu_info(instance->fe, &presets, &presets_limit, &current_preset,
+			&can_configure, &can_copy, &can_undo, &can_redo, &can_solve);
 
 	/* The menu is being newly opened, so set up the one-off data. */
 
@@ -1151,6 +1151,7 @@ static void game_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_poi
 	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_UNDO, !can_undo);
 	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_REDO, !can_redo);
 	menus_shade_entry(game_window_game_submenu, GAME_WINDOW_GAME_SUBMENU_SOLVE, !can_solve);
+	menus_shade_entry(game_window_game_submenu, GAME_WINDOW_GAME_SUBMENU_COPY_AS_TEXT, !can_copy);
 
 	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_SPECIFIC, (instance->specific == NULL) ? FALSE : TRUE);
 	menus_shade_entry(game_window_menu, GAME_WINDOW_MENU_RANDOM_SEED, (instance->random_seed == NULL) ? FALSE : TRUE);
