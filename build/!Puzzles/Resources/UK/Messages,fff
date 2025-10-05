@@ -123,7 +123,7 @@ Help.Index.unequal:\Sto play Unequal.|MEnter digits so that every row and column
 Help.Index.unruly:\Sto play Unruly.|MColour every square either black or white such that no three consecutive squares, horizontally or vertically, are the same colour, and each row and column contains the same number of black and white squares.
 Help.Index.untangle:\Sto play Untangle.|MMove the points around until no connecting lines cross.
 
-Help.Game:\Tone of Simon Tatham's Portable Puzzles.
+Help.Game:This is one of Simon Tatham's Portable Puzzles.
 
 Help.GameConfigD:\Tgame description dialogue for one of Simon Tatham's Portable Puzzles.|MEnter a game description to recreate it, or copy the description from the field.
 Help.GameConfigR:\Tspecific game dialogue for one of Simon Tatham's Portable Puzzles.|MEnter a game seed to recreate it, or copy the seed from the field.
