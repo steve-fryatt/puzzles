@@ -41,12 +41,14 @@
 #include "oslib/font.h"
 #include "oslib/os.h"
 #include "oslib/osbyte.h"
+#include "oslib/osfile.h"
 #include "oslib/osspriteop.h"
 #include "oslib/wimp.h"
 #include "oslib/wimpspriteop.h"
 
 /* SF-Lib header files. */
 
+#include "sflib/dataxfer.h"
 #include "sflib/debug.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
@@ -206,8 +208,8 @@ void game_window_initialise(void)
 
 	/* The SaveAs windows. */
 
-	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_1f2", game_window_save_game);
-	game_window_saveas_sprite = saveas_create_dialogue(FALSE, "file_ff9", game_window_save_sprite);
+	game_window_saveas_game = saveas_create_dialogue(FALSE, "file_1f2", dataxfer_TYPE_PUZZLE, game_window_save_game);
+	game_window_saveas_sprite = saveas_create_dialogue(FALSE, "file_ff9", osfile_TYPE_SPRITE, game_window_save_sprite);
 
 	/* The window menu. */
 
