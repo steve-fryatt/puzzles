@@ -28,7 +28,7 @@ TaskName:Puzzles
 Version:%0 (%1) [Upstream %2]
 
 TaskSpr:!puzzles
-SupportURL:http://www.stevefryatt.org.uk/risc-os/games
+SupportURL:https://www.stevefryatt.org.uk/risc-os/games
 
 # Menu entries
 
