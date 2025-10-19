@@ -29,10 +29,13 @@
 
 /* ANSI C header files */
 
+#include <string.h>
+
 /* Acorn C header files */
 
 /* OSLib header files */
 
+#include "oslib/os.h"
 #include "oslib/osfile.h"
 #include "oslib/wimp.h"
 
@@ -49,6 +52,7 @@
 /* Application header files */
 
 #include "iconbar.h"
+#include "additional_contributors.h"
 
 #include "frontend.h"
 #include "help.h"
@@ -68,6 +72,7 @@
 #define ICON_PROGINFO_PORTER  6
 #define ICON_PROGINFO_VERSION 8
 #define ICON_PROGINFO_WEBSITE 10
+#define ICON_PROGINFO_CONTRIBUTORS 12
 
 /* Static function prototypes. */
 
@@ -90,20 +95,44 @@ static wimp_menu	*iconbar_menu = NULL;
 
 static wimp_w		iconbar_info_window = NULL;
 
-
 /**
  * Initialise the iconbar icon and its associated menus and dialogues.
  */
 
 void iconbar_initialise(void)
 {
-	char*			date = BUILD_DATE;
+	char			*date = BUILD_DATE;
+	os_error		*error = NULL;
+	wimp_window		*info_window_def;
 	wimp_icon_create	icon_bar;
+
+	/* Create the iconbar menu. */
 
 	iconbar_menu = templates_get_menu("IconBarMenu");
 	ihelp_add_menu(iconbar_menu, "IconBarMenu");
 
-	iconbar_info_window = templates_create_window("ProgInfo");
+	/* Create and link the Program Info window. */
+
+	info_window_def = templates_load_window("ProgInfo");
+	if (info_window_def == NULL)
+		return;
+
+	if (info_window_def->icon_count > ICON_PROGINFO_CONTRIBUTORS) {
+		wimp_icon_data *contributor_icon_data = &(info_window_def->icons[ICON_PROGINFO_CONTRIBUTORS].data);
+
+		contributor_icon_data->indirected_text.text = iconbar_additional_contributors;
+		contributor_icon_data->indirected_text.size = strlen(iconbar_additional_contributors) + 1;
+	}
+
+	error = xwimp_create_window(info_window_def, &iconbar_info_window);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		iconbar_info_window = NULL;
+		return;
+	}
+
+	free(info_window_def);
+
 	templates_link_menu_dialogue("ProgInfo", iconbar_info_window);
 	ihelp_add_window(iconbar_info_window, "ProgInfo", NULL);
 	icons_msgs_param_lookup(iconbar_info_window, ICON_PROGINFO_VERSION, "Version",
@@ -111,6 +140,8 @@ void iconbar_initialise(void)
 	icons_printf(iconbar_info_window, ICON_PROGINFO_AUTHOR, "\xa9 Simon Tatham, 2004-%s", date + 7);
 	icons_printf(iconbar_info_window, ICON_PROGINFO_PORTER, "\xa9 Stephen Fryatt, 2024-%s", date + 7);
 	event_add_window_icon_click(iconbar_info_window, ICON_PROGINFO_WEBSITE, iconbar_proginfo_web_click);
+
+	/* Create the iconbar icon. */
 
 	icon_bar.w = wimp_ICON_BAR_RIGHT;
 	icon_bar.icon.extent.x0 = 0;

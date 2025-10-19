@@ -65,9 +65,11 @@ The corresponding source files for the backends should also be added to the `OBJ
 
 ### Manual
 
-The RISC OS post uses its own manual, defined in `manual/Source.xml`. This is based on the upstream manual supplied in Halibut format in `core/puzzles.but`, but contains modifications to reflect the RISC OS interface.
+The RISC OS post uses its own manual, defined in `manual/Source.xml`. This is based on the upstream manual supplied in Halibut format in `src/core/puzzles.but`, but contains modifications to reflect the RISC OS interface.
 
-The `manual/Source.xml` file contains a comment near the top which should be kept up to date with the commit hash of the last upstream manual to be merged in to the RISC OS version. When new changes are brought in from the upstream repository, a diff of `core/puzzles.but` can be done between this revision and HEAD, to show the changes which must be manually edited in to the RISC OS manual source.
+The `manual/Source.xml` file contains a comment near the top which should be kept up to date with the commit hash of the last upstream manual to be merged in to the RISC OS version. When new changes are brought in from the upstream repository, a diff of `src/core/puzzles.but` can be done between this revision and HEAD, to show the changes which must be manually edited in to the RISC OS manual source.
+
+In addition, the list of contributors' names found towards the end of the `src/core/puzzles.but` file ("Portions copyright...") should be transferred into the `src/additional_contributors.h` header file so that it can be included in the Program Info dialogue. This is a manual process which won't internationalise well, so it may need to be re-visited in the future.
 
 ### Game Descriptions
 
@@ -77,7 +79,7 @@ The RISC OS Messages file (at `build/!Puzzles/Resources/UK/Messages` and potenti
 
 The RISC OS port expects to find icons for the games in the `build/!Puzzles/Sprites`, `build/!Puzzles/Sprites22` and `build/!Puzzles/Sprites11` files, named by the game titles (with an `sm` suffix for the small versions). These icons follow the standard RISC OS conventions.
 
-It is possible to generate images in the sizes needed by RISC OS using the standard upstream build system. In the `core/icons/icons.cmake` file, look for the lines defining the icon sizes.
+It is possible to generate images in the sizes needed by RISC OS using the standard upstream build system. In the `src/core/icons/icons.cmake` file, look for the lines defining the icon sizes.
 
     # All sizes of icon we make for any purpose.
     set(all_icon_sizes 128 96 88 64 48 44 32 24 16)
@@ -115,7 +117,7 @@ If the build is then run by executing
 
 from within the `src/core` folder, the icons should be generated as PNG files within the `src/core/icons` folder (if there are dependencies missing, such as ImageMagick, these should be reported at the `cmake .` stage).
 
-The 68 and 34 can be used at 180 DPI for the Sprites11 file, the 34 and 17 can be used at the default 90 DPI for the Sprites22 file, and with the aid of ChangeFSI to convert to rectangual pixel mode, the 34 and 17 can also be used at 90/45 DPI for the Sprites file.
+The 68 and 34 can be used at 180 DPI for the Sprites11 file, the 34 and 17 can be used at the default 90 DPI for the Sprites22 file, and with the aid of ChangeFSI to convert to rectangular pixel mode, the 34 and 17 can also be used at 90/45 DPI for the Sprites file.
 
 
 Licence

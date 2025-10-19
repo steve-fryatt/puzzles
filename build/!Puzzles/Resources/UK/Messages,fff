@@ -138,6 +138,8 @@ Help.ProgInfo:This \w displays information about Puzzles.
 Help.ProgInfo.Website:\Sopen the Puzzles home page in your web browser, if one has been seen.
 Help.ProgInfo.Author:This \w displays information about Puzzles.|MSimon created and maintains the cross-platform puzzles and the infrastructure to make them work.
 Help.ProgInfo.Porter:This \w displays information about Puzzles.|MSteve created the front-end which allows the puzzles to be played on RISC OS.
+Help.ProgInfo.Additional:Expand the information window using the Toggle Size button to see the names of other people who have contributed to Simon Tatham's Portable Puzzle Collection.
+Help.ProgInfo.Contributors:These people have also made contributions to Simon Tatham's Portable Puzzle Collection.|MSee the manual for more details.
 
 # Interactive help for menus.
 #
