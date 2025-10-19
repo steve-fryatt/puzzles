@@ -8,5 +8,5 @@ Environment: arm
 Licence: Free
 Description: Simon Tatham's Portable Puzzle Collection on RISC OS
  Puzzles is a RISC OS port of Simon Tatham's Portable Puzzle Collection.
-Homepage: http://www.stevefryatt.org.uk/risc-os/games
+Homepage: https://www.stevefryatt.org.uk/risc-os/games
 Components: Apps.Games.!Puzzles (Movable)
