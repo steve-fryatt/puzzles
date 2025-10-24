@@ -29,7 +29,7 @@
 
 <p>The source for the RISC OS port of <cite>Puzzles</cite> can be found on GitHub, at <link external="true" href="https://github.com/steve-fryatt/puzzles"/>.</p>
 
-<p>The core <cite>Puzzles</cite> code is copyright Simon Tatham and others, and is licenced separately: see <link external="true" href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/"/> for details and access to the source code repository.</p>
+<p>The core <cite>Puzzles</cite> code is copyright Simon Tatham and others, and is licenced under the MIT Licence: see <link external="true" href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/"/> for details and access to the source code repository.</p>
 
 <p>Portions of the code are copyright Richard Boulton, James Harvey, Mike Pinna, Jonas Koelker, Dariusz Olszewski, Michael Schierl, Lambros Lambrou, Bernd Schmidt, Steffen Bauer, Lennard Sprong, Rogier Goossens, Michael Quevillon, Asher Gordon, Didi Kohen, and Ben Harris.</p>
 
