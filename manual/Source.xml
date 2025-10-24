@@ -2502,9 +2502,10 @@ remove the circle.</p>
 </section>
 
 <section>
-<title>Test Build (<define name="date" />)</title>
+<!-- title>Test Build (<define name="date" />)</title -->
+<title>Version 1.00 (24 October 2025)</title>
 
-<p>First alpha release, for testing and feedback.</p>
+<p>First RISC OS release, based on commit d928126c from the upstream repository.</p>
 </section>
 </chapter>
 
