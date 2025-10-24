@@ -407,23 +407,9 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <title>Sixteen</title>
 
 <section>
-<p>Another sliding tile puzzle, visually similar to <ref id="fifteen">Fifteen</ref>on the grid. By default, Twiddle will shuffle the grid so much
-that any arrangement is about as probable as any other. You can
-override this by requesting a precise number of shuffling moves
-to be performed. Typically your aim is then to determine the
-precise set of shuffling moves and invert them exactly, so that
-you answer (say) a four-move shuffle with a four-move solution.
-Note that the more moves you ask for, the more likely it is that
-solutions shorter than the target length will turn out to be
-possible.
- but with a different type of move. This time, there is no hole: all 16 squares on the grid contain numbered squares. Your move is to shift an entire row left or right, or shift an entire column up or down; every time you do that, the tile you shift off the grid re-appears at the other end of the same row, in the space you just vacated. To win, arrange the tiles into numerical order (1,2,3,4 on the top row, 13,14,15,16 on the bottom). When you&rsquo;ve done that, try playing on different sizes of grid.</p>
+<p>Another sliding tile puzzle, visually similar to <ref id="fifteen">Fifteen</ref> but with a different type of move. This time, there is no hole: all 16 squares on the grid contain numbered squares. Your move is to shift an entire row left or right, or shift an entire column up or down; every time you do that, the tile you shift off the grid re-appears at the other end of the same row, in the space you just vacated. To win, arrange the tiles into numerical order (1,2,3,4 on the top row, 13,14,15,16 on the bottom). When you&rsquo;ve done that, try playing on different sizes of grid.</p>
 
-<p>I <em>might</em> have invented this game myself, though only by accident if so (and I&rsquo;m sure other people have independently invented it). I
-thought I was imitating a screensaver I&rsquo;d seen, but I have a feeling
-that the screensaver might actually have been a Fifteen-type puzzle
-rather than this slightly different kind. So this might be the one
-thing in my puzzle collection which represents creativity on my part
-rather than just engineering.</p>
+<p>I <em>might</em> have invented this game myself, though only by accident if so (and I&rsquo;m sure other people have independently invented it). I thought I was imitating a screensaver I&rsquo;d seen, but I have a feeling that the screensaver might actually have been a Fifteen-type puzzle rather than this slightly different kind. So this might be the one thing in my puzzle collection which represents creativity on my part rather than just engineering.</p>
 </section>
 
 <section id="sixteen-controls">
