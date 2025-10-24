@@ -2475,7 +2475,7 @@ remove the circle.</p>
 <title>Known Issues</title>
 
 <section>
-<p>This version of <cite>Puzzles</cite> is best described as an early Alpha release, and is still very much a work in progress. As such, there are many things which have either not yet been implemented, are incomplete, or contain bugs and mis-features.</p>
+<p>The RISC&nbsp;OS port of <cite>Puzzles</cite> is a work in progress, and there are a few things which have either not yet been implemented, are incomplete, or contain bugs and mis-features.</p>
 
 <p>The following is a non-exhaustive list of things which are known to need attention.</p>
 
@@ -2488,7 +2488,7 @@ remove the circle.</p>
 
 <p>Before reporting bugs or suggesting new features, it is a good idea to check <link href="https://github.com/steve-fryatt/puzzles/issues" external="true">the project&rsquo;s issues list on GitHub</link> (this will probably need <cite>Iris</cite> or a non-RISC&nbsp;OS browser to work correctly).</p>
 
-<p>The intention is to address many of these items before a full release takes place. The implementation of features such as printing will depend on the level of interest shown in the RISC&nbsp;OS port.</p>
+<p>The intention is to address many of these items in future releases. The implementation of printing will depend on the level of interest shown in the RISC&nbsp;OS port.</p>
 </section>
 </chapter>
 
