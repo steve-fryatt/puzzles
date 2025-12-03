@@ -1,4 +1,4 @@
-<!-- This manual is in sync with core commit d928126c from 10-10-2025. -->
+<!-- This manual is in sync with core commit a4f68b6a from 26-11-2025. -->
 
 <manual>
 <title>Puzzles</title>
@@ -967,7 +967,7 @@ slow.</p>
 
 <p>You can also use the cursor keys to move a cursor around the grid. When the cursor is half way between two adjacent numbers, pressing the <keypress><key>Return</key></keypress> key will place a domino covering those numbers, or pressing the <keypress><key>Space</key></keypress> bar will lay a line between the two squares. Repeating either action removes the domino or line.</p>
 
-<p>Pressing a number key will highlight all occurrences of that number. Pressing that number again will clear the highlighting. Up to two different numbers can be highlighted at any given time.</p>
+<p>Pressing a number key or <mouse>Adjust</mouse>-clicking on a number will highlight all occurrences of that number. Pressing or <mouse>Adjust</mouse>-clicking that number again will clear the highlighting. Up to two different numbers can be highlighted at any given time.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1082,7 +1082,7 @@ H........|
 
 <p>For this reason, when you have your guesses checked, the game will check that your solution <em>produces the same results</em> as the computer&rsquo;s, rather than that your solution is identical to the computer&rsquo;s. So in the above example, you could put the fifth ball at <em>any</em> of the locations marked with an x, and you would still win.</p>
 
-<p>Acornsoft published versions of Black Box for the Acorn Atom and the BBC&nbsp;Microcomputer in the early 1980s. The puzzle was contributed to this collection by James Harvey.</p>
+<p>Black Box was created by Eric Solomon and originally published as a board game by Waddingtons in 1977. Acornsoft published versions of Black Box for the Acorn Atom and the BBC&nbsp;Microcomputer in the early 1980s. The puzzle was contributed to this collection by James Harvey.</p>
 </section>
 
 <section>
@@ -2196,7 +2196,7 @@ remove the circle.</p>
 
 <p>Undead has a similar control system to <ref id="solo">Solo</ref>, <ref id="unequal">Unequal</ref> and <ref id="keen">Keen</ref>.</p>
 
-<p>To play Undead, click the mouse in any empty square and then type a letter or number on the keyboard indicating the type of monster: <keypress><key>G</key></keypress> or <keypress><key>1</key></keypress> for a ghost, <keypress><key>V</key></keypress> or <keypress><key>2</key></keypress> for a vampire, or <keypress><key>Z</key></keypress> or <keypress><key>3</key></keypress> for a zombie. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the Undo feature).</p>
+<p>To play Undead, click the mouse in any empty square and then type a letter or number on the keyboard indicating the type of monster: <keypress><key>G</key></keypress> or <keypress><key>1</key></keypress> for a ghost, <keypress><key>V</key></keypress> or <keypress><key>2</key></keypress> for a vampire, or <keypress><key>Z</key></keypress> or <keypress><key>3</key></keypress> for a zombie. You can also click on a monster in the counts at the top to place it in the highlighted square. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the Undo feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a letter or number, the corresponding monster will be shown in reduced size in that square, as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple monsters in the same square. A square containing a full-size monster cannot also contain pencil marks.</p>
 
@@ -2210,7 +2210,9 @@ remove the circle.</p>
 
 <p>If you prefer plain letters of the alphabet to cute monster pictures, you can press <keypress><key>A</key></keypress> to toggle between showing the monsters as monsters or showing them as letters.</p>
 
-<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked.</p>
+<p>Pressing <keypress><key>C</key></keypress> or <mouse>Adjust</mouse>-clicking any monster count at the top will cycle through three styles of monster counts: the total monsters to be placed of each type, the number remaining that have yet to be placed (shown as negative to distinguish it from the first style), or the number placed so far followed by a slash and the total count.</p>
+
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. The counts at top will automatically gray out when the correct number of monsters have been placed.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2234,7 +2236,7 @@ remove the circle.</p>
 <section>
 <title>Undead user preferences</title>
 
-<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether Undead uses letters or pictures to represent monsters.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether Undead uses letters or pictures to represent monsters and how to display monster counts at the top. Unlike the <keypress><key>A</key></keypress> and <keypress><key>C</key></keypress> keys, these will persist between games.</p>
 </section>
 </chapter>
 
