@@ -80,7 +80,7 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <section>
 <p>To play the puzzles, double-click on the <file>!Puzzles</file> application to load it on to the iconbar. Once loaded, a <mouse>Select</mouse> click on its iconbar icon will open the <window>Puzzles list</window> window, showing all of the available games. To play a game, click <mouse>Select</mouse> on its icon (or <mouse>Adjust</mouse> to open the game and close the <window>Puzzles list</window> window).</p>
 
-<p>The window supports interactive help, to provide a few more details about the individual games. The layout can be changed from large to small icons using the window menu. If the menu is opened over a puzzle, selecting <menu>Puzzle</menu> &msep; <menu>Help...</menu> will open this manual at that puzzle&rsquo;s entry (this only works for the HTML format documentation).</p>
+<p>The window supports interactive help, to provide a few more details about the individual games. The layout can be changed from large to small icons using the window menu. If the menu is opened over a puzzle, selecting <menu><item>Puzzle</item><item>Help...</item></menu> will open this manual at that puzzle&rsquo;s entry (this only works for the HTML format documentation).</p>
 
 <p>As part of a suite, there are many features which are common to all of the games in <cite>Puzzles</cite>, and these are described here. Details of the individual games are in the following chapters.</p>
 </section>
@@ -93,54 +93,54 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>The <window>Game</window> window menu offers a number of options for interacting with the game, which are common to most of the games. If the window has input focus, some standard keyboard shortcuts can also be used. The available actions are described in the list here, and in the following sections.</p>
 
 <dl>
-<li><title><menu>Game</menu></title>
+<li><title><menu><item>Game</item></menu></title>
 
 <p>Leads to a sub-menu containing a number of actions relating to the current game.</p></li>
 
 
-<li><title><menu>Type</menu></title>
+<li><title><menu><item>Type</item></menu></title>
 
 <p>Leads to a sub-menu containing a number of preset game configurations and an option to create custom configurations.</p></li>
 
 
-<li><title><menu>Specific game...</menu></title>
+<li><title><menu><item>Specific game...</item></menu></title>
 
 <p>Open a dialogue box allowing the <ref id="playing-game-id">specific game ID</ref> for the current game to be copied out or a new game to be created from another ID.</p></li>
 
 
-<li><title><menu>Random seed...</menu></title>
+<li><title><menu><item>Random seed...</item></menu></title>
 
 <p>Open a dialogue box allowing the <ref id="playing-game-id">random seed</ref> for the current game to be copied out or a new game to be created from another seed.</p></li>
 
 
-<li><title><menu>Undo</menu> (<key>U</key>, <key>Ctrl-Z</key>, <key>Ctrl-_</key>, or <key>*</key>)</title>
+<li><title><menu><item>Undo</item></menu> (<keypress><key>U</key></keypress>, <keypress><key>Ctrl</key><key>Z</key></keypress>, <keypress><key>Ctrl</key><key>_</key></keypress>, or <keypress><key>*</key></keypress>)</title>
 
 <p>Undoes a single move. (You can undo moves back to the start of the session.)</p></li>
 
 
-<li><title><menu>Redo</menu> (<key>R</key>, <key>Ctrl-R</key> or <key>#</key>)</title>
+<li><title><menu><item>Redo</item></menu> (<keypress><key>R</key></keypress>, <keypress><key>Ctrl</key><key>R</key></keypress> or <keypress><key>#</key></keypress>)</title>
 
 <p>Redoes a previously undone move.</p></li>
 
 
-<li><title><menu>Preferences...</menu></title>
+<li><title><menu><item>Preferences...</item></menu></title>
 
 <p>Where supported, brings up a dialog allowing you to configure personal preferences about a particular game. Some of these preferences will be specific to a particular game; others will be common to all games.</p>
 
 <p>Within the <window>Preferences</window> dialogue, click <icon>Set</icon> to store the options and apply them to the associated <window>Game</window> window &ndash; this will cause a new game to be generated. The <icon>Save</icon> button will save the preferences for future instances of the puzzle as well. Preferences are saved separately for each of the puzzles in the collection.</p>
 
-<p>One option common to all games allows you to turn off the one-key shortcuts like <key>N</key> for new game or <key>Q</key> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <key>Ctrl</key> key.</p></li>
+<p>One option common to all games allows you to turn off the one-key shortcuts like <keypress><key>N</key></keypress> for new game or <keypress><key>Q</key></keypress> for quit, so that there&rsquo;s less chance of hitting them by accident. You can still access the same shortcuts with the <keypress><key>Ctrl</key></keypress> key.</p></li>
 
 
-<li><title><menu>Help...</menu></title>
+<li><title><menu><item>Help...</item></menu></title>
 
 <p>Open this manual at the section for the puzzle (if the HTML manual is in use).</p></li>
 </dl>
 
-<p>The <menu>Game</menu> entry leads to a submenu containing the following additional options.</p>
+<p>The <menu><item>Game</item></menu> entry leads to a submenu containing the following additional options.</p>
 
 <dl>
-<li><title><menu>Save</menu></title>
+<li><title><menu><item>Save</item></menu></title>
 
 <p>Saves the current state of your game to a file on disk. A saved game can be re-loaded by double-clicking on the file in a Filer window, or dropping it on to the <cite>Puzzles</cite> iconbar icon.</p>
 
@@ -149,33 +149,33 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>The saved files are compatible with those generated by versions of <cite>Simon Tatham&rsquo;s Portable Puzzle Collection</cite> running on other platforms. When loading files from other platforms into the RISC&nbsp;OS port, either set their filetype to &lsquo;Puzzle&rsquo; or drop Text or Data files on to the <cite>Puzzles</cite> iconbar icon.</p></li>
 
 
-<li><title><menu>Save sprite</menu></title>
+<li><title><menu><item>Save sprite</item></menu></title>
 
 <p>Saves the current game board as a sprite file.</p></li>
 
 
-<li><title><menu>Copy as text</menu></title>
+<li><title><menu><item>Copy as text</item></menu></title>
 
 <p>Copies the current state of your game to the clipboard in text format, so that you can paste it into (say) an e-mail client or a web message board if you're discussing the game with someone else. (Not all games support this feature.)</p></li>
 
 
-<li><title><menu>New</menu> (<key>N</key> or <key>Ctrl-N</key>)</title>
+<li><title><menu><item>New</item></menu> (<keypress><key>N</key></keypress> or <keypress><key>Ctrl</key><key>N</key></keypress>)</title>
 
 <p>Starts a new game, with a random initial state.</p></li>
 
 
-<li><title><menu>Restart</menu></title>
+<li><title><menu><item>Restart</item></menu></title>
 
 <p>Resets the current game to its initial state. (This can be undone.)</p></li>
 
 
-<li><title><menu>Solve</menu></title>
+<li><title><menu><item>Solve</item></menu></title>
 
 <p>Transforms the puzzle instantly into its solved state. For some games (<ref id="cube">Cube</ref>) this feature is not supported at all because it is of no particular use. For other games (such as <ref id="pattern">Pattern</ref>), the solved state can be used to give you information, if you can&rsquo;t see how a solution can exist at all or you want to know where you made a mistake. For still other games (such as <ref id="sixteen">Sixteen</ref>), automatic solution tells you nothing about how to <em>get</em> to the solution, but it does provide a useful way to get there quickly so that you can experiment with set-piece moves and transformations.</p>
 
 <p>Some games (such as <ref id="solo">Solo</ref>) are capable of solving a game ID you have typed in from elsewhere. Other games (such as <ref id="rectangles">Rectangles</ref>) cannot solve a game ID they didn&rsquo;t invent themself, but when they did invent the game ID they know what the solution is already. Still other games (<ref id="pattern">Pattern</ref>) can solve <em>some</em> external game IDs, but only if they aren&rsquo;t too difficult.</p>
 
-<p>The <menu>Solve</menu> command adds the solved state to the end of the undo chain for the puzzle. In other words, if you want to go back to solving it yourself after seeing the answer, you can just press <menu>Undo</menu>.</p></li>
+<p>The <menu><item>Solve</item></menu> command adds the solved state to the end of the undo chain for the puzzle. In other words, if you want to go back to solving it yourself after seeing the answer, you can just press <menu><item>Undo</item></menu>.</p></li>
 </dl>
 </section>
 
@@ -184,9 +184,9 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 
 <p>There are two ways to save a game specification out of a puzzle and recreate it later, or recreate it in somebody else&rsquo;s copy of the same puzzle.</p>
 
-<p>The <menu>Specific game...</menu> and <menu>Random Seed...</menu> entries in the <window>Game</window> window menu each show a piece of text (a &lsquo;game ID&rsquo;) which is sufficient to reconstruct precisely the same game at a later date.</p>
+<p>The <menu><item>Specific game...</item></menu> and <menu><item>Random Seed...</item></menu> entries in the <window>Game</window> window menu each show a piece of text (a &lsquo;game ID&rsquo;) which is sufficient to reconstruct precisely the same game at a later date.</p>
 
-<p>You can enter either of these pieces of text back into the program (via the same <menu>Specific game...</menu> and <menu>Random Seed...</menu> menu entries) at a later point, and it will recreate the same game.</p>
+<p>You can enter either of these pieces of text back into the program (via the same <menu><item>Specific game...</item></menu> and <menu><item>Random Seed...</item></menu> menu entries) at a later point, and it will recreate the same game.</p>
 
 <p>The difference between the two forms is that a descriptive game ID is a literal <em>description</em> of the initial state of the game, whereas a random seed is just a piece of arbitrary text which was provided as input to the random number generator used to create the puzzle. This means that:</p>
 
@@ -201,7 +201,7 @@ game IDs suitable for use with these programs.</p></li>
 <li><p>Random seeds are not guaranteed to produce the same result if you use them with a different <em>version</em> of the puzzle program. This is because the generation algorithm might have been improved or modified in later versions of the code, and will therefore produce a different result when given the same
 sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure that it will be used on the same version of the program as yours.</p>
 
-<!-- p>(Use the <menu>About</menu> menu option to find out the version number of the program. Programs with the same version number running on different platforms should still be random-seed compatible.)</p --></li>
+<!-- p>(Use the <menu><item>About</item></menu> menu option to find out the version number of the program. Programs with the same version number running on different platforms should still be random-seed compatible.)</p --></li>
 </ul>
 
 <p>A descriptive game ID starts with a piece of text which encodes the <em>parameters</em> of the current game (such as grid size). Then there is a colon, and after that is the description of the game&rsquo;s initial state. A random seed starts with a similar string of parameters, but then it contains a hash sign followed by arbitrary data.</p>
@@ -214,11 +214,11 @@ sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure t
 </section>
 
 <section>
-<title>The <menu>Type</menu> menu</title>
+<title>The <menu><item>Type</item></menu> menu</title>
 
-<p>The <menu>Type</menu> submenu, if present, may contain a list of preset game settings. Selecting one of these will start a new random game with the parameters specified.</p>
+<p>The <menu><item>Type</item></menu> submenu, if present, may contain a list of preset game settings. Selecting one of these will start a new random game with the parameters specified.</p>
 
-<p>The <menu>Type</menu> submenu may also contain a <menu>Custom...</menu> option which allows you to fine-tune game parameters. The parameters available are specific to each game and are described in the following sections.</p>
+<p>The <menu><item>Type</item></menu> submenu may also contain a <menu><item>Custom...</item></menu> option which allows you to fine-tune game parameters. The parameters available are specific to each game and are described in the following sections.</p>
 
 
 </section>
@@ -247,19 +247,19 @@ sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure t
 
 <li><title>Rotate tile anticlockwise</title>
 
-<p><mouse>Select</mouse> click, <key>A</key> key</p></li>
+<p><mouse>Select</mouse> click, <keypress><key>A</key></keypress> key</p></li>
 
 <li><title>Rotate tile clockwise</title>
 
-<p><mouse>Adjust</mouse> click, <key>D</key> key</p></li>
+<p><mouse>Adjust</mouse> click, <keypress><key>D</key></keypress> key</p></li>
 
 <li><title>Rotate tile by 180 degrees</title>
 
-<p><key>F</key> key</p></li>
+<p><keypress><key>F</key></keypress> key</p></li>
 
 <li><title>Lock (or unlock) tile</title>
 
-<p><key>Ctrl</key>-<mouse>Select</mouse> click, <key>Shift</key>-<mouse>Select</mouse> click, <key>S</key> key</p>
+<p><keypress><key>Ctrl</key></keypress>-<mouse>Select</mouse> click, <keypress><key>Shift</key></keypress>-<mouse>Select</mouse> click, <keypress><key>S</key></keypress> key</p>
 
 <p>You can lock a tile once you&rsquo;re sure of its orientation. You can also unlock it again, but while it&rsquo;s locked you can&rsquo;t accidentally turn it.</p></li>
 </dl>
@@ -269,19 +269,19 @@ sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure t
 <dl>
 <li><title>Shift grid</title>
 
-<p><key>Shift</key> + arrow keys</p>
+<p><keypress><key>Shift</key></keypress> + arrow keys</p>
 
 <p>On grids that wrap, you can move the origin of the grid, so that tiles that were on opposite sides of the grid can be seen together.</p></li>
 
 <li><title>Move centre</title>
 
-<p><key>Ctrl</key> + arrow keys</p>
+<p><keypress><key>Ctrl</key></keypress> + arrow keys</p>
 
 <p>You can change which tile is used as the source of highlighting. (It doesn&rsquo;t ultimately matter which tile this is, as every tile will be connected to every other tile in a correct solution, but it may be helpful in the intermediate stages of solving the puzzle.)</p></li>
 
 <li><title>Jumble tiles</title>
 
-<p><key>J</key> key</p>
+<p><keypress><key>J</key></keypress> key</p>
 
 <p>This key turns all tiles that are not locked to random orientations.</p></li>
 </dl>
@@ -292,7 +292,7 @@ sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure t
 <section id="net-params">
 <title>Net parameters</title>
 
-<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+<p>These parameters are available from the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon> and <icon>Height</icon></title>
@@ -318,7 +318,7 @@ sequence of random numbers. Use a descriptive game ID if you aren&rsquo;t sure t
 <section>
 <title>Net user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the Net <window>Game</window> window menu will let you configure when loops are highlighted as errors. By default, they&rsquo;re always highlighted; by
+<p>The <menu><item>Preferences</item></menu> option on the Net <window>Game</window> window menu will let you configure when loops are highlighted as errors. By default, they&rsquo;re always highlighted; by
 changing this option, you can ask for a loop to be highlighted only if every tile forming part of the loop is locked. This avoids the loop highlighting acting as a spoiler for available deductions about squares you haven&rsquo;t even looked at yet.</p>
 </section>
 </chapter>
@@ -343,7 +343,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p><mouse>Select</mouse>-clicking anywhere on the window will move the cube (or other solid) towards the mouse pointer.</p>
 
-<p>The arrow keys can also used to roll the cube on its square grid in the four cardinal directions. On the triangular grids, the mapping of arrow keys to directions is more approximate. Vertical movement is disallowed where it doesn&rsquo;t make sense. The four keys surrounding the arrow keys on the numeric keypad (<key>7</key>, <key>9</key>, <key>1</key>, <key>3</key>) can be used for diagonal movement.</p>
+<p>The arrow keys can also used to roll the cube on its square grid in the four cardinal directions. On the triangular grids, the mapping of arrow keys to directions is more approximate. Vertical movement is disallowed where it doesn&rsquo;t make sense. The four keys surrounding the arrow keys on the numeric keypad (<keypress><key>7</key></keypress>, <keypress><key>9</key></keypress>, <keypress><key>1</key></keypress>, <keypress><key>3</key></keypress>) can be used for diagonal movement.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -351,7 +351,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Cube parameters</title>
 
-<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+<p>These parameters are available from the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Type of solid</icon></title>
@@ -383,7 +383,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>By default, the arrow keys will move a tile adjacent to the space in the direction indicated (moving the space in the <em>opposite</em> direction).</p>
 
-<p>Pressing <key>H</key> will make a suggested move. Pressing <key>H</key> enough times will solve the game, but it may scramble your progress while doing so.</p>
+<p>Pressing <keypress><key>H</key></keypress> will make a suggested move. Pressing <keypress><key>H</key></keypress> enough times will solve the game, but it may scramble your progress while doing so.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -391,13 +391,13 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Fifteen parameters</title>
 
-<p>The only options available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory. (Once you&rsquo;ve changed these, it&rsquo;s not a &lsquo;15-puzzle&rsquo; any more, of course!)</p>
+<p>The only options available from the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory. (Once you&rsquo;ve changed these, it&rsquo;s not a &lsquo;15-puzzle&rsquo; any more, of course!)</p>
 </section>
 
 <section>
 <title>Fifteen user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the sense of the arrow keys. With the default setting, <menu>Move the tile</menu>, the arrow key you press indicates the direction that you want a tile to move, so that (for example) if you want to move the tile left of the gap rightwards into the gap, you&rsquo;d press <key>Right</key>. With the opposite setting, <menu>Move the gap</menu>, the behaviour of the arrow keys is reversed, and you would press <key>Left</key> to move the tile left of the gap into the gap, so that the <em>gap</em> ends up one square left of where it was.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the sense of the arrow keys. With the default setting, <menu><item>Move the tile</item></menu>, the arrow key you press indicates the direction that you want a tile to move, so that (for example) if you want to move the tile left of the gap rightwards into the gap, you&rsquo;d press <keypress><key>Right</key></keypress>. With the opposite setting, <menu><item>Move the gap</item></menu>, the behaviour of the arrow keys is reversed, and you would press <keypress><key>Left</key></keypress> to move the tile left of the gap into the gap, so that the <em>gap</em> ends up one square left of where it was.</p>
 </section>
 </chapter>
 
@@ -419,7 +419,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>Alternatively, use the cursor keys to move the position indicator around the edge of the grid, and use the return key to move the row/column in the direction indicated.</p>
 
-<p>You can also move the tiles directly. Move the cursor onto a tile, hold <key>Ctrl</key> and press an arrow key to move the tile under the cursor and move the cursor along with the tile. Or, hold <key>Shift</key> to move only the tile. Pressing <key>Enter</key> simulates holding down <key>Ctrl</key> (press <key>Enter</key> again to release), while pressing <key>Space</key> simulates holding down <key>Shift</key>.</p>
+<p>You can also move the tiles directly. Move the cursor onto a tile, hold <keypress><key>Ctrl</key></keypress> and press an arrow key to move the tile under the cursor and move the cursor along with the tile. Or, hold <keypress><key>Shift</key></keypress> to move only the tile. Pressing <keypress><key>Enter</key></keypress> simulates holding down <keypress><key>Ctrl</key></keypress> (press <keypress><key>Enter</key></keypress> again to release), while pressing <keypress><key>Space</key></keypress> simulates holding down <keypress><key>Shift</key></keypress>.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -427,7 +427,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section id="sixteen-params">
 <title>Sixteen parameters</title>
 
-<p>The parameters available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are:</p>
+<p>The parameters available from the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu are:</p>
 
 <dl>
 <li><title><icon>Width</icon> and <icon>Height</icon></title>
@@ -463,7 +463,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>Clicking with <mouse>Select</mouse> rotates the group anticlockwise. Clicking with <mouse>Adjust</mouse> rotates it clockwise.</p>
 
-<p>You can also move an outline square around the grid with the cursor keys; the square is the size above (2&times;2 by default, or larger). Pressing the <key>Return</key> key or <key>Space</key> bar will rotate the current square anticlockwise or clockwise respectively.</p>
+<p>You can also move an outline square around the grid with the cursor keys; the square is the size above (2&times;2 by default, or larger). Pressing the <keypress><key>Return</key></keypress> key or <keypress><key>Space</key></keypress> bar will rotate the current square anticlockwise or clockwise respectively.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -471,7 +471,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Twiddle parameters</title>
 
-<p>Twiddle provides several configuration options via the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu:</p>
+<p>Twiddle provides several configuration options via the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu:</p>
 
 <dl>
 <li><title><icon>Width</icon> and <icon>Height</icon></title>
@@ -519,7 +519,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p><mouse>Select</mouse>-click any edge to toggle it on or off, or <mouse>Select</mouse>-drag to draw an entire rectangle (or line) on the grid in one go (removing any existing edges within that rectangle). <mouse>Adjust</mouse>-dragging will allow you to erase the contents of a rectangle without affecting its edges.</p>
 
-<p>Alternatively, use the cursor keys to move the position indicator around the board. Pressing the <key>Return</key> key then allows you to use the cursor keys to drag a rectangle out from that position, and pressing the <key>Return</key> key again completes the rectangle. Using the <key>Space</key> bar instead of the <key>Return</key> key allows you to erase the contents of a rectangle without affecting its edges, as above. Pressing <key>Escape</key> cancels a drag.</p>
+<p>Alternatively, use the cursor keys to move the position indicator around the board. Pressing the <keypress><key>Return</key></keypress> key then allows you to use the cursor keys to drag a rectangle out from that position, and pressing the <keypress><key>Return</key></keypress> key again completes the rectangle. Using the <keypress><key>Space</key></keypress> bar instead of the <keypress><key>Return</key></keypress> key allows you to erase the contents of a rectangle without affecting its edges, as above. Pressing <keypress><key>Escape</key></keypress> cancels a drag.</p>
 
 <p>When a rectangle of the correct size is completed, it will be shaded.</p>
 
@@ -529,7 +529,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Rectangles parameters</title>
 
-<p>These parameters are available from the <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu.</p>
+<p>These parameters are available from the <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -585,13 +585,13 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>This game is played with the mouse.</p>
 
-<p><mouse>Select</mouse>-click in a square to colour it black. <mouse>Adjust</mouse>-click to colour it white. If you make a mistake, you can <key>Ctrl</key>-<mouse>Select</mouse>-click, or hold down <key>Shift</key> while clicking with either button, to colour the square in the default grey (meaning &lsquo;undecided&rsquo;) again.</p>
+<p><mouse>Select</mouse>-click in a square to colour it black. <mouse>Adjust</mouse>-click to colour it white. If you make a mistake, you can <keypress><key>Ctrl</key></keypress>-<mouse>Select</mouse>-click, or hold down <keypress><key>Shift</key></keypress> while clicking with either button, to colour the square in the default grey (meaning &lsquo;undecided&rsquo;) again.</p>
 
-<p>You can click and drag with <mouse>Select</mouse> or <mouse>Adjust</mouse> to colour a vertical or horizontal line of squares black or white at a time (respectively). If you click and drag with <key>Ctrl</key>-<mouse>Select</mouse>, or with <key>Shift</key> held down, you can colour a whole rectangle of squares grey.</p>
+<p>You can click and drag with <mouse>Select</mouse> or <mouse>Adjust</mouse> to colour a vertical or horizontal line of squares black or white at a time (respectively). If you click and drag with <keypress><key>Ctrl</key></keypress>-<mouse>Select</mouse>, or with <keypress><key>Shift</key></keypress> held down, you can colour a whole rectangle of squares grey.</p>
 
-<p>You can also move around the grid with the cursor keys. Pressing the <key>Return</key> key will cycle the current cell through empty, then black, then white, then empty, and the <key>Space</key> bar does the same cycle in reverse.</p>
+<p>You can also move around the grid with the cursor keys. Pressing the <keypress><key>Return</key></keypress> key will cycle the current cell through empty, then black, then white, then empty, and the <keypress><key>Space</key></keypress> bar does the same cycle in reverse.</p>
 
-<p>Moving the cursor while holding <key>Ctrl</key> will colour the moved-over squares black. Holding <key>Shift</key> will colour the moved-over squares white, and holding both will colour them grey.</p>
+<p>Moving the cursor while holding <keypress><key>Ctrl</key></keypress> will colour the moved-over squares black. Holding <keypress><key>Shift</key></keypress> will colour the moved-over squares white, and holding both will colour them grey.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -599,7 +599,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Pattern parameters</title>
 
-<p>The only options available from <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory.</p>
+<p>The only options available from <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu are <icon>Width</icon> and <icon>Height</icon>, which are self-explanatory.</p>
 </section>
 </chapter>
 
@@ -639,7 +639,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Solo controls</title>
 
-<p>To play Solo, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the Undo feature).</p>
+<p>To play Solo, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the Undo feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
 
@@ -647,9 +647,9 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress> will also erase pencil marks.</p>
 
-<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <key>Return</key> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the space bar will clear a filled square.</p>
+<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <keypress><key>Return</key></keypress> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the space bar will clear a filled square.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -657,7 +657,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Solo parameters</title>
 
-<p>Solo allows you to configure two separate dimensions of the puzzle grid using <menu>Type</menu> &msep; <menu>Custom</menu> from the <window>Game</window> window: the number of <icon>Columns of sub-blocks</icon>, and the number of <icon>Rows of sub-blocks</icon>, into which the main grid is divided. (The size of a block is the inverse of this: for example, if you select 2 columns and 3 rows, each actual block will have 3 columns and 2 rows.)</p>
+<p>Solo allows you to configure two separate dimensions of the puzzle grid using <menu><item>Type</item><item>Custom</item></menu> from the <window>Game</window> window: the number of <icon>Columns of sub-blocks</icon>, and the number of <icon>Rows of sub-blocks</icon>, into which the main grid is divided. (The size of a block is the inverse of this: for example, if you select 2 columns and 3 rows, each actual block will have 3 columns and 2 rows.)</p>
 
 <p>If you tick the <icon>X</icon> checkbox, Solo will apply the optional extra constraint that the two main diagonals of the grid also contain one of every digit. (This is sometimes known as &lsquo;Sudoku-X&rsquo; in newspapers.) In this mode, the squares on the two main diagonals will be shaded slightly so that you know it&rsquo;s enabled.</p>
 
@@ -667,7 +667,7 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>You can also configure the type of <icon>Symmetry</icon> shown in the generated puzzles. More symmetry makes the puzzles look prettier but may also make them easier, since the symmetry constraints can force more clues than necessary to be present. Completely asymmetric puzzles have the freedom to contain as few clues as possible.</p>
 
-<p>Finally, you can configure the <icon>Difficulty</icon> of the generated puzzles. Difficulty levels are judged by the complexity of the techniques of deduction required to solve the puzzle: each level requires a mode of reasoning which was not necessary in the previous one. In particular, on difficulty levels <menu>Trivial</menu> and <menu>Basic</menu> there will be a square you can fill in with a single number at all times, whereas at <menu>Intermediate</menu> level and beyond you will have to make partial deductions about the <em>set</em> of squares a number could be in (or the set of numbers that could be in a square). At <menu>Unreasonable</menu> level, even this is not enough, and you will eventually have to make a guess, and then backtrack if it turns out to be wrong.</p>
+<p>Finally, you can configure the <icon>Difficulty</icon> of the generated puzzles. Difficulty levels are judged by the complexity of the techniques of deduction required to solve the puzzle: each level requires a mode of reasoning which was not necessary in the previous one. In particular, on difficulty levels <menu><item>Trivial</item></menu> and <menu><item>Basic</item></menu> there will be a square you can fill in with a single number at all times, whereas at <menu><item>Intermediate</item></menu> level and beyond you will have to make partial deductions about the <em>set</em> of squares a number could be in (or the set of numbers that could be in a square). At <menu><item>Unreasonable</item></menu> level, even this is not enough, and you will eventually have to make a guess, and then backtrack if it turns out to be wrong.</p>
 
 <p>Generating difficult puzzles is itself difficult: if you select one of the higher difficulty levels, Solo may have to make many attempts at generating a puzzle before it finds one hard enough for you. Be prepared to wait, especially if you have also configured a large puzzle size.</p>
 </section>
@@ -699,21 +699,21 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>If you uncover a square which has <em>no</em> mines in the surrounding eight squares, then it is obviously safe to uncover those squares in turn, and so on if any of them also has no surrounding mines. This will be done for you automatically; so sometimes when you uncover a square, a whole new area will open up to be explored.</p>
 
-<p>You can also use the cursor keys to move around the minefield. Pressing the <key>Return</key> key in a covered square uncovers it, and in an uncovered square will clear around it (so it acts as the <mouse>Select</mouse> button), pressing the <key>Space</key> bar in a covered square will place a flag (similarly, it acts as the <mouse>Adjust</mouse> button).</p>
+<p>You can also use the cursor keys to move around the minefield. Pressing the <keypress><key>Return</key></keypress> key in a covered square uncovers it, and in an uncovered square will clear around it (so it acts as the <mouse>Select</mouse> button), pressing the <keypress><key>Space</key></keypress> bar in a covered square will place a flag (similarly, it acts as the <mouse>Adjust</mouse> button).</p>
 
 <p>All the actions described in <ref id="common-actions" /> are also available.</p>
 
-<p>Even <menu>Undo</menu> is available, although you might consider it cheating to use it. If you step on a mine, the program will only reveal the mine in question (unlike most other implementations, which reveal all of them). You can then Undo your fatal move and continue playing if you like. The program will track the number of times you died (and Undo will not reduce that counter), so when you get to the end of the game you know whether or not you did it without making any errors.</p>
+<p>Even <menu><item>Undo</item></menu> is available, although you might consider it cheating to use it. If you step on a mine, the program will only reveal the mine in question (unlike most other implementations, which reveal all of them). You can then Undo your fatal move and continue playing if you like. The program will track the number of times you died (and Undo will not reduce that counter), so when you get to the end of the game you know whether or not you did it without making any errors.</p>
 
 <p>(If you really want to know the full layout of the grid, which other
 implementations will show you after you die, you can always use the
-<menu>Solve</menu> menu option.)</p>
+<menu><item>Solve</item></menu> menu option.)</p>
 </section>
 
 <section>
 <title>Mines parameters</title>
 
-<p>The options available from <menu>Type</menu> &msep; <menu>Custom...</menu> option in the <window>Game</window> window menu are:</p>
+<p>The options available from <menu><item>Type</item><item>Custom...</item></menu> option in the <window>Game</window> window menu are:</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -759,8 +759,8 @@ implementations will show you after you die, you can always use the
 
 <p>If you <mouse>Adjust</mouse>-click the selected region, it will be unselected.</p>
 
-<p>The cursor keys move a cursor around the grid. Pressing the <key>Space</key> or <key>Enter</key> keys while the cursor is in an unselected region selects it;
-pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
+<p>The cursor keys move a cursor around the grid. Pressing the <keypress><key>Space</key></keypress> or <keypress><key>Enter</key></keypress> keys while the cursor is in an unselected region selects it;
+pressing <keypress><key>Space</key></keypress> or <keypress><key>Enter</key></keypress> again removes it as above.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -768,7 +768,7 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <section>
 <title>Same Game parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -781,7 +781,7 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 
 <li><title><icon>Scoring system</icon></title>
 
-<p>Controls the precise mechanism used for scoring. With the default system, <menu>(n-2)^2</menu>, only regions of three squares or more will score any points at all. With the alternative <menu>(n-1)^2</menu> system, regions of two squares score a point each, and larger regions score relatively more points.</p></li>
+<p>Controls the precise mechanism used for scoring. With the default system, <menu><item>(n-2)^2</item></menu>, only regions of three squares or more will score any points at all. With the alternative <menu><item>(n-1)^2</item></menu> system, regions of two squares score a point each, and larger regions score relatively more points.</p></li>
 
 <li><title><icon>Ensure solubility</icon></title>
 
@@ -808,9 +808,9 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 
 <p>This game can be played with either the keyboard or the mouse.</p>
 
-<p><mouse>Select</mouse>-click in a square to flip it and its associated squares, or use the cursor keys to choose a square and the <key>Space</key> bar or <key>Enter</key> key to flip.</p>
+<p><mouse>Select</mouse>-click in a square to flip it and its associated squares, or use the cursor keys to choose a square and the <keypress><key>Space</key></keypress> bar or <keypress><key>Enter</key></keypress> key to flip.</p>
 
-<p>If you use the <menu>Solve</menu> function on this game, it will mark some of the squares in red. If you click once in every square with a red mark, the game should be solved. (If you click in a square <em>without</em> a red mark, a red mark will appear in it to indicate that you will need to reverse that operation to reach the solution.)</p>
+<p>If you use the <menu><item>Solve</item></menu> function on this game, it will mark some of the squares in red. If you click once in every square with a red mark, the game should be solved. (If you click in a square <em>without</em> a red mark, a red mark will appear in it to indicate that you will need to reverse that operation to reach the solution.)</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -818,7 +818,7 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 <section>
 <title>Flip parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -827,7 +827,7 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 
 <li><title><icon>Shape type</icon></title>
 
-<p>This control determines the shape of the region which is flipped by clicking in any given square. The default setting, <menu>Crosses</menu>,causes every square to flip itself and its four immediate neighbours (or three or two if it&rsquo;s at an edge or corner). The other setting, <menu>Random</menu>, causes a random shape to be chosen for every square, so the game is different every time.</p></li>
+<p>This control determines the shape of the region which is flipped by clicking in any given square. The default setting, <menu><item>Crosses</item></menu>,causes every square to flip itself and its four immediate neighbours (or three or two if it&rsquo;s at an edge or corner). The other setting, <menu><item>Random</item></menu>, causes a random shape to be chosen for every square, so the game is different every time.</p></li>
 </dl>
 </section>
 </chapter>
@@ -856,16 +856,16 @@ pressing <key>Space</key> or <key>Enter</key> again removes it as above.</p>
 
 <p><mouse>Adjust</mouse>-clicking in the current guess adds a &lsquo;hold&rsquo; marker; pegs that have hold markers will be automatically added to the next guess after marking.</p>
 
-<p>Alternatively, with the keyboard, the <key>Up</key> and <key>Down</key> cursor keys can be used to select a peg colour, the <key>Left</key> and <key>Right</key> keys to select a peg position, and the <key>Enter</key> key to place a peg of the selected colour in the chosen position. <key>D</key> or <key>Backspace</key> removes a peg, and <key>Space</key> adds a hold marker.</p>
+<p>Alternatively, with the keyboard, the <keypress><key>Up</key></keypress> and <keypress><key>Down</key></keypress> cursor keys can be used to select a peg colour, the <keypress><key>Left</key></keypress> and <keypress><key>Right</key></keypress> keys to select a peg position, and the <keypress><key>Enter</key></keypress> key to place a peg of the selected colour in the chosen position. <keypress><key>D</key></keypress> or <keypress><key>Backspace</key></keypress> removes a peg, and <keypress><key>Space</key></keypress> adds a hold marker.</p>
 
-<p>The number keys can also be used to insert pegs: <key>1</key> inserts the top-most colour, <key>2</key> the second one, and so forth. These also move the peg cursor to the right. Pressing <key>L</key> will label the pegs with their numbers.</p>
+<p>The number keys can also be used to insert pegs: <keypress><key>1</key></keypress> inserts the top-most colour, <keypress><key>2</key></keypress> the second one, and so forth. These also move the peg cursor to the right. Pressing <keypress><key>L</key></keypress> will label the pegs with their numbers.</p>
 
-<p>Pressing <key>H</key> or <key>?</key> will fill the current guess with a suggested guess. Using this is not recommended for 10 or more pegs as it is
+<p>Pressing <keypress><key>H</key></keypress> or <keypress><key>?</key></keypress> will fill the current guess with a suggested guess. Using this is not recommended for 10 or more pegs as it is
 slow.</p>
 
-<p>When the guess is complete, the smaller feedback pegs will be highlighted; clicking on these (or moving the peg cursor to them with the arrow keys and pressing the <key>Space</key> bar or <key>Enter</key> key) will mark the current guess, copy any held pegs to the next guess, and move the &lsquo;current guess&rsquo; marker.</p>
+<p>When the guess is complete, the smaller feedback pegs will be highlighted; clicking on these (or moving the peg cursor to them with the arrow keys and pressing the <keypress><key>Space</key></keypress> bar or <keypress><key>Enter</key></keypress> key) will mark the current guess, copy any held pegs to the next guess, and move the &lsquo;current guess&rsquo; marker.</p>
 
-<p>If you correctly position all the pegs the solution will be displayed below; if you run out of guesses (or select <menu>Solve...</menu>) the solution will also be revealed.</p>
+<p>If you correctly position all the pegs the solution will be displayed below; if you run out of guesses (or select <menu><item>Solve...</item></menu>) the solution will also be revealed.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -873,7 +873,7 @@ slow.</p>
 <section>
 <title>Guess parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu. The default game matches the parameters for the board game <cite>Mastermind</cite>.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu. The default game matches the parameters for the board game <cite>Mastermind</cite>.</p>
 
 <dl>
 <li><title><icon>Colours</icon></title>
@@ -903,7 +903,7 @@ slow.</p>
 <section>
 <title>Guess user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether pegs are labelled with their numbers. Unlike the <key>L</key> key, this will persist between games.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether pegs are labelled with their numbers. Unlike the <keypress><key>L</key></keypress> key, this will persist between games.</p>
 </section>
 </chapter>
 
@@ -925,7 +925,7 @@ slow.</p>
 
 <p>Vacant spaces which you can move a peg into are marked with holes. A space with no peg and no hole is not available for moving at all: it is an obstacle which you must work around.</p>
 
-<p>You can also use the cursor keys to move a position indicator around the board. Pressing the <key>Return</key> key while over a peg, followed by a cursor key, will jump the peg in that direction (if that is a legal move).</p>
+<p>You can also use the cursor keys to move a position indicator around the board. Pressing the <keypress><key>Return</key></keypress> key while over a peg, followed by a cursor key, will jump the peg in that direction (if that is a legal move).</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -933,7 +933,7 @@ slow.</p>
 <section>
 <title>Pegs parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -942,7 +942,7 @@ slow.</p>
 
 <li><title><icon>Board type</icon></title>
 
-<p>Controls whether you are given a board of a standard shape or a randomly generated shape. The two standard shapes currently supported are <menu>Cross</menu> (in various sizes) and <menu>Octagon</menu>;. The 7&times;7 Cross is the traditional English board layout. The Octagon is the traditional French one. Selecting <menu>Random</menu>; will give you a different board shape every time (but always one that is known to have a solution).</p></li>
+<p>Controls whether you are given a board of a standard shape or a randomly generated shape. The two standard shapes currently supported are <menu><item>Cross</item></menu> (in various sizes) and <menu><item>Octagon</item></menu>;. The 7&times;7 Cross is the traditional English board layout. The Octagon is the traditional French one. Selecting <menu><item>Random</item></menu>; will give you a different board shape every time (but always one that is known to have a solution).</p></li>
 </dl>
 </section>
 </chapter>
@@ -965,7 +965,7 @@ slow.</p>
 
 <p><mouse>Adjust</mouse>-clicking between two adjacent numbers draws a line between them, which you can use to remind yourself that you know those two numbers are <em>not</em> covered by a single domino. <mouse>Adjust</mouse>-clicking again removes the line.</p>
 
-<p>You can also use the cursor keys to move a cursor around the grid. When the cursor is half way between two adjacent numbers, pressing the <key>Return</key> key will place a domino covering those numbers, or pressing the <key>Space</key> bar will lay a line between the two squares. Repeating either action removes the domino or line.</p>
+<p>You can also use the cursor keys to move a cursor around the grid. When the cursor is half way between two adjacent numbers, pressing the <keypress><key>Return</key></keypress> key will place a domino covering those numbers, or pressing the <keypress><key>Space</key></keypress> bar will lay a line between the two squares. Repeating either action removes the domino or line.</p>
 
 <p>Pressing a number key will highlight all occurrences of that number. Pressing that number again will clear the highlighting. Up to two different numbers can be highlighted at any given time.</p>
 
@@ -975,7 +975,7 @@ slow.</p>
 <section>
 <title>Dominosa parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Maximum number on dominoes</icon></title>
@@ -1007,7 +1007,7 @@ slow.</p>
 
 <p>To move a point, drag it into a new position with <mouse>Select</mouse>.</p>
 
-<p>The cursor keys may also be used to navigate amongst the points. Pressing the <key>Enter</key> key will toggle dragging the currently-highlighted point. Pressing <key>Tab</key> or <key>Space</key> will cycle through all the points.</p>
+<p>The cursor keys may also be used to navigate amongst the points. Pressing the <keypress><key>Enter</key></keypress> key will toggle dragging the currently-highlighted point. Pressing <keypress><key>Tab</key></keypress> or <keypress><key>Space</key></keypress> will cycle through all the points.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1015,7 +1015,7 @@ slow.</p>
 <section>
 <title>Untangle parameters</title>
 
-<p>There is only one parameter available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>There is only one parameter available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Number of points</icon></title>
@@ -1094,13 +1094,13 @@ H........|
 
 <p>Locations in the arena may be locked against modification by <mouse>Adjust</mouse>-clicking; whole rows and columns may be similarly locked by <mouse>Adjust</mouse>-clicking in the laser square above/below that column, or to the left/right of that row.</p>
 
-<p>The cursor keys may also be used to move around the grid. Pressing the <key>Enter</key> key will fire a laser or add a new ball-location guess, and pressing <key>Space</key> will lock a cell, row, or column.</p>
+<p>The cursor keys may also be used to move around the grid. Pressing the <keypress><key>Enter</key></keypress> key will fire a laser or add a new ball-location guess, and pressing <keypress><key>Space</key></keypress> will lock a cell, row, or column.</p>
 
 <p>When an appropriate number of balls have been guessed, a button will appear at the top-left corner of the grid; clicking that (with mouse or cursor) will check your guesses.</p>
 
 <p>If you click the &lsquo;check&rsquo; button and your guesses are not correct, the game will show you the minimum information necessary to demonstrate this to you, so you can try again. If your ball positions are not consistent with the beam paths you already know about, one beam path will be circled to indicate that it proves you wrong. If your positions match all the existing beam paths but are still wrong, one new beam path will be revealed (written in red) which is not consistent with your current guesses.</p>
 
-<p>If you decide to give up completely, you can select <menu>Solve</menu> to reveal the actual ball positions. At this point, correctly-placed balls will be displayed as filled black circles, incorrectly-placed balls as filled black circles with red crosses, and missing balls as filled red circles. In addition, a red circle marks any laser you had already fired which is not consistent with your ball layout (just as when you press the &lsquo;check&rsquo; button), and red text marks any laser you <em>could</em> have fired in order to distinguish your ball layout from the correct one.</p>
+<p>If you decide to give up completely, you can select <menu><item>Solve</item></menu> to reveal the actual ball positions. At this point, correctly-placed balls will be displayed as filled black circles, incorrectly-placed balls as filled black circles with red crosses, and missing balls as filled red circles. In addition, a red circle marks any laser you had already fired which is not consistent with your ball layout (just as when you press the &lsquo;check&rsquo; button), and red text marks any laser you <em>could</em> have fired in order to distinguish your ball layout from the correct one.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1108,7 +1108,7 @@ H........|
 <section>
 <title>Black Box parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1148,7 +1148,7 @@ H........|
 
 <p>Continuing to click either button will cycle between the three possible square contents. Thus, if you <mouse>Select</mouse>-click repeatedly in a blank square it will change from blank to <code>\</code> to <code>/</code> back to blank, and if you <mouse>Adjust</mouse>-click repeatedly the square will change from blank to <code>/</code> to <code>\</code> back to blank. (Therefore, you can play the game entirely with one button if you need to.)</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will place a <code>\</code> or a <code>/</code>, respectively, and will then cycle them as above. You can also press <key>/</key> or <key>\</key> to place a <code>/</code> or <code>\</code>, respectively, independent of what is already in the cursor square. Backspace removes any line from the cursor square.</p>
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will place a <code>\</code> or a <code>/</code>, respectively, and will then cycle them as above. You can also press <keypress><key>/</key></keypress> or <keypress><key>\</key></keypress> to place a <code>/</code> or <code>\</code>, respectively, independent of what is already in the cursor square. Backspace removes any line from the cursor square.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1156,7 +1156,7 @@ H........|
 <section>
 <title>Slant parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1165,14 +1165,14 @@ H........|
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. At <menu>Hard</menu> level, you are required to do deductions based on knowledge of <em>relationships</em> between squares rather than always being able to deduce the exact contents of one square at a time. (For example, you might know that two squares slant in the same direction, even if you don&rsquo;t yet know what that direction is, and this might enable you to deduce something about still other squares.) Even at <menu>Hard</menu> level, guesswork and backtracking should never be necessary.</p></li>
+<p>Controls the difficulty of the generated puzzle. At <menu><item>Hard</item></menu> level, you are required to do deductions based on knowledge of <em>relationships</em> between squares rather than always being able to deduce the exact contents of one square at a time. (For example, you might know that two squares slant in the same direction, even if you don&rsquo;t yet know what that direction is, and this might enable you to deduce something about still other squares.) Even at <menu><item>Hard</item></menu> level, guesswork and backtracking should never be necessary.</p></li>
 </dl>
 </section>
 
 <section>
 <title>Slant user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
 </section>
 </chapter>
 
@@ -1222,7 +1222,7 @@ H........|
 <section>
 <title>Light Up parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1241,14 +1241,14 @@ H........|
 
 <li><title><icon>Difficulty</icon></title>
 
-<p><menu>Easy</menu> means that the puzzles should be soluble without backtracking or guessing, <menu>Hard</menu> means that some guesses will probably be necessary.</p></li>
+<p><menu><item>Easy</item></menu> means that the puzzles should be soluble without backtracking or guessing, <menu><item>Hard</item></menu> means that some guesses will probably be necessary.</p></li>
 </dl>
 </section>
 
 <section>
 <title>Light Up user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether &lsquo;this is not a light&rsquo; marks are shown when the square is also lit.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether &lsquo;this is not a light&rsquo; marks are shown when the square is also lit.</p>
 </section>
 </chapter>
 
@@ -1276,9 +1276,9 @@ H........|
 
 <p>Dragging a colour using <mouse>Adjust</mouse> will stipple the region in that colour, which you can use as a note to yourself that you think the region <em>might</em> be that colour. A region can contain stipples in multiple colours at once. (This is often useful at the harder difficulty levels.)</p>
 
-<p>You can also use the cursor keys to move around the map: the colour of the cursor indicates the position of the colour you would drag (which is not obvious if you&rsquo;re on a region&rsquo;s boundary, since it depends on the direction from which you approached the boundary). Pressing the <key>Return</key> key starts a drag of that colour, as above, which you control with the cursor keys; pressing the <key>Return</key> key again finishes the drag. The <key>Space</key> bar can be used similarly to create a stippled region. Double-pressing the <key>Return</key> key (without moving the cursor) will clear the region, as a drag from an empty region does: this is useful with the cursor mode if you have filled the entire map in but need to correct the layout.</p>
+<p>You can also use the cursor keys to move around the map: the colour of the cursor indicates the position of the colour you would drag (which is not obvious if you&rsquo;re on a region&rsquo;s boundary, since it depends on the direction from which you approached the boundary). Pressing the <keypress><key>Return</key></keypress> key starts a drag of that colour, as above, which you control with the cursor keys; pressing the <keypress><key>Return</key></keypress> key again finishes the drag. The <keypress><key>Space</key></keypress> bar can be used similarly to create a stippled region. Double-pressing the <keypress><key>Return</key></keypress> key (without moving the cursor) will clear the region, as a drag from an empty region does: this is useful with the cursor mode if you have filled the entire map in but need to correct the layout.</p>
 
-<p>If you press <key>L</key> during play, the game will toggle display of a number in each region of the map. This is useful if you want to discuss a particular puzzle instance with a friend &ndash; having an unambiguous name for each region is much easier than trying to refer to them all by names such as &lsquo;the one down and right of the brown one on the top border&rsquo;.</p>
+<p>If you press <keypress><key>L</key></keypress> during play, the game will toggle display of a number in each region of the map. This is useful if you want to discuss a particular puzzle instance with a friend &ndash; having an unambiguous name for each region is much easier than trying to refer to them all by names such as &lsquo;the one down and right of the brown one on the top border&rsquo;.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1286,7 +1286,7 @@ H........|
 <section>
 <title>Map parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1299,16 +1299,16 @@ H........|
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>In <menu>Easy</menu> mode, there should always be at least one region whose colour can be determined trivially. In <menu>Normal</menu> and <menu>Hard</menu> modes, you will have to use increasingly complex logic to deduce the colour of some regions. However, it will always be possible without having to guess or backtrack.</p>
+<p>In <menu><item>Easy</item></menu> mode, there should always be at least one region whose colour can be determined trivially. In <menu><item>Normal</item></menu> and <menu><item>Hard</item></menu> modes, you will have to use increasingly complex logic to deduce the colour of some regions. However, it will always be possible without having to guess or backtrack.</p>
 
-<p>In <menu>Unreasonable</menu> mode, the program will feel free to generate puzzles which are as hard as it can possibly make them: the only constraint is that they should still have a unique solution. Solving Unreasonable puzzles may require guessing and backtracking.</p></li>
+<p>In <menu><item>Unreasonable</item></menu> mode, the program will feel free to generate puzzles which are as hard as it can possibly make them: the only constraint is that they should still have a unique solution. Solving Unreasonable puzzles may require guessing and backtracking.</p></li>
 </dl>
 </section>
 
 <section>
 <title>Map user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the victory flash and also whether the regions start out labelled with numbers.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the style of the victory flash and also whether the regions start out labelled with numbers.</p>
 </section>
 </chapter>
 
@@ -1344,7 +1344,7 @@ H........|
 <section>
 <title>Loopy parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1353,7 +1353,7 @@ H........|
 
 <li><title><icon>Grid type</icon></title>
 
-<p>Allows you to choose between a selection of types of tiling. Some have all the faces the same but may have multiple different types of vertex (eg. the <menu>Cairo</menu> or <menu>Kites</menu> mode); others have all the vertices the same but may have different types of face (eg. the <menu>Great Hexagonal</menu>). The square, triangular and honeycomb grids are fully regular, and have all their vertices <em>and</em> faces the same; this makes them the least confusing to play.</p></li>
+<p>Allows you to choose between a selection of types of tiling. Some have all the faces the same but may have multiple different types of vertex (eg. the <menu><item>Cairo</item></menu> or <menu><item>Kites</item></menu> mode); others have all the vertices the same but may have different types of face (eg. the <menu><item>Great Hexagonal</item></menu>). The square, triangular and honeycomb grids are fully regular, and have all their vertices <em>and</em> faces the same; this makes them the least confusing to play.</p></li>
 
 <li><title><icon>Difficulty</icon></title>
 
@@ -1364,16 +1364,16 @@ H........|
 <section>
 <title>Loopy user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the following things:</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the following things:</p>
 
 <p><icon>Draw excluded grid lines faintly</icon>. This is on by default: when a line of the grid has been explicitly excluded from the solution by <mouse>Adjust</mouse>-clicking it, the line is still drawn, just in a faint grey colour. If you turn this option off, excluded lines are not drawn at
 all.</p>
 
 <p><icon>Auto-follow unique paths of edges</icon>. This is off by default. When it&rsquo;s on, clicking to change the status of a single grid line will potentially propagate the change along multiple lines, if one or both ends of the line you clicked connect to only one other line. (The idea is that if two lines meet at a vertex and no other lines do at all, then those lines are either both part of the loop or neither, so there&rsquo;s no reason you should have to click separately to toggle each one.)</p>
 
-<p>In the mode <menu>Based on grid only</menu>, the effects of a click will only propagate across vertices that have degree 2 in the underlying grid. For example, in the square grid, the effect will <em>only</em> occur at the four grid corners.</p>
+<p>In the mode <menu><item>Based on grid only</item></menu>, the effects of a click will only propagate across vertices that have degree 2 in the underlying grid. For example, in the square grid, the effect will <em>only</em> occur at the four grid corners.</p>
 
-<p>In the mode <menu>Based on grid and game state</menu>, the propagation will also take account of edges you&rsquo;ve already excluded from the solution, so that it will do even more work for you.</p>
+<p>In the mode <menu><item>Based on grid and game state</item></menu>, the propagation will also take account of edges you&rsquo;ve already excluded from the solution, so that it will do even more work for you.</p>
 </section>
 </chapter>
 
@@ -1399,15 +1399,15 @@ all.</p>
 
 <p>You can move the ball in any of the eight directions using the numeric keypad. Alternatively, if you click <mouse>Select</mouse> on the grid, the ball will begin a move in the general direction of where you clicked.</p>
 
-<p>If you use the <menu>Solve</menu> function on this game, the program will compute a path through the grid which collects all the remaining gems and returns to the current position. A hint arrow will appear on the ball indicating the direction in which you should move to begin on this path. If you then move in that direction, the arrow will update to indicate the next direction on the path. You can also press <key>Space</key> to automatically move in the direction of the hint arrow. If you move in a different direction from the one shown by the arrow, arrows will be shown only if the puzzle is still solvable.</p>
+<p>If you use the <menu><item>Solve</item></menu> function on this game, the program will compute a path through the grid which collects all the remaining gems and returns to the current position. A hint arrow will appear on the ball indicating the direction in which you should move to begin on this path. If you then move in that direction, the arrow will update to indicate the next direction on the path. You can also press <keypress><key>Space</key></keypress> to automatically move in the direction of the hint arrow. If you move in a different direction from the one shown by the arrow, arrows will be shown only if the puzzle is still solvable.</p>
 
-<p>All the actions described in <ref id="common-actions" /> are also available. In particular, if you do run into a mine and die, you can use the <menu>Undo</menu> function and resume playing from before the fatal move. The game will keep track of the number of times you have done this.</p>
+<p>All the actions described in <ref id="common-actions" /> are also available. In particular, if you do run into a mine and die, you can use the <menu><item>Undo</item></menu> function and resume playing from before the fatal move. The game will keep track of the number of times you have done this.</p>
 </section>
 
 <section>
 <title>Inertia parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1445,7 +1445,7 @@ all.</p>
 
 <p>If you <em>drag</em> with <mouse>Adjust</mouse> along a row or column, every blank square in the region you cover will be turned green, and no other squares will be affected. (This is useful for clearing the remainder of a row once you have placed all its tents.)</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> key over an empty square will place a tent, and pressing the <key>Space</key> bar over an empty square will colour it green; either key will clear an occupied square. Holding <key>Shift</key> and pressing the cursor keys will colour empty squares green. Holding <key>Ctrl</key> and pressing the cursor keys will colour green both empty squares and squares with tents.</p>
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> key over an empty square will place a tent, and pressing the <keypress><key>Space</key></keypress> bar over an empty square will colour it green; either key will clear an occupied square. Holding <keypress><key>Shift</key></keypress> and pressing the cursor keys will colour empty squares green. Holding <keypress><key>Ctrl</key></keypress> and pressing the cursor keys will colour green both empty squares and squares with tents.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1453,7 +1453,7 @@ all.</p>
 <section>
 <title>Tents parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1508,13 +1508,13 @@ all.</p>
 
 <p>If you think you have finished with an island (ie. you have placed all its bridges and are confident that they are in the right places), you can mark the island as finished by <mouse>Select</mouse>-clicking on it. This will highlight it and all the bridges connected to it, and you will be prevented from accidentally modifying any of those bridges in future. <mouse>Select</mouse>-clicking again on a highlighted island will unmark it and restore your ability to modify it.</p>
 
-<p>You can also use the cursor keys to move around the grid: if possible the cursor will always move orthogonally, otherwise it will move towards the nearest island to the indicated direction. Holding <key>Ctrl</key> and pressing a cursor key will lay a bridge in that direction (if available); <key>Shift</key> and a cursor key will lay a &lsquo;non-bridge&rsquo; marker. Pressing the <key>Return</key> key followed by a cursor key will also lay a bridge in that direction.</p>
+<p>You can also use the cursor keys to move around the grid: if possible the cursor will always move orthogonally, otherwise it will move towards the nearest island to the indicated direction. Holding <keypress><key>Ctrl</key></keypress> and pressing a cursor key will lay a bridge in that direction (if available); <keypress><key>Shift</key></keypress> and a cursor key will lay a &lsquo;non-bridge&rsquo; marker. Pressing the <keypress><key>Return</key></keypress> key followed by a cursor key will also lay a bridge in that direction.</p>
 
-<p>You can mark an island as finished by pressing the <key>Space</key> bar or by pressing the <key>Return</key> key twice.</p>
+<p>You can mark an island as finished by pressing the <keypress><key>Space</key></keypress> bar or by pressing the <keypress><key>Return</key></keypress> key twice.</p>
 
-<p>By pressing a number key, you can jump to the nearest island with that number. Letters <key>A</key> through <key>F</key> count as 10 through 15 and <key>0</key> as 16.</p>
+<p>By pressing a number key, you can jump to the nearest island with that number. Letters <keypress><key>A</key></keypress> through <keypress><key>F</key></keypress> count as 10 through 15 and <keypress><key>0</key></keypress> as 16.</p>
 
-<p>The <key>G</key> key will draw a grey line between each pair of islands that could be connected with a bridge or non-bridge but are currently not.</p>
+<p>The <keypress><key>G</key></keypress> key will draw a grey line between each pair of islands that could be connected with a bridge or non-bridge but are currently not.</p>
 
 <p>Violations of the puzzle rules will be marked in red:</p>
 
@@ -1534,7 +1534,7 @@ all.</p>
 <section>
 <title>Bridges parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1568,7 +1568,7 @@ all.</p>
 <section>
 <title>Bridges user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether possible bridge locations are shown. Unlike the <key>G</key> key, this will persist between games.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether possible bridge locations are shown. Unlike the <keypress><key>G</key></keypress> key, this will persist between games.</p>
 </section>
 </chapter>
 
@@ -1594,7 +1594,7 @@ all.</p>
 
 <p>In &lsquo;Adjacent&rsquo; mode, the clue signs are bars indicating one square&rsquo;s value is numerically adjacent (ie. one higher or one lower) than its neighbour. In this mode all clues are always visible: absence of a bar thus means that a square&rsquo;s value is definitely not numerically adjacent to that neighbour&rsquo;s.</p>
 
-<p>In &lsquo;Trivial&rsquo; difficulty level (available via the <menu>Type</menu> &msep; <menu>Custom</menu> game type selector), there are no greater-than signs in &lsquo;Unequal&rsquo; mode; the puzzle is to solve the Latin square only.</p>
+<p>In &lsquo;Trivial&rsquo; difficulty level (available via the <menu><item>Type</item><item>Custom</item></menu> game type selector), there are no greater-than signs in &lsquo;Unequal&rsquo; mode; the puzzle is to solve the Latin square only.</p>
 
 <p>At the time of writing, the &lsquo;Unequal&rsquo; mode of this puzzle is
 appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
@@ -1607,7 +1607,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>Unequal shares much of its control system with <ref id="solo">Solo</ref>.</p>
 
-<p>To play Unequal, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+<p>To play Unequal, simply click the mouse in any empty square and then type a digit or letter on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the <menu><item>Undo</item></menu> feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
 
@@ -1615,13 +1615,13 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key>> will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress>> will also erase pencil marks.</p>
 
-<p>As for Solo, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. You can also use the <key>M</key> key to auto-fill every numeric hint, ready for removal as required, or the <key>H</key> key to do the same but also to remove all obvious hints.</p>
+<p>As for Solo, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. You can also use the <keypress><key>M</key></keypress> key to auto-fill every numeric hint, ready for removal as required, or the <keypress><key>H</key></keypress> key to do the same but also to remove all obvious hints.</p>
 
-<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <key>Return</key> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the <key>Space</key> bar will clear a filled square.</p>
+<p>Alternatively, use the cursor keys to move the mark around the grid. Pressing the <keypress><key>Return</key></keypress> key toggles the mark (from a normal mark to a pencil mark), and typing a number in is entered in the square in the appropriate way; typing in a 0 or using the <keypress><key>Space</key></keypress> bar will clear a filled square.</p>
 
-<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <key>Ctrl</key> or <key>Shift</key> and pressing an arrow key likewise marks any clue adjacent to the cursor in the given direction.</p>
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <keypress><key>Ctrl</key></keypress> or <keypress><key>Shift</key></keypress> and pressing an arrow key likewise marks any clue adjacent to the cursor in the given direction.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1629,13 +1629,13 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 <section>
 <title>Unequal parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 
 <li><title><icon>Mode</icon></title>
 
-<p>Mode of the puzzle (<menu>Unequal</menu> or <menu>Adjacent</menu>)</p></li>
+<p>Mode of the puzzle (<menu><item>Unequal</item></menu> or <menu><item>Adjacent</item></menu>)</p></li>
 
 <li><title><icon>Size (s*s)</icon></title>
 
@@ -1643,7 +1643,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. At <menu>Trivial</menu> level, there are no greater-than signs; the puzzle is to solve the Latin square only. At <menu>Recursive</menu> level (only available via the <menu>Type</menu> &msep; <menu>Custom...</menu> game type selector) backtracking will be required, but the solution should still be unique. The levels in between require increasingly complex reasoning to avoid having to backtrack.</p></li>
+<p>Controls the difficulty of the generated puzzle. At <menu><item>Trivial</item></menu> level, there are no greater-than signs; the puzzle is to solve the Latin square only. At <menu><item>Recursive</item></menu> level (only available via the <menu><item>Type</item><item>Custom...</item></menu> game type selector) backtracking will be required, but the solution should still be unique. The levels in between require increasingly complex reasoning to avoid having to backtrack.</p></li>
 </dl>
 </section>
 </chapter>
@@ -1672,7 +1672,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>During solving, you might know that a particular grid square belongs to a specific dot, but not be sure of where the edges go and which other squares are connected to the dot. In order to mark this so you don&rsquo;t forget, you can <mouse>Adjust</mouse>-drag on the dot, which will create an arrow marker pointing at the dot. Drop that in a square of your choice and it will remind you which dot it&rsquo;s associated with. You can also <mouse>Adjust</mouse>-drag existing arrows to pick them up and move them, or destroy them by dropping them off the edge of the grid. (Also, if you&rsquo;re not sure which dot an arrow is pointing at, you can pick it up and move it around to make it clearer. It will swivel constantly as you drag it, to stay pointed at its parent dot.)</p>
 
-<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <key>Return</key> key when over a grid line will draw or clear its edge, as above. Pressing the <key>Return</key> key when over a dot will pick up an arrow, to be dropped the next time the return key is pressed; this can also be used to move existing arrows around, removing them by dropping them on a dot or another arrow.</p>
+<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <keypress><key>Return</key></keypress> key when over a grid line will draw or clear its edge, as above. Pressing the <keypress><key>Return</key></keypress> key when over a dot will pick up an arrow, to be dropped the next time the return key is pressed; this can also be used to move existing arrows around, removing them by dropping them on a dot or another arrow.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1680,7 +1680,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 <section>
 <title>Galaxies parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1689,7 +1689,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. More difficult puzzles require more complex deductions, and the <menu>Unreasonable</menu> difficulty level may require backtracking.</p></li>
+<p>Controls the difficulty of the generated puzzle. More difficult puzzles require more complex deductions, and the <menu><item>Unreasonable</item></menu> difficulty level may require backtracking.</p></li>
 </dl>
 </section>
 </chapter>
@@ -1716,9 +1716,9 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 <section>
 <title>Filling controls</title>
 
-<p>To play Filling, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. By dragging the mouse, you can select multiple squares to fill with a single keypress. If you make a mistake, click the mouse in the incorrect square and press <key>0</key>, <key>Space</key>, <key>Backspace</key> or <key>Enter</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+<p>To play Filling, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. By dragging the mouse, you can select multiple squares to fill with a single keypress. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>0</key></keypress>, <keypress><key>Space</key></keypress>, <keypress><key>Backspace</key></keypress> or <keypress><key>Enter</key></keypress> to clear it again (or use the <menu><item>Undo</item></menu> feature).</p>
 
-<p>You can also move around the grid with the cursor keys; typing a digit will fill the square containing the cursor with that number; typing <key>0</key> will clear it. You can also select multiple squares for numbering or clearing with the <key>Return</key> and arrow keys, before typing a digit to fill or clear the highlighted squares (as above). The <key>Space</key> bar adds and removes single squares to and from the selection. <key>Escape</key> removes all squares from the selection.</p>
+<p>You can also move around the grid with the cursor keys; typing a digit will fill the square containing the cursor with that number; typing <keypress><key>0</key></keypress> will clear it. You can also select multiple squares for numbering or clearing with the <keypress><key>Return</key></keypress> and arrow keys, before typing a digit to fill or clear the highlighted squares (as above). The <keypress><key>Space</key></keypress> bar adds and removes single squares to and from the selection. <keypress><key>Escape</key></keypress> removes all squares from the selection.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1726,7 +1726,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 <section>
 <title>Filling parameters</title>
 
-<p>Filling allows you to configure the number of rows and columns of the grid, through <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>Filling allows you to configure the number of rows and columns of the grid, through <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 </section>
 </chapter>
 
@@ -1766,7 +1766,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>Keen shares much of its control system with <ref id="solo">Solo</ref> (and <ref id="unequal">Unequal</ref>).</p>
 
-<p>To play Keen, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+<p>To play Keen, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the <menu><item>Undo</item></menu> feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. Squares containing filled-in numbers cannot also contain pencil marks.</p>
 
@@ -1774,13 +1774,13 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing space will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing space will also erase pencil marks.</p>
 
 <p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. Use the cursor keys to move a highlight around the grid, and type a digit to enter it in
-the highlighted square. Pressing <key>Return</key> toggles the highlight into a
+the highlighted square. Pressing <keypress><key>Return</key></keypress> toggles the highlight into a
 mode in which you can enter or remove pencil marks.</p>
 
-<p>Pressing <key>M</key> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
+<p>Pressing <keypress><key>M</key></keypress> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1788,7 +1788,7 @@ mode in which you can enter or remove pencil marks.</p>
 <section>
 <title>Keen parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Grid size</icon></title>
@@ -1797,7 +1797,7 @@ mode in which you can enter or remove pencil marks.</p>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. At <menu>Unreasonable</menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
+<p>Controls the difficulty of the generated puzzle. At <menu><item>Unreasonable</item></menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
 
 <li><title><icon>Multiplication only</icon></title>
 
@@ -1836,7 +1836,7 @@ this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
 
 <p>Towers shares much of its control system with <ref id="solo">Solo</ref>, <ref id="unequal">Unequal</ref> and <ref id="keen">Keen</ref>.</p>
 
-<p>To play Towers, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square with a tower of the given height. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the <menu>Undo</menu> feature).</p>
+<p>To play Towers, simply click the mouse in any empty square and then type a digit on the keyboard to fill that square with a tower of the given height. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the <menu><item>Undo</item></menu> feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a number, that number will be entered in the square as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple numbers in the same square. A square containing a tower cannot also contain pencil marks.</p>
 
@@ -1844,13 +1844,13 @@ this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress> will also erase pencil marks.</p>
 
-<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. Use the cursor keys to move a highlight around the grid, and type a digit to enter it in the highlighted square. Pressing <key>Return</key> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
+<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. Use the cursor keys to move a highlight around the grid, and type a digit to enter it in the highlighted square. Pressing <keypress><key>Return</key></keypress> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
 
-<p>Pressing <key>M</key> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
+<p>Pressing <keypress><key>M</key></keypress> will fill in a full set of pencil marks in every square that does not have a main digit in it.</p>
 
-<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <key>Ctrl</key> or <key>Shift</key> and pressing an arrow key likewise marks any clue in the given direction.</p>
+<p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked. Holding <keypress><key>Ctrl</key></keypress> or <keypress><key>Shift</key></keypress> and pressing an arrow key likewise marks any clue in the given direction.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1858,7 +1858,7 @@ this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
 <section>
 <title>Towers parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Grid size</icon></title>
@@ -1867,14 +1867,14 @@ this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. At <menu>Unreasonable</menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
+<p>Controls the difficulty of the generated puzzle. At <menu><item>Unreasonable</item></menu> level, some backtracking will be required, but the solution should still be unique. The remaining levels require increasingly complex reasoning to avoid having to backtrack.</p></li>
 </dl>
 </section>
 
 <section>
 <title>Towers user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the game display. If you don&rsquo;t like the three-dimensional mode, selecting <menu>2D</menu> will switch to a simpler display style in which towers are shown by just writing their height in the square.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the style of the game display. If you don&rsquo;t like the three-dimensional mode, selecting <menu><item>2D</item></menu> will switch to a simpler display style in which towers are shown by just writing their height in the square.</p>
 </section>
 </chapter>
 
@@ -1906,7 +1906,7 @@ this rule, the puzzle is known as &lsquo;Inshi No Heya&rsquo;.</p></li>
 
 <p><mouse>Select</mouse>-clicking on an empty square will colour it black; <mouse>Select</mouse>-clicking again will restore the number. <mouse>Adjust</mouse>-clicking will add a circle (useful for indicating that a cell is definitely not black). Clicking outside the grid will toggle whether black squares completely hide the numbers on them, or display them in dark grey.</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn a square black or add a circle respectively, and pressing the key again will restore the number or
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will turn a square black or add a circle respectively, and pressing the key again will restore the number or
 remove the circle.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
@@ -1915,7 +1915,7 @@ remove the circle.</p>
 <section>
 <title>Singles parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1931,7 +1931,7 @@ remove the circle.</p>
 <section>
 <title>Singles user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether numbers on black squares are visible. Unlike clicking outside the grid, this will persist between games.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether numbers on black squares are visible. Unlike clicking outside the grid, this will persist between games.</p>
 </section>
 </chapter>
 
@@ -1962,7 +1962,7 @@ remove the circle.</p>
 
 <p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked.</p>
 
-<p>You can also use the cursor keys to move a cursor around the grid. Pressing the <key>Return</key> key will lay a domino with a positive pole at that position; pressing again reverses the polarity and then removes the domino, as with <mouse>Select</mouse>-clicking. Using the <key>Space</key> bar allows placement of blank dominoes and cannot-be-blank hints, as for <mouse>Adjust</mouse>-clicking.</p>
+<p>You can also use the cursor keys to move a cursor around the grid. Pressing the <keypress><key>Return</key></keypress> key will lay a domino with a positive pole at that position; pressing again reverses the polarity and then removes the domino, as with <mouse>Select</mouse>-clicking. Using the <keypress><key>Space</key></keypress> bar allows placement of blank dominoes and cannot-be-blank hints, as for <mouse>Adjust</mouse>-clicking.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -1970,7 +1970,7 @@ remove the circle.</p>
 <section>
 <title>Magnets parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -1981,7 +1981,7 @@ remove the circle.</p>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle. At <menu>Tricky</menu> level, you are required to make more deductions about empty dominoes and row/column counts.</p></li>
+<p>Controls the difficulty of the generated puzzle. At <menu><item>Tricky</item></menu> level, you are required to make more deductions about empty dominoes and row/column counts.</p></li>
 
 <li><title><icon>Strip clues</icon></title>
 
@@ -2020,7 +2020,7 @@ remove the circle.</p>
 
 <p>To remove any links for a particular square (both incoming and outgoing), <mouse>Select</mouse>-drag it off the grid. To remove a whole chain, <mouse>Adjust</mouse>-drag any square in the chain off the grid.</p>
 
-<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <key>Return</key> key when over a square starts a link operation, and pressing the <key>Return</key> key again over a square will finish the link, if allowable. Pressing the <key>Space</key> bar over a square will show the other squares pointing to it, and allow you to form a backward link, and pressing the <key>Space</key> bar again cancels this.</p>
+<p>You can also use the cursor keys to move around the grid squares and lines. Pressing the <keypress><key>Return</key></keypress> key when over a square starts a link operation, and pressing the <keypress><key>Return</key></keypress> key again over a square will finish the link, if allowable. Pressing the <keypress><key>Space</key></keypress> bar over a square will show the other squares pointing to it, and allow you to form a backward link, and pressing the <keypress><key>Space</key></keypress> bar again cancels this.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2028,7 +2028,7 @@ remove the circle.</p>
 <section>
 <title>Signpost parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2044,7 +2044,7 @@ remove the circle.</p>
 <section>
 <title>Signpost user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the victory effect.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the style of the victory effect.</p>
 </section>
 </chapter>
 
@@ -2080,7 +2080,7 @@ remove the circle.</p>
 
 <p>Click with <mouse>Select</mouse> to paint a square black, or with <mouse>Adjust</mouse> to mark a square with a dot to indicate that you are sure it should <em>not</em> be painted black. Repeated clicking with either button will cycle the square through the three possible states (filled, dotted or empty) in opposite directions.</p>
 
-<p>You can also use the cursor keys to move around the grid squares. Pressing <key>Return</key> does the same as clicking with <mouse>Select</mouse>, while pressing <key>Space</key> does the same as a right button click. Moving with the cursor keys while holding <key>Shift</key> will place dots in all squares that are moved through.</p>
+<p>You can also use the cursor keys to move around the grid squares. Pressing <keypress><key>Return</key></keypress> does the same as clicking with <mouse>Select</mouse>, while pressing <keypress><key>Space</key></keypress> does the same as a right button click. Moving with the cursor keys while holding <keypress><key>Shift</key></keypress> will place dots in all squares that are moved through.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2088,7 +2088,7 @@ remove the circle.</p>
 <section>
 <title>Range parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2100,7 +2100,7 @@ remove the circle.</p>
 <section>
 <title>Range user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure which way round the mouse buttons work (where &lsquo;Left&rsquo; and &lsquo;Right&rsquo; refer to <mouse>Select</mouse> and <mouse>Adjust</mouse> respectively).</p>
 </section>
 </chapter>
 
@@ -2136,9 +2136,9 @@ remove the circle.</p>
 
 <p>Click with <mouse>Adjust</mouse> on a grid edge to mark it with a cross, indicating that you are sure the loop does not go through that edge. (For instance, if you have decided which of the squares adjacent to a white clue has to be a corner, but don&rsquo;t yet know which way the corner turns, you might mark the one way it <em>can&rsquo;t</em> go with a cross.)</p>
 
-<p>Alternatively, use the cursor keys to move the cursor. Use the <key>Enter</key> key to begin and end keyboard &lsquo;drag&rsquo; operations. Use the <key>Space</key>, <key>Escape</key> or <key>Backspace</key> keys to cancel the drag. Or, hold <key>Ctrl</key> while dragging with the cursor keys to toggle segments as you move between squares.</p>
+<p>Alternatively, use the cursor keys to move the cursor. Use the <keypress><key>Enter</key></keypress> key to begin and end keyboard &lsquo;drag&rsquo; operations. Use the <keypress><key>Space</key></keypress>, <keypress><key>Escape</key></keypress> or <keypress><key>Backspace</key></keypress> keys to cancel the drag. Or, hold <keypress><key>Ctrl</key></keypress> while dragging with the cursor keys to toggle segments as you move between squares.</p>
 
-<p>Pressing <key>Ctrl</key>-<key>Shift</key>-arrowkey or <key>Shift</key>-arrowkey simulates a left or <mouse>Adjust</mouse> click, respectively, on the edge in the direction of the key.</p>
+<p>Pressing <keypress><key>Ctrl</key><key>Shift</key></keypress>-arrowkey or <keypress><key>Shift</key></keypress>-arrowkey simulates a left or <mouse>Adjust</mouse> click, respectively, on the edge in the direction of the key.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2146,7 +2146,7 @@ remove the circle.</p>
 <section>
 <title>Pearl parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2168,7 +2168,7 @@ remove the circle.</p>
 <section>
 <title>Pearl user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the style of the game display. <menu>Traditional</menu> is the default mode, in which the loop runs between centres of grid squares, and each clue occupies a square. <menu>Loopy-style</menu> is an alternative mode that looks more like <ref id="loopy">Loopy</ref>, in which the loop runs between grid <em>vertices</em>, and the clues also occupy vertices.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the style of the game display. <menu><item>Traditional</item></menu> is the default mode, in which the loop runs between centres of grid squares, and each clue occupies a square. <menu><item>Loopy-style</item></menu> is an alternative mode that looks more like <ref id="loopy">Loopy</ref>, in which the loop runs between grid <em>vertices</em>, and the clues also occupy vertices.</p>
 </section>
 </chapter>
 
@@ -2196,7 +2196,7 @@ remove the circle.</p>
 
 <p>Undead has a similar control system to <ref id="solo">Solo</ref>, <ref id="unequal">Unequal</ref> and <ref id="keen">Keen</ref>.</p>
 
-<p>To play Undead, click the mouse in any empty square and then type a letter or number on the keyboard indicating the type of monster: <key>G</key> or <key>1</key> for a ghost, <key>V</key> or <key>2</key> for a vampire, or <key>Z</key> or <key>3</key> for a zombie. If you make a mistake, click the mouse in the incorrect square and press <key>Space</key> to clear it again (or use the Undo feature).</p>
+<p>To play Undead, click the mouse in any empty square and then type a letter or number on the keyboard indicating the type of monster: <keypress><key>G</key></keypress> or <keypress><key>1</key></keypress> for a ghost, <keypress><key>V</key></keypress> or <keypress><key>2</key></keypress> for a vampire, or <keypress><key>Z</key></keypress> or <keypress><key>3</key></keypress> for a zombie. If you make a mistake, click the mouse in the incorrect square and press <keypress><key>Space</key></keypress> to clear it again (or use the Undo feature).</p>
 
 <p>If you <mouse>Adjust</mouse>-click in a square and then type a letter or number, the corresponding monster will be shown in reduced size in that square, as a &lsquo;pencil mark&rsquo;. You can have pencil marks for multiple monsters in the same square. A square containing a full-size monster cannot also contain pencil marks.</p>
 
@@ -2204,11 +2204,11 @@ remove the circle.</p>
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same letter or number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a monster letter, or when you <mouse>Select</mouse>-click and press <key>Space</key>. <mouse>Adjust</mouse>-clicking and pressing <key>Space</key> will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a monster letter, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress> will also erase pencil marks.</p>
 
-<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the letter keys to place monsters or pencil marks. Use the cursor keys to move a highlight around the grid, and type a monster letter or number to enter it in the highlighted square. Pressing <key>Return</key> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
+<p>As for <ref id="solo">Solo</ref>, the cursor keys can be used in conjunction with the letter keys to place monsters or pencil marks. Use the cursor keys to move a highlight around the grid, and type a monster letter or number to enter it in the highlighted square. Pressing <keypress><key>Return</key></keypress> toggles the highlight into a mode in which you can enter or remove pencil marks.</p>
 
-<p>If you prefer plain letters of the alphabet to cute monster pictures, you can press <key>A</key> to toggle between showing the monsters as monsters or showing them as letters.</p>
+<p>If you prefer plain letters of the alphabet to cute monster pictures, you can press <keypress><key>A</key></keypress> to toggle between showing the monsters as monsters or showing them as letters.</p>
 
 <p><mouse>Select</mouse>-clicking a clue will mark it as done (grey it out), or unmark it if it is already marked.</p>
 
@@ -2218,7 +2218,7 @@ remove the circle.</p>
 <section>
 <title>Undead parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2234,7 +2234,7 @@ remove the circle.</p>
 <section>
 <title>Undead user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure whether Undead uses letters or pictures to represent monsters.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure whether Undead uses letters or pictures to represent monsters.</p>
 </section>
 </chapter>
 
@@ -2257,9 +2257,9 @@ remove the circle.</p>
 <title>Unruly controls</title>
 
 <p>To play Unruly, click the mouse in a square to change its colour.
-<mouse>Select</mouse>-clicking an empty square will turn it black, and <mouse>Adjust</mouse>-clicking will turn it white. Keep clicking the same button to cycle through the three possible states for the square. If you <key>Ctrl</key>-<mouse>Select</mouse>-click in a square it will be reset to empty.</p>
+<mouse>Select</mouse>-clicking an empty square will turn it black, and <mouse>Adjust</mouse>-clicking will turn it white. Keep clicking the same button to cycle through the three possible states for the square. If you <keypress><key>Ctrl</key></keypress>-<mouse>Select</mouse>-click in a square it will be reset to empty.</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <key>Backspace</key>> will reset a square to empty.</p>
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <keypress><key>Backspace</key></keypress>> will reset a square to empty.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2267,7 +2267,7 @@ remove the circle.</p>
 <section>
 <title>Unruly parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2303,7 +2303,7 @@ remove the circle.</p>
 
 <p>To play Flood, click the mouse in a square. The top left corner and everything connected to it will be flood-filled with the colour of the square you clicked. Clicking a square the same colour as the top left corner has no effect, and therefore does not count as a move.</p>
 
-<p>You can also use the cursor keys to move a cursor (outline black square) around the grid. Pressing the <key>Return</key> key will fill the top left corner in the colour of the square under the cursor.</p>
+<p>You can also use the cursor keys to move a cursor (outline black square) around the grid. Pressing the <keypress><key>Return</key></keypress> key will fill the top left corner in the colour of the square under the cursor.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2311,7 +2311,7 @@ remove the circle.</p>
 <section>
 <title>Flood parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2359,7 +2359,7 @@ remove the circle.</p>
 <section>
 <title>Tracks parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2368,7 +2368,7 @@ remove the circle.</p>
 
 <li><title><icon>Difficulty</icon></title>
 
-<p>Controls the difficulty of the generated puzzle: at <menu>Tricky</menu> level, you are required to make more deductions regarding disregarding moves that would lead to impossible crossings later.</p></li>
+<p>Controls the difficulty of the generated puzzle: at <menu><item>Tricky</item></menu> level, you are required to make more deductions regarding disregarding moves that would lead to impossible crossings later.</p></li>
 
 <li><title><icon>Disallow consecutive 1 clues</icon></title>
 
@@ -2397,7 +2397,7 @@ remove the circle.</p>
 
 <p><mouse>Select</mouse>-click to place an edge. <mouse>Adjust</mouse>-click to indicate &lsquo;no edge&rsquo;.</p>
 
-<p>Alternatively, the arrow keys will move a keyboard cursor. Depending on the <icon>Cursor mode</icon> preference (see <ref id="palisade-prefs"/>), the cursor will either navigate among the grid squares, or along their borders. In <menu>Full-grid</menu> mode, hold <key>Ctrl</key> while pressing an arrow key to place an edge, and press <key>Shift</key>-arrowkey to switch off an edge. In <menu>Half-grid</menu> mode, press <key>Enter</key> to place an edge, and <key>Space</key> to switch off an edge. In either mode, you can repeat an action to perform its inverse.</p>
+<p>Alternatively, the arrow keys will move a keyboard cursor. Depending on the <icon>Cursor mode</icon> preference (see <ref id="palisade-prefs"/>), the cursor will either navigate among the grid squares, or along their borders. In <menu><item>Full-grid</item></menu> mode, hold <keypress><key>Ctrl</key></keypress> while pressing an arrow key to place an edge, and press <keypress><key>Shift</key></keypress>-arrowkey to switch off an edge. In <menu><item>Half-grid</item></menu> mode, press <keypress><key>Enter</key></keypress> to place an edge, and <keypress><key>Space</key></keypress> to switch off an edge. In either mode, you can repeat an action to perform its inverse.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2405,7 +2405,7 @@ remove the circle.</p>
 <section>
 <title>Palisade parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
@@ -2421,7 +2421,7 @@ remove the circle.</p>
 <section id="palisade-prefs">
 <title>Palisade user preferences</title>
 
-<p>The <menu>Preferences</menu> option on the <window>Game</window> window menu will let you configure the behaviour of the cursor keys to either navigate among full grid squares, or along the borders of the grid squares.</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the behaviour of the cursor keys to either navigate among full grid squares, or along the borders of the grid squares.</p>
 </section>
 </chapter>
 
@@ -2447,7 +2447,7 @@ remove the circle.</p>
 
 <p>If you hold down the mouse button and drag, you can colour multiple cells in a single action.</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <key>Return</key> or <key>Space</key> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <key>Backspace</key> will reset a square to empty.</p>
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <keypress><key>Backspace</key></keypress> will reset a square to empty.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
@@ -2455,7 +2455,7 @@ remove the circle.</p>
 <section>
 <title>Mosaic parameters</title>
 
-<p>These parameters are available from <menu>Type</menu> &msep; <menu>Custom...</menu> in the <window>Game</window> window menu.</p>
+<p>These parameters are available from <menu><item>Type</item><item>Custom...</item></menu> in the <window>Game</window> window menu.</p>
 
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
