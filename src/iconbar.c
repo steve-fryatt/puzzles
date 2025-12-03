@@ -42,6 +42,7 @@
 /* SF-Lib header files. */
 
 #include "sflib/dataxfer.h"
+#include "sflib/errors.h"
 #include "sflib/event.h"
 #include "sflib/icons.h"
 #include "sflib/ihelp.h"
