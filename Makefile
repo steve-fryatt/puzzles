@@ -1,4 +1,4 @@
-# Copyright 2024, Stephen Fryatt
+# Copyright 2024-2025, Stephen Fryatt
 #
 # This file is part of Puzzles:
 #
@@ -56,6 +56,7 @@ OBJS =  blitter.o			\
 	main.o				\
 	riscos_test.o			\
 	sprites.o			\
+	unicode.o			\
 	core/blackbox.o			\
 	core/bridges.o			\
 	core/combi.o			\

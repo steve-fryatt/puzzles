@@ -52,6 +52,7 @@
 #include "sflib/debug.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
+#include "sflib/string.h"
 
 /* Application header files */
 
@@ -62,6 +63,7 @@
 #include "clipboard.h"
 #include "game_window.h"
 #include "help.h"
+#include "unicode.h"
 
 /* The game collection data structure. */
 
@@ -122,6 +124,7 @@ static blitter *riscos_blitter_new(drawing *dr, int w, int h);
 static void riscos_blitter_free(drawing *dr, blitter *bl);
 static void riscos_blitter_save(drawing *dr, blitter *bl, int x, int y);
 static void riscos_blitter_load(drawing *dr, blitter *bl, int x, int y);
+static char *riscos_text_fallback(drawing *dr, const char *const *strings, int nstrings);
 
 /* The drawing API. */
 
@@ -161,7 +164,7 @@ static const struct drawing_api riscos_drawing = {
 
 	/* Text fallback. */
 
-	.text_fallback = NULL,
+	.text_fallback = riscos_text_fallback,
 
 	/* Thick lines. */
 
@@ -1099,6 +1102,46 @@ static void riscos_blitter_load(drawing *dr, blitter *bl, int x, int y)
 	game_windoow_load_blitter(window, bl, x, y);
 }
 
+/**
+ * Find the first entry from a collection of UTF-8 strings which can be displayed
+ * correctly in the current RISC OS Alphabet, and return a version which has
+ * been converted into that encoding. This will be in a malloc() block, which
+ * the client should free after use.
+ *
+ * The client assumes that we will always return something, and should ensure that
+ * the final string in the set is 7-bit ASCII.
+ *
+ * \param *dr		The drawing structure referencing the target Game Window.
+ * \param *strings	The set of strings from which we should find a suitable
+ *			version for display.
+ * \param nstrings	The number of strings in the set.
+ * \return		Pointer to a suitable string, in a new block of memory.
+ */
+
+static char *riscos_text_fallback(drawing *dr, const char *const *strings, int nstrings)
+{
+	char *result = NULL, *fallback = "";
+
+	for (int i = 0; i < nstrings && result == NULL; i++) {
+		result = unicode_convert(strings[i], (i + 1 < nstrings) ? FALSE : TRUE);
+	}
+
+	/* The client expects something to be returned, so if we failed to find
+	 * anything we set up an empty string and return that so that the
+	 * client won't break.
+	 */
+
+	if (result == NULL) {
+		size_t length = strlen(fallback) + 1;
+
+		result = malloc(length);
+
+		if (result != NULL)
+			string_copy(result, fallback, length);
+	}
+
+	return result;
+}
 
 /* Below this point are the functions that the frontend must provide
  * for the midend.
