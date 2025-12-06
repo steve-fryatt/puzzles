@@ -1748,11 +1748,11 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 <ul>
 <li><p>An addition clue means that the sum of the digits in the block must be the given number. For example, &rsquo;15+&rsquo; means the contents of the block adds up to fifteen.</p></li>
 
-<li><p>A multiplication clue (eg. &lsquo;60*&rsquo;), similarly, means that the product of the digits in the block must be the given number.</p></li>
+<li><p>A multiplication clue (eg. &lsquo;60&times;&rsquo; or &lsquo;60*&rsquo;), similarly, means that the product of the digits in the block must be the given number.</p></li>
 
 <li><p>A subtraction clue will always be written in a block of size two, and it means that one of the digits in the block is greater than the other by the given amount. For example, &lsquo;2&minus;&rsquo; means that one of the digits in the block is 2 more than the other, or equivalently that one digit minus the other one is 2. The two digits could be either way round, though.</p></li>
 
-<li><p>A division clue (eg. &lsquo;3/&rsquo;), similarly, is always in a block of size two and means that one digit divided by the other is equal to the given amount.</p></li>
+<li><p>A division clue (eg. &lsquo;3&divide;&rsquo; or &lsquo;3/&rsquo;), similarly, is always in a block of size two and means that one digit divided by the other is equal to the given amount.</p></li>
 </ul>
 
 <p>Note that a block may contain the same digit more than once (provided the identical ones are not in the same row and column). This rule is precisely the opposite of the rule in <ref id="solo">Solo</ref>&rsquo;s &lsquo;Killer&rsquo; mode (see <ref id="solo"/>).</p></li>
