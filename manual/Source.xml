@@ -113,12 +113,12 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 <p>Open a dialogue box allowing the <ref id="playing-game-id">random seed</ref> for the current game to be copied out or a new game to be created from another seed.</p></li>
 
 
-<li><title><menu><item>Undo</item></menu> (<keypress><key>U</key></keypress>, <keypress><key>Ctrl</key><key>Z</key></keypress>, <keypress><key>Ctrl</key><key>_</key></keypress>, or <keypress><key>*</key></keypress>)</title>
+<li><title><menu><item>Undo</item></menu> (<keypress><key>F8</key></keypress>, <keypress><key>Ctrl</key><key>Z</key></keypress>, <keypress><key>Ctrl</key><key>_</key></keypress>, or <keypress><key>*</key></keypress>)</title>
 
 <p>Undoes a single move. (You can undo moves back to the start of the session.)</p></li>
 
 
-<li><title><menu><item>Redo</item></menu> (<keypress><key>R</key></keypress>, <keypress><key>Ctrl</key><key>R</key></keypress> or <keypress><key>#</key></keypress>)</title>
+<li><title><menu><item>Redo</item></menu> (<keypress><key>F9</key></keypress>, <keypress><key>R</key></keypress>, <keypress><key>Ctrl</key><key>R</key></keypress> or <keypress><key>#</key></keypress>)</title>
 
 <p>Redoes a previously undone move.</p></li>
 
