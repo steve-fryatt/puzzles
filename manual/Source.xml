@@ -2506,16 +2506,16 @@ remove the circle.</p>
 <section>
 <title>Version 1.00 (24 October 2025)</title>
 
-<p>First RISC OS release, based on commit d928126c from the upstream repository.</p>
+<p>First RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=d928126c9fa73739086e35ccaedb4ac1be684a2e" external="true" flatten="true">d928126</link> from the upstream repository.</p>
 </section>
 
 <section>
-<title>Test Build (<define name="date" />)</title>
+<title>Version 1.01 (8 December 2025)</title>
 
-<p>Released for testing and feedback.</p>
+<p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=a4f68b6a0725e8a285c2c8cd09fb9f4f07fd5dc9" external="true" flatten="true">a4f68b6</link> from the upstream repository.</p>
 
 <ul>
-<li><p>Update the upstream to a4f68b6, with updates to <ref id="dominosa">Dominosa</ref>, <ref id="mines">Mines</ref>, <ref id="undead">Undead</ref> and changes to the mid-end.</p></li>
+<li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=a4f68b6a0725e8a285c2c8cd09fb9f4f07fd5dc9" external="true" flatten="true">a4f68b6</link>, with improvements to <ref id="dominosa">Dominosa</ref>, <ref id="mines">Mines</ref>, <ref id="undead">Undead</ref> and changes to the mid-end.</p></li>
 <li><p>Games have access to the characters in the top-half of the current RISC&nbsp;OS character set if they wish to use them, as the RISC&nbsp;OS front-end implements the <function>text_fallback()</function> function to allow conversion from UTF-8 when possible. At the time of writing, this improves the display of <ref id="keen">Keen</ref> and <ref id="undead">Undead</ref>. Versions of RISC&nbsp;OS which do not support UCS lookup tables will continue to use plain ASCII characters as before.</p></li>
 </ul>
 </section>
