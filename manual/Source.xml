@@ -2519,6 +2519,17 @@ remove the circle.</p>
 <li><p>Games have access to the characters in the top-half of the current RISC&nbsp;OS character set if they wish to use them, as the RISC&nbsp;OS front-end implements the <function>text_fallback()</function> function to allow conversion from UTF-8 when possible. At the time of writing, this improves the display of <ref id="keen">Keen</ref> and <ref id="undead">Undead</ref>. Versions of RISC&nbsp;OS which do not support UCS lookup tables will continue to use plain ASCII characters as before.</p></li>
 </ul>
 </section>
+
+<section>
+<title>Test Build (<define name="date" />)</title>
+
+<p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=ecb576fb2a0a47df6486919c1ebb945f7f252234" external="true" flatten="true">ecb576f</link> from the upstream repository.</p>
+
+<ul>
+<li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=ecb576fb2a0a47df6486919c1ebb945f7f252234" external="true" flatten="true">ecb576f</link>, with bug fixes to <ref id="mosaic">Mosaic</ref> and other changes.</p></li>
+<li><p>Remove stray <cite>Reporter</cite> debug output from the Unicode routines added in version 1.01.</p></li>
+</ul>
+</section>
 </chapter>
 
 <!-- Contact Details -->
