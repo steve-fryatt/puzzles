@@ -44,7 +44,6 @@
 
 /* SF-Lib header files. */
 
-#include "sflib/debug.h"
 #include "sflib/string.h"
 
 /* Application header files */
@@ -120,8 +119,6 @@ char *unicode_convert(const char *original, osbool force)
 	/* Check the current alphabet and initialise the mapping table. */
 
 	alphabet = osbyte1(osbyte_ALPHABET_NUMBER, 127, 0);
-
-	debug_printf("Current alphabet: %d", alphabet);
 
 	if (alphabet != unicode_current_alphabet) {
 		unicode_build_table(alphabet);
