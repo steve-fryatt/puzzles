@@ -39,6 +39,8 @@ Additional Notes
 
 The RISC OS port of Puzzles uses the original sources from Simon Tatham's Git repository, which are located as a submodule at `src/core`. You will therefore need to run `git submodule init` and `git submodule update` after cloning the RISC OS front end, in order to pull these additional sources in. These files are considered a 'black box' as far as the RISC OS code is concerned: for more details on the code within this submodule, take a look at Simon's website at https://www.chiark.greenend.org.uk/~sgtatham/puzzles/.
 
+The upstream sources can be updated using `git submodule update --remote`, and then a specific revision checked out to peg the build to that version.
+
 There are a few additional steps which must be carried out manually, as described below.
 
 ### Puzzles and Source Files
@@ -65,7 +67,7 @@ The corresponding source files for the backends should also be added to the `OBJ
 
 ### Manual
 
-The RISC OS post uses its own manual, defined in `manual/Source.xml`. This is based on the upstream manual supplied in Halibut format in `src/core/puzzles.but`, but contains modifications to reflect the RISC OS interface.
+The RISC OS port uses its own manual, defined in `manual/Source.xml`. This is based on the upstream manual supplied in Halibut format in `src/core/puzzles.but`, but contains modifications to reflect the RISC OS interface. The IDs for the game sections should match the `htmlhelp_topic` values for the respective games.
 
 The `manual/Source.xml` file contains a comment near the top which should be kept up to date with the commit hash of the last upstream manual to be merged in to the RISC OS version. When new changes are brought in from the upstream repository, a diff of `src/core/puzzles.but` can be done between this revision and HEAD, to show the changes which must be manually edited in to the RISC OS manual source.
 
@@ -73,11 +75,11 @@ In addition, the list of contributors' names found towards the end of the `src/c
 
 ### Game Descriptions
 
-The RISC OS Messages file (at `build/!Puzzles/Resources/UK/Messages` and potentially other country resources) contains a set of tokens in the form `Help.Index.game`, where 'game' is the internal name of a game, which define interactive help texts for each of the game icons in the index. These will need to be created for each new game to be added.
+The RISC OS Messages file (at `build/!Puzzles/Resources/UK/Messages` and potentially other country resources) contains a set of tokens in the form `Help.Index.game`, where 'game' is the `htmlhelp_topic` of a game, which define interactive help texts for each of the game icons in the index. These will need to be created for each new game to be added.
 
 ### Icons
 
-The RISC OS port expects to find icons for the games in the `build/!Puzzles/Sprites`, `build/!Puzzles/Sprites22` and `build/!Puzzles/Sprites11` files, named by the game titles (with an `sm` suffix for the small versions). These icons follow the standard RISC OS conventions.
+The RISC OS port expects to find icons for the games in the `build/!Puzzles/Sprites`, `build/!Puzzles/Sprites22` and `build/!Puzzles/Sprites11` files, named by the `htmlhelp_topic` for each game (with an `sm` suffix for the small versions). These icons follow the standard RISC OS conventions.
 
 It is possible to generate images in the sizes needed by RISC OS using the standard upstream build system. In the `src/core/icons/icons.cmake` file, look for the lines defining the icon sizes.
 
