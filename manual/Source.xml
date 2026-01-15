@@ -3,7 +3,7 @@
 <manual>
 <title>Puzzles</title>
 <strapline>Simon Tatham&rsquo;s Portable Puzzle Collection on RISC&nbsp;OS</strapline>
-<credit>&copy; Simon&nbsp;Tatham,&nbsp;2004-2025; Stephen&nbsp;Fryatt,&nbsp;2024-2025</credit>
+<credit>&copy; Simon&nbsp;Tatham,&nbsp;2004-2026; Stephen&nbsp;Fryatt,&nbsp;2024-2026</credit>
 <version>Version&nbsp;<define name="version" /></version>
 <date><define name="date" /></date>
 
@@ -33,7 +33,7 @@
 
 <p>Portions of the code are copyright Richard Boulton, James Harvey, Mike Pinna, Jonas Koelker, Dariusz Olszewski, Michael Schierl, Lambros Lambrou, Bernd Schmidt, Steffen Bauer, Lennard Sprong, Rogier Goossens, Michael Quevillon, Asher Gordon, Didi Kohen, and Ben Harris.</p>
 
-<p>This manual is based on the original by Simon Tatham, with RISC&nbsp;OS-specific modifications where required.</p>
+<p>This manual is based on the original by Simon Tatham which is licenced under the MIT Licence, with RISC&nbsp;OS-specific modifications where required.</p>
 </section>
 </chapter>
 
@@ -43,6 +43,13 @@
 <title>Introduction &amp; Installation</title>
 
 <section>
+<callout type="note">
+
+<p>This manual is &copy;&nbsp;Simon Tatham, 2004-2026. All rights reserved. Some modifications have been made to reflect the operation of the RISC&nbsp;OS port. The original documentation may be distributed under the MIT Licence.</p>
+
+<p><ref id="intro"/>, <ref id="issues"/>, <ref id="history"/> and <ref id="contact"/> are specific to the RISC&nbsp;OS port of <cite>Puzzles</cite>, and have been added by Stephen Fryatt.</p>
+</callout>
+
 <p><cite>Puzzles</cite> is a RISC&nbsp;OS port of Simon Tatham&rsquo;s Portable Puzzle Collection, a collection of 40 one-player puzzle games which are mainly focussed on logic and maths. More details about the collection can be found on Simon&rsquo;s website, at <link href="https://www.chiark.greenend.org.uk/~sgtatham/puzzles/" />.</p>
 
 <p>I discovered the collection through the Android port, and have also played the GTK version available from Simon&rsquo;s site. Since it is described as &ldquo;portable&rdquo;, I decided that RISC&nbsp;OS needed its own version &ndash; and so here it is.</p>
