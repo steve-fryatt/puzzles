@@ -289,6 +289,7 @@ static void iconbar_menu_close_handler(wimp_w w, wimp_menu *menu)
 
 	ihelp_remove_window(iconbar_info_window);
 	event_delete_window(iconbar_info_window);
+	wimp_delete_window(iconbar_info_window);
 
 	iconbar_info_window = NULL;
 }
