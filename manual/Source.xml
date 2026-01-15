@@ -2514,7 +2514,7 @@ remove the circle.</p>
 
 <p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=a4f68b6a0725e8a285c2c8cd09fb9f4f07fd5dc9" external="true" flatten="true">a4f68b6</link> from the upstream repository.</p>
 
-<ul>
+<ul compact="true">
 <li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=a4f68b6a0725e8a285c2c8cd09fb9f4f07fd5dc9" external="true" flatten="true">a4f68b6</link>, with improvements to <ref id="dominosa">Dominosa</ref>, <ref id="mines">Mines</ref>, <ref id="undead">Undead</ref> and changes to the mid-end.</p></li>
 <li><p>Games have access to the characters in the top-half of the current RISC&nbsp;OS character set if they wish to use them, as the RISC&nbsp;OS front-end implements the <function>text_fallback()</function> function to allow conversion from UTF-8 when possible. At the time of writing, this improves the display of <ref id="keen">Keen</ref> and <ref id="undead">Undead</ref>. Versions of RISC&nbsp;OS which do not support UCS lookup tables will continue to use plain ASCII characters as before.</p></li>
 </ul>
@@ -2525,9 +2525,10 @@ remove the circle.</p>
 
 <p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=ecb576fb2a0a47df6486919c1ebb945f7f252234" external="true" flatten="true">ecb576f</link> from the upstream repository.</p>
 
-<ul>
+<ul compact="true">
 <li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=ecb576fb2a0a47df6486919c1ebb945f7f252234" external="true" flatten="true">ecb576f</link>, with bug fixes to <ref id="mosaic">Mosaic</ref> and other changes.</p></li>
 <li><p>Remove stray <cite>Reporter</cite> debug output from the Unicode routines added in version 1.01.</p></li>
+<li><p>Minimise the <window>program information</window> window each time the iconbar menu opens (ticket #1).</p></li>
 </ul>
 </section>
 </chapter>

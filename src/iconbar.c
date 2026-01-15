@@ -1,4 +1,4 @@
-/* Copyright 2024-2025, Stephen Fryatt
+/* Copyright 2024-2026, Stephen Fryatt
  *
  * This file is part of Puzzles:
  *
@@ -44,9 +44,9 @@
 #include "sflib/dataxfer.h"
 #include "sflib/errors.h"
 #include "sflib/event.h"
-#include "sflib/icons.h"
 #include "sflib/ihelp.h"
 #include "sflib/msgs.h"
+#include "sflib/string.h"
 #include "sflib/templates.h"
 #include "sflib/url.h"
 
@@ -77,10 +77,13 @@
 
 /* Static function prototypes. */
 
-static void	iconbar_click_handler(wimp_pointer *pointer);
-static void	iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *selection);
-static osbool	iconbar_proginfo_web_click(wimp_pointer *pointer);
-static osbool	iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, char *filename, void *data);
+static void iconbar_click_handler(wimp_pointer *pointer);
+static void iconbar_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer);
+static void iconbar_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_message_menu_warning *warning);
+static void iconbar_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection);
+static void iconbar_menu_close_handler(wimp_w w, wimp_menu *menu);
+static osbool iconbar_proginfo_web_click(wimp_pointer *pointer);
+static osbool iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, char *filename, void *data);
 
 /* Global variables. */
 
@@ -89,6 +92,12 @@ static osbool	iconbar_load_puzzle_file(wimp_w w, wimp_i i, unsigned filetype, ch
  */
 
 static wimp_menu	*iconbar_menu = NULL;
+
+/**
+ * The iconbar menu program info window definition.
+ */
+
+static wimp_window	*iconbar_info_window_def = NULL;
 
 /**
  * The iconbar menu program info window handle.
@@ -102,47 +111,56 @@ static wimp_w		iconbar_info_window = NULL;
 
 void iconbar_initialise(void)
 {
-	char			*date = BUILD_DATE;
-	os_error		*error = NULL;
-	wimp_window		*info_window_def;
-	wimp_icon_create	icon_bar;
-
 	/* Create the iconbar menu. */
 
 	iconbar_menu = templates_get_menu("IconBarMenu");
 	ihelp_add_menu(iconbar_menu, "IconBarMenu");
 
-	/* Create and link the Program Info window. */
+	/* The dialogue box pointer can be anything that isn't NULL, as
+	 * we'll fill the real one in on the submenu warning.
+	 */
 
-	info_window_def = templates_load_window("ProgInfo");
-	if (info_window_def == NULL)
+	templates_link_menu_dialogue("ProgInfo", wimp_ICON_BAR);
+
+	/* Load and complete the Program Info window definition. */
+
+	iconbar_info_window_def = templates_load_window("ProgInfo");
+	if (iconbar_info_window_def == NULL)
 		return;
 
-	if (info_window_def->icon_count > ICON_PROGINFO_CONTRIBUTORS) {
-		wimp_icon_data *contributor_icon_data = &(info_window_def->icons[ICON_PROGINFO_CONTRIBUTORS].data);
+	char *date = BUILD_DATE;
+
+	if (iconbar_info_window_def->icon_count > ICON_PROGINFO_VERSION) {
+		wimp_icon_data *version_icon_data = &(iconbar_info_window_def->icons[ICON_PROGINFO_VERSION].data);
+
+		msgs_param_lookup("Version", version_icon_data->indirected_text.text, version_icon_data->indirected_text.size,
+				BUILD_VERSION, date, BUILD_INFO, NULL);
+	}
+
+	if (iconbar_info_window_def->icon_count > ICON_PROGINFO_AUTHOR) {
+		wimp_icon_data *author_icon_data = &(iconbar_info_window_def->icons[ICON_PROGINFO_AUTHOR].data);
+
+		string_printf(author_icon_data->indirected_text.text, author_icon_data->indirected_text.size,
+				"\xa9 Simon Tatham, 2004-%s", date + 7);
+	}
+
+	if (iconbar_info_window_def->icon_count > ICON_PROGINFO_PORTER) {
+		wimp_icon_data *porter_icon_data = &(iconbar_info_window_def->icons[ICON_PROGINFO_PORTER].data);
+
+		string_printf(porter_icon_data->indirected_text.text, porter_icon_data->indirected_text.size,
+				"\xa9 Stephen Fryatt, 2024-%s", date + 7);
+	}
+
+	if (iconbar_info_window_def->icon_count > ICON_PROGINFO_CONTRIBUTORS) {
+		wimp_icon_data *contributor_icon_data = &(iconbar_info_window_def->icons[ICON_PROGINFO_CONTRIBUTORS].data);
 
 		contributor_icon_data->indirected_text.text = iconbar_additional_contributors;
 		contributor_icon_data->indirected_text.size = strlen(iconbar_additional_contributors) + 1;
 	}
 
-	error = xwimp_create_window(info_window_def, &iconbar_info_window);
-	if (error != NULL) {
-		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
-		iconbar_info_window = NULL;
-		return;
-	}
-
-	free(info_window_def);
-
-	templates_link_menu_dialogue("ProgInfo", iconbar_info_window);
-	ihelp_add_window(iconbar_info_window, "ProgInfo", NULL);
-	icons_msgs_param_lookup(iconbar_info_window, ICON_PROGINFO_VERSION, "Version",
-			BUILD_VERSION, date, BUILD_INFO, NULL);
-	icons_printf(iconbar_info_window, ICON_PROGINFO_AUTHOR, "\xa9 Simon Tatham, 2004-%s", date + 7);
-	icons_printf(iconbar_info_window, ICON_PROGINFO_PORTER, "\xa9 Stephen Fryatt, 2024-%s", date + 7);
-	event_add_window_icon_click(iconbar_info_window, ICON_PROGINFO_WEBSITE, iconbar_proginfo_web_click);
-
 	/* Create the iconbar icon. */
+
+	wimp_icon_create icon_bar;
 
 	icon_bar.w = wimp_ICON_BAR_RIGHT;
 	icon_bar.icon.extent.x0 = 0;
@@ -155,7 +173,10 @@ void iconbar_initialise(void)
 
 	event_add_window_mouse_event(wimp_ICON_BAR, iconbar_click_handler);
 	event_add_window_menu(wimp_ICON_BAR, iconbar_menu);
-	event_add_window_menu_selection(wimp_ICON_BAR, iconbar_menu_selection);
+	event_add_window_menu_prepare(wimp_ICON_BAR, iconbar_menu_prepare_handler);
+	event_add_window_menu_warning(wimp_ICON_BAR, iconbar_menu_warning_handler);
+	event_add_window_menu_selection(wimp_ICON_BAR, iconbar_menu_selection_handler);
+	event_add_window_menu_close(wimp_ICON_BAR, iconbar_menu_close_handler);
 
 	dataxfer_set_drop_target(dataxfer_TYPE_PUZZLE, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
 	dataxfer_set_drop_target(osfile_TYPE_DATA, wimp_ICON_BAR, -1, NULL, iconbar_load_puzzle_file, NULL);
@@ -182,6 +203,49 @@ static void iconbar_click_handler(wimp_pointer *pointer)
 	}
 }
 
+/**
+ * Handle Menu Prepare events from the iconbar.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *pointer	The pointer position, or NULL for a re-open.
+ */
+
+static void iconbar_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_pointer *pointer)
+{
+	if (iconbar_info_window != NULL)
+		return;
+
+	os_error *error = xwimp_create_window(iconbar_info_window_def, &iconbar_info_window);
+	if (error != NULL) {
+		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
+		iconbar_info_window = NULL;
+		return;
+	}
+
+	ihelp_add_window(iconbar_info_window, "ProgInfo", NULL);
+	event_add_window_icon_click(iconbar_info_window, ICON_PROGINFO_WEBSITE, iconbar_proginfo_web_click);
+}
+
+/**
+ * Process submenu warning events from the iconbar menu.
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ * \param *warning	The submenu warning message data.
+ */
+
+static void iconbar_menu_warning_handler(wimp_w w, wimp_menu *menu, wimp_message_menu_warning *warning)
+{
+	if (menu != iconbar_menu || iconbar_info_window == NULL)
+		return;
+
+	switch (warning->selection.items[0]) {
+	case ICONBAR_MENU_INFO:
+		wimp_create_sub_menu((wimp_menu *) iconbar_info_window, warning->pos.x, warning->pos.y);
+		break;
+	}
+}
 
 /**
  * Handle selections from the iconbar menu.
@@ -191,11 +255,14 @@ static void iconbar_click_handler(wimp_pointer *pointer)
  * \param  *selection		Pointer to the Wimp menu selction block.
  */
 
-static void iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *selection)
+static void iconbar_menu_selection_handler(wimp_w w, wimp_menu *menu, wimp_selection *selection)
 {
 	wimp_pointer	pointer;
 
 	wimp_get_pointer_info(&pointer);
+
+	if (menu != iconbar_menu)
+		return;
 
 	switch(selection->items[0]) {
 	case ICONBAR_MENU_HELP:
@@ -208,6 +275,23 @@ static void iconbar_menu_selection(wimp_w w, wimp_menu *menu, wimp_selection *se
 	}
 }
 
+/**
+ * Handle Menu Close events from the iconbar
+ *
+ * \param w		The handle of the owning window.
+ * \param *menu		The menu handle.
+ */
+
+static void iconbar_menu_close_handler(wimp_w w, wimp_menu *menu)
+{
+	if (menu != iconbar_menu || iconbar_info_window == NULL)
+		return;
+
+	ihelp_remove_window(iconbar_info_window);
+	event_delete_window(iconbar_info_window);
+
+	iconbar_info_window = NULL;
+}
 
 /**
  * Handle clicks on the Website action button in the program info window.
