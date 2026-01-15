@@ -2528,7 +2528,7 @@ remove the circle.</p>
 </section>
 
 <section>
-<title>Test Build (<define name="date" />)</title>
+<title>Version 1.02 (15 January 2026)</title>
 
 <p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=ecb576fb2a0a47df6486919c1ebb945f7f252234" external="true" flatten="true">ecb576f</link> from the upstream repository.</p>
 
