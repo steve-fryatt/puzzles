@@ -1540,31 +1540,19 @@ osbool game_window_set_clip(struct game_window_block *instance, int x0, int y0, 
 	x1 = game_window_convert_x_coordinate_to_canvas(canvas_size.x, x1);
 	y1 = game_window_convert_y_coordinate_to_canvas(canvas_size.y, y1);
 
-	error = xos_writec(os_VDU_SET_GRAPHICS_WINDOW);
+	const char command[] = {
+		os_VDU_SET_GRAPHICS_WINDOW,
+		x0 & 0xff,
+		(x0 >> 8) & 0xff,
+		y1 & 0xff,
+		(y1 >> 8) & 0xff,
+		x1 & 0xff,
+		(x1 >> 8) & 0xff,
+		y0 & 0xff,
+		(y0 >> 8) & 0xff,
+	};
 
-	if (error == NULL)
-		error = xos_writec(x0 & 0xff);
-
-	if (error == NULL)
-		error = xos_writec((x0 >> 8) & 0xff);
-
-	if (error == NULL)
-		error = xos_writec(y1 & 0xff);
-
-	if (error == NULL)
-		error = xos_writec((y1 >> 8) & 0xff);
-
-	if (error == NULL)
-		error = xos_writec(x1 & 0xff);
-
-	if (error == NULL)
-		error = xos_writec((x1 >> 8) & 0xff);
-
-	if (error == NULL)
-		error = xos_writec(y0 & 0xff);
-
-	if (error == NULL)
-		error = xos_writec((y0 >> 8) & 0xff);
+	error = xos_writen(command, 9);
 
 	if (error != NULL) {
 		error_report_os_error(error, wimp_ERROR_BOX_CANCEL_ICON);
