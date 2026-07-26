@@ -1,4 +1,4 @@
-# Copyright 2024-2025, Stephen Fryatt
+# Copyright 2024-2026, Stephen Fryatt
 #
 # This file is part of Puzzles:
 #
@@ -41,6 +41,8 @@ MANSRC := Source.xml
 HTHELP := HelpHTML,faf
 
 EXTRASRCPREREQ := $(CORE)/$(GAMES)
+
+OBJS_SUBDIRS = core
 
 OBJS =  blitter.o			\
 	canvas.o			\
