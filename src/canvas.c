@@ -216,6 +216,8 @@ void canvas_delete_instance(struct canvas_block *instance)
 
 	if (instance->save_area != NULL)
 		free(instance->save_area);
+
+	free(instance);
 }
 
 /**
