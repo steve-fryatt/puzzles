@@ -1622,7 +1622,7 @@ appearing in the Guardian weekly under the name &lsquo;Futoshiki&rsquo;.</p>
 
 <p>To erase a single pencil mark, <mouse>Adjust</mouse>-click in the square and type the same number again.</p>
 
-<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress>> will also erase pencil marks.</p>
+<p>All pencil marks in a square are erased when you <mouse>Select</mouse>-click and type a number, or when you <mouse>Select</mouse>-click and press <keypress><key>Space</key></keypress>. <mouse>Adjust</mouse>-clicking and pressing <keypress><key>Space</key></keypress> will also erase pencil marks.</p>
 
 <p>As for Solo, the cursor keys can be used in conjunction with the digit keys to set numbers or pencil marks. You can also use the <keypress><key>M</key></keypress> key to auto-fill every numeric hint, ready for removal as required, or the <keypress><key>H</key></keypress> key to do the same but also to remove all obvious hints.</p>
 
@@ -2268,7 +2268,7 @@ remove the circle.</p>
 <p>To play Unruly, click the mouse in a square to change its colour.
 <mouse>Select</mouse>-clicking an empty square will turn it black, and <mouse>Adjust</mouse>-clicking will turn it white. Keep clicking the same button to cycle through the three possible states for the square. If you <keypress><key>Ctrl</key></keypress>-<mouse>Select</mouse>-click in a square it will be reset to empty.</p>
 
-<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <keypress><key>Backspace</key></keypress>> will reset a square to empty.</p>
+<p>You can also use the cursor keys to move around the grid. Pressing the <keypress><key>Return</key></keypress> or <keypress><key>Space</key></keypress> keys will turn an empty square black or white respectively (and then cycle the colours in the same way as the mouse buttons), and pressing <keypress><key>Backspace</key></keypress> will reset a square to empty.</p>
 
 <p>(All the actions described in <ref id="common-actions" /> are also available.)</p>
 </section>
