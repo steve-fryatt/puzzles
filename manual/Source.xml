@@ -2538,6 +2538,18 @@ remove the circle.</p>
 <li><p>Minimise the <window>program information</window> window each time the iconbar menu opens (ticket #1).</p></li>
 </ul>
 </section>
+
+<section>
+<title>Version 1.03 (27 July 2026)</title>
+
+<p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=3c3632259d298ab62aafa8a5858823569ab1af46" external="true" flatten="true">3c36322</link> from the upstream repository.</p>
+
+<ul compact="true">
+<li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=3c3632259d298ab62aafa8a5858823569ab1af46" external="true" flatten="true">3c36322</link>, with improvements to <ref id="keen">Keen</ref>, <ref id="solo">Solo</ref>, <ref id="towers">Towers</ref>, <ref id="undead">Undead</ref> and <ref id="unequal">Unequal</ref>.</p></li>
+<li><p>Fix a memory leak when closing game windows.</p></li>
+<li><p>Resolve a potential bug when loading the application Help in HTML format.</p></li>
+</ul>
+</section>
 </chapter>
 
 <!-- Contact Details -->
