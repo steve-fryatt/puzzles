@@ -1,6 +1,6 @@
 REM >!Help
 REM
-REM Copyright 2024-2025, Stephen Fryatt (info@stevefryatt.org.uk)
+REM Copyright 2024-2026, Stephen Fryatt (info@stevefryatt.org.uk)
 REM
 REM This file is part of Puzzles:
 REM
@@ -84,7 +84,7 @@ text_file$ = ""
 html_file$ = ""
 strong_file$ = ""
 
-WHILE LEN(folders$) > 0 AND ((TextHelp$ <> "" AND text_file$ = "") OR (StrongHelp$ <> "" AND strong_file$ = ""))
+WHILE LEN(folders$) > 0 AND ((TextHelp$ <> "" AND text_file$ = "") OR (StrongHelp$ <> "" AND strong_file$ = "") OR (HtmlHelp$ <> "" AND html_file$ = ""))
 	pos% = INSTR(folders$, ",")
 	IF pos% = 0 THEN
 		dir$ = folders$
