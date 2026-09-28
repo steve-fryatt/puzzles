@@ -1,4 +1,4 @@
-<!-- This manual is in sync with core commit a4f68b6a from 26-11-2025. -->
+<!-- This manual is in sync with core commit 616da16f from 22-09-2026. -->
 
 <manual>
 <title>Puzzles</title>
@@ -163,7 +163,7 @@ both platforms. And if anyone feels like writing any other front ends &ndash; Po
 
 <li><title><menu><item>Copy as text</item></menu></title>
 
-<p>Copies the current state of your game to the clipboard in text format, so that you can paste it into (say) an e-mail client or a web message board if you're discussing the game with someone else. (Not all games support this feature.)</p></li>
+<p>Copies the current state of your game to the clipboard in text format, so that you can paste it into (say) an e-mail client or a web message board if you&rsquo;re discussing the game with someone else. (Not all games support this feature.)</p></li>
 
 
 <li><title><menu><item>New</item></menu> (<keypress><key>N</key></keypress> or <keypress><key>Ctrl</key><key>N</key></keypress>)</title>
@@ -691,6 +691,10 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <p>This game needs no introduction; popularised by Windows, it is perhaps the single best known desktop puzzle game in existence.</p>
 
 <p>This version of it has an unusual property. By default, it will generate its mine positions in such a way as to ensure that you never need to <em>guess</em> where a mine is: you will always be able to deduce it somehow. So you will never, as can happen in other versions, get to the last four squares and discover that there are two mines left but you have no way of knowing for sure where they are.</p>
+
+<p>You can also play the same game on various other tilings, similarly to <ref id="loopy">Loopy</ref>. In other tilings, the &lsquo;neighbours&rsquo; of a tile are taken to be any tile that touches it, <em>even if only at a corner</em>. This means that on some grids &ndash; the triangular grid, in particular &ndash; a tile can have a <em>lot</em> of neighbours!</p>
+
+<p>The simplest types of tiling &ndash; squares, triangles and hexagons &ndash; also have a &lsquo;wrapping&rsquo; mode, in which the left side of the grid is considered adjacent to the right side, and the top adjacent to the bottom, similar to the <icon>Walls wrap around</icon> option in <ref id="net">Net</ref>).</p>
 </section>
 
 <section>
@@ -698,23 +702,21 @@ changing this option, you can ask for a loop to be highlighted only if every til
 
 <p>This game is played with the mouse.</p>
 
-<p>If you <mouse>Select</mouse>-click in a covered square, it will be uncovered.</p>
+<p>If you <mouse>Select</mouse>-click in a covered space, it will be uncovered.</p>
 
-<p>If you <mouse>Adjust</mouse>-click in a covered square, it will place a flag which indicates that the square is believed to be a mine. <mouse>Select</mouse>-clicking in a marked square will not uncover it, for safety. You can <mouse>Adjust</mouse>-click again to remove a mark placed in error.</p>
+<p>If you <mouse>Adjust</mouse>-click in a covered space, it will place a flag which indicates that that space is believed to be a mine. <mouse>Select</mouse>-clicking in a marked space will not uncover it, for safety. You can <mouse>Adjust</mouse>-click again to remove a mark placed in error.</p>
 
-<p>If you <mouse>Select</mouse>-click in an <em>uncovered</em> square, it will &lsquo;clear around&rsquo; the square. This means: if the square has exactly as many flags surrounding it as it should have mines, then all the covered squares next to it which are <em>not</em> flagged will be uncovered. So once you think you know the location of all the mines around a square, you can use this function as a shortcut to avoid having to click on each of the remaining squares one by one.</p>
+<p>If you <mouse>Select</mouse>-click in an <em>uncovered</em> space, it will &lsquo;clear around&rsquo; the space. This means: if the space has exactly as many flags surrounding it as it should have mines, then all the covered spaces next to it which are <em>not</em> flagged will be uncovered. So once you think you know the location of all the mines around a space, you can use this function as a shortcut to avoid having to click on each of the remaining spaces one by one.</p>
 
-<p>If you uncover a square which has <em>no</em> mines in the surrounding eight squares, then it is obviously safe to uncover those squares in turn, and so on if any of them also has no surrounding mines. This will be done for you automatically; so sometimes when you uncover a square, a whole new area will open up to be explored.</p>
+<p>If you uncover a space which has <em>no</em> mines in any of the neighbouring spaces, then it is obviously safe to uncover those spaces in turn, and so on if any of them also has no surrounding mines. This will be done for you automatically; so sometimes when you uncover a space, a whole new area will open up to be explored.</p>
 
-<p>You can also use the cursor keys to move around the minefield. Pressing the <keypress><key>Return</key></keypress> key in a covered square uncovers it, and in an uncovered square will clear around it (so it acts as the <mouse>Select</mouse> button), pressing the <keypress><key>Space</key></keypress> bar in a covered square will place a flag (similarly, it acts as the <mouse>Adjust</mouse> button).</p>
+<p>On the default square grid, you can also use the cursor keys to move around the minefield. Pressing the <keypress><key>Return</key></keypress> key in a covered space uncovers it, and in an uncovered space will clear around it (so it acts as the <mouse>Select</mouse> button), pressing the <keypress><key>Space</key></keypress> bar in a covered space will place a flag (similarly, it acts as the <mouse>Adjust</mouse> button).</p>
 
 <p>All the actions described in <ref id="common-actions" /> are also available.</p>
 
 <p>Even <menu><item>Undo</item></menu> is available, although you might consider it cheating to use it. If you step on a mine, the program will only reveal the mine in question (unlike most other implementations, which reveal all of them). You can then Undo your fatal move and continue playing if you like. The program will track the number of times you died (and Undo will not reduce that counter), so when you get to the end of the game you know whether or not you did it without making any errors.</p>
 
-<p>(If you really want to know the full layout of the grid, which other
-implementations will show you after you die, you can always use the
-<menu><item>Solve</item></menu> menu option.)</p>
+<p>(If you really want to know the full layout of the grid, which other implementations will show you after you die, you can always use the <menu><item>Solve</item></menu> menu option.)</p>
 </section>
 
 <section>
@@ -725,18 +727,30 @@ implementations will show you after you die, you can always use the
 <dl>
 <li><title><icon>Width</icon>, <icon>Height</icon></title>
 
-<p>Size of grid in squares.</p></li>
+<p>Size of grid, measured in number of regions across and down. For square grids, it&rsquo;s clear how this is counted; for other types of grid you may have to think a bit to see how the dimensions are measured.</p></li>
 
 <li><title><icon>Mines</icon></title>
 
-<p>Number of mines in the grid. You can enter this as an absolute mine count, or alternatively you can put a % sign on the end in which case the game will arrange for that proportion of the squares in the grid to be mines.</p>
-
-<p>Beware of setting the mine count too high. At very high densities, the program may spend forever searching for a solvable grid.</p></li>
+<p>Number of mines in the grid. You can enter this as an absolute mine count, or alternatively you can put a % sign on the end in which case the game will arrange for that proportion of the squares in the grid to be mines.</p></li>
 
 <li><title><icon>Ensure solubility</icon></title>
 
 <p>When this option is enabled (as it is by default), Mines will ensure that the entire grid can be fully deduced starting from the initial open space. If you prefer the riskier grids generated by other implementations, you can switch off this option.</p></li>
+
+<li><title><icon>Grid type</icon></title>
+
+<p>Allows you to choose between a selection of types of tiling. Some are more regular than others!</p></li>
 </dl>
+</section>
+
+<section>
+<title>Mines user preferences</title>
+
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the following setting:</p>
+
+<p><icon>Highlight adjacent flags when clicking on a clue</icon>. This is off by default. When it&rsquo;s turned on, <mouse>Select</mouse>-clicking in an <em>uncovered</em> space (to clear around it) will temporarily highlight all the flagged spaces that are already neighbours of the space you clicked on, until you release the button. This makes it easier to count them, and work out how many more mines you expect to find in the remaining covered neighbours of the space.</p>
+
+<p>(If there <em>are</em> any more mines to be found, then the <mouse>Select</mouse>-click will not open any squares, so the only effect of the click is to display the highlights temporarily.)</p>
 </section>
 </chapter>
 
