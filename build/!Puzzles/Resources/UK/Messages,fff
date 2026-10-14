@@ -1,4 +1,4 @@
-# Copyright 2024-2025, Stephen Fryatt (info@stevefryatt.org.uk)
+# Copyright 2024-2026, Stephen Fryatt (info@stevefryatt.org.uk)
 #
 # This file is part of Puzzles:
 #
@@ -98,7 +98,7 @@ Help.Index.lightup:\Sto play Light Up.|MPlace lamps so that all squares are lit,
 Help.Index.loopy:\Sto play Loopy.|MDraw a single unbroken and uncrossing line, such that numbered squares have the given number of edges filled.
 Help.Index.magnets:\Sto play Magnets.|MPlace magnets and blanks to satisfy the + and - counts, as well as to avoid magnets repelling.
 Help.Index.map:\Sto play Map.|MCopy the four colours to colour the map, with no regions of the same colour touching.
-Help.Index.mines:\Sto play Mine.|MUncover all of the squares except those with mines, using the given counts of adjacent mines as clues.|MThe game is generated after first move, so you may see the hourglass at that point.
+Help.Index.mines:\Sto play Mines.|MUncover all of the spaces except those with mines, using the given counts of adjacent mines as clues.|MThe game is generated after first move, so you may see the hourglass at that point.
 Help.Index.mosaic:\Sto play Mosaic.|MColour squares black or white. Clues give the number of black squares in the 3 by 3 region around (and including) the clue square itself.
 Help.Index.net:\Sto play Net.|MRotate tiles to connect all of the tiles (not just endpoints) to the centre tile using the joining lines.
 Help.Index.netslide:\Sto play Netslide.|MSlide rows and columns to connect all the tiles (not just the endpoints) to the centre tile.
