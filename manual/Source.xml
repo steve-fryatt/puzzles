@@ -746,11 +746,13 @@ changing this option, you can ask for a loop to be highlighted only if every til
 <section>
 <title>Mines user preferences</title>
 
-<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the following setting:</p>
+<p>The <menu><item>Preferences</item></menu> option on the <window>Game</window> window menu will let you configure the following settings:</p>
 
 <p><icon>Highlight adjacent flags when clicking on a clue</icon>. This is off by default. When it&rsquo;s turned on, <mouse>Select</mouse>-clicking in an <em>uncovered</em> space (to clear around it) will temporarily highlight all the flagged spaces that are already neighbours of the space you clicked on, until you release the button. This makes it easier to count them, and work out how many more mines you expect to find in the remaining covered neighbours of the space.</p>
 
 <p>(If there <em>are</em> any more mines to be found, then the <mouse>Select</mouse>-click will not open any squares, so the only effect of the click is to display the highlights temporarily.)</p>
+
+<p><icon>Permit marking squares with a ? instead of a flag</icon>. If turned on, <mouse>Adjust</mouse>-clicking on a closed cell will cycle it from empty to a flag, to a question mark and then back to empty &ndash; instead of just swapping between empty and a flag. This is provided as a memory aid: aside from its visual appearance, a cell with a question mark is no different from an empty cell.</p>
 </section>
 </chapter>
 
