@@ -1287,6 +1287,8 @@ osbool game_window_create_canvas(struct game_window_block *instance, int x, int 
 		extent.y0 = -GAME_WINDOW_STATUS_BAR_HEIGHT;
 		extent.y1 = 0;
 		wimp_set_extent(instance->status_bar, &extent);
+		wimp_resize_icon(instance->status_bar, instance->status_icon,
+				extent.x0, extent.y0, extent.x1, extent.y1);
 		windows_redraw(instance->status_bar);
 	}
 
