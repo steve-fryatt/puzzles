@@ -634,7 +634,8 @@ static void index_window_menu_prepare_handler(wimp_w w, wimp_menu *menu, wimp_po
 	if (menu != index_window_menu)
 		return;
 
-	index_window_menu_game = index_window_find_game_from_pointer(pointer->w, pointer->pos);
+	if (pointer != NULL)
+		index_window_menu_game = index_window_find_game_from_pointer(pointer->w, pointer->pos);
 
 	/* Update the menu state. */
 
