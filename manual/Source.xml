@@ -2566,6 +2566,18 @@ remove the circle.</p>
 <li><p>Resolve a potential bug when loading the application Help in HTML format.</p></li>
 </ul>
 </section>
+
+<section>
+<title>Version 1.04 (22 October 2026)</title>
+
+<p>Update to the first RISC&nbsp;OS release, based on commit <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=616da16f25da428ccda805536209095bd062676e" external="true" flatten="true">616da16</link> from the upstream repository.</p>
+
+<ul compact="true">
+<li><p>Update the upstream to <link href="https://git.tartarus.org/?p=simon/puzzles.git;a=commit;h=616da16f25da428ccda805536209095bd062676e" external="true" flatten="true">616da16</link>, with new grid layouts and other improvements to <ref id="mines">Mines</ref>.</p></li>
+<li><p>Fix a crash when <mouse>Adjust</mouse>-clicking in the <window>index</window> window menu.</p></li>
+<li><p>Correctly resize the status bar text field when changing the game size.</p></li>
+</ul>
+</section>
 </chapter>
 
 <!-- Contact Details -->
